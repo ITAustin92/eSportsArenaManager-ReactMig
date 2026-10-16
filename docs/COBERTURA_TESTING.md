@@ -4,8 +4,8 @@ Fecha: 16 de octubre de 2026. Evidencia: ejecución real, no estimaciones.
 
 ## Resultado Jasmine/Karma
 
-- npm test: 118 pruebas aprobadas.
-- npm run test:cov: 118 pruebas aprobadas.
+- npm test: 122 pruebas aprobadas, distribuidas en 18 archivos spec.
+- npm run test:cov: 122 pruebas aprobadas; 48 archivos de aplicación instrumentados.
 - Sentencias: 84.55% (794/939).
 - Ramas: 82.85% (546/659).
 - Funciones: 80.72% (268/332).
@@ -15,13 +15,15 @@ No se incluyen specs, helpers de prueba, node_modules, CSS, imágenes ni main.js
 
 ## Entorno y configuración
 
-Node 24.21.0; Chrome for Testing 156 (el agente del navegador reporta Windows 10), Jasmine 4.6.1, Karma 6.4.4, karma-jasmine 5.1, karma-chrome-launcher 3.2, karma-esbuild 2.3, karma-coverage e esbuild-plugin-istanbul. Consultar package-lock.json para resoluciones exactas.
+Node 24.21.0; Chrome Headless Shell 156.0.8078.4 (el agente del navegador reporta Windows 10), Jasmine 4.6.1, Karma 6.4.4, karma-jasmine 5.1, karma-chrome-launcher 3.2, karma-esbuild 2.3, karma-coverage e esbuild-plugin-istanbul. Consultar package-lock.json para resoluciones exactas.
 
 karma.conf.cjs conserva frameworks jasmine, patrón src/**/*.spec.js*, JSX automático y loader .js como JSX. singleRun es el valor por defecto; test:watch lo desactiva. singleBundle: false resuelve el problema de rutas temporales Windows documentado en DECISIONES.md.
 
-La instrumentación Istanbul se activa con --coverage. Un plugin previo devuelve sin instrumentar los specs/helpers. Se comprobaron los archivos del resumen JSON para evitar contarlos artificialmente. Reportes: HTML, text-summary, JSON completo y JSON resumen.
+La instrumentación Istanbul se activa con --coverage. El plugin previo de Karma y .nycrc.json excluyen explícitamente `**/*.spec.js`, `**/*.spec.jsx`, `src/pruebas/**`, `src/main.jsx` y `node_modules/**`; el instrumentador solo recibe archivos dentro de src/. Reportes: HTML, text-summary, JSON completo y JSON resumen.
 
-La ejecución aislada utilizó CHROME_BIN hacia el Chrome de pruebas y CHROME_NO_SANDBOX=1. Esta última opción no es necesaria ni aconsejada para navegación habitual. No se cambió la seguridad del navegador del usuario.
+test:cov elimina coverage/ con Node antes de ejecutar Karma. Se verificaron los 48 archivos del resumen JSON y los enlaces de coverage/html/index.html: no contienen specs ni helpers y existe un único árbol de fuentes bajo coverage/html/src/, sin las carpetas antiguas duplicadas. La tabla siguiente se cotejó con la ejecución de 122 pruebas; los porcentajes no cambiaron, porque MensajeError ya tenía cobertura indirecta en Boton.spec.js.
+
+La ejecución aislada utilizó CHROME_BIN hacia Chrome Headless Shell y CHROME_NO_SANDBOX=1. Esta última opción no es necesaria ni aconsejada para navegación habitual. No se cambió la seguridad del navegador del usuario. Karma sirve las imágenes y el favicon locales para evitar avisos 404, sin silenciar advertencias.
 
 ## Casos obligatorios
 
@@ -56,12 +58,16 @@ La ejecución aislada utilizó CHROME_BIN hacia el Chrome de pruebas y CHROME_NO
 | T22 | Propiedad | Equipo/inscripción/perfil ajenos | Operación rechazada; aprobado |
 | T23 | Suscripción | Notificación y posterior limpieza | Solo una notificación; aprobado |
 | T24 | Integración React | Login con retorno, perfil, búsqueda admin y CRUD juego | Aprobado |
+| T25 | MensajeError.spec.js: sin error | Cadena vacía, null, undefined (tres pruebas) | Cero nodos DOM; aprobado |
+| T26 | MensajeError.spec.js: con error | Texto e id correo-error | Texto exacto, role="alert" e id recibido; aprobado |
 
 ## Espías, aislamiento y async
 
 FormularioInscripcion usa jasmine.createSpy para onEnviar; Boton para onClick. El CRUD usa almacenamiento en memoria y spyOn(storage, 'setItem').and.throwError. App.spec.js espía scrollTo y monta con act async mientras se resuelve la carga local.
 
 Cada prueba crea fixtures frescos; las pruebas DOM desmontan la raíz dentro de act y eliminan el contenedor. Se comprueba inmutabilidad con copias y toEqual. El reloj de las reglas puras se inyecta como hoy. No se llama una API de negocio real.
+
+MensajeError.spec.js reutiliza prepararDOM/renderizar de src/pruebas/dom.jsx y su configuración IS_REACT_ACT_ENVIRONMENT; no modifica el componente ni los helpers. Los 17 specs preexistentes se conservaron intactos. La búsqueda en todo src/ no encontró fit, xit, fdescribe ni xdescribe.
 
 ## Porcentajes reales por archivo
 

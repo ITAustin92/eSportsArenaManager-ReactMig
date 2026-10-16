@@ -13,17 +13,32 @@ module.exports = function (config) {
   const excluirPruebas = {
     name: 'excluir-pruebas',
     setup(build) {
-      build.onLoad({ filter: /\.spec\.jsx?$|[\\/]pruebas[\\/]/ }, async ({ path }) => ({ contents: await fs.readFile(path, 'utf8'), loader: 'jsx' }))
+      build.onLoad({ filter: /\.jsx?$/ }, async ({ path }) => {
+        const excluido = /\.spec\.jsx?$|[\\/]src[\\/]pruebas[\\/]|[\\/]src[\\/]main\.jsx$|[\\/]node_modules[\\/]/.test(path)
+        if (!excluido) return
+        return { contents: await fs.readFile(path, 'utf8'), loader: 'jsx' }
+      })
     },
   }
   config.set({
     basePath: '',
     frameworks: ['jasmine'],
-    files: [{ pattern: 'src/**/*.spec.js*', watched: true, type: 'module' }],
+    files: [
+      { pattern: 'src/**/*.spec.js*', watched: true, type: 'module' },
+      { pattern: 'public/**/*', included: false, watched: false },
+    ],
+    // Reutiliza el servidor estático de Karma sin el proxy HTTP obsoleto.
+    beforeMiddleware: ['recursos-publicos'],
+    plugins: ['karma-*', {
+      'middleware:recursos-publicos': ['factory', function () { return (request, response, next) => {
+        if (request.url.startsWith('/img/') || request.url.split('?')[0] === '/favicon.svg') request.url = '/base/public' + request.url
+        next()
+      } }],
+    }],
     preprocessors: { 'src/**/*.spec.js*': ['esbuild'] },
     esbuild: {
       singleBundle: false, target: 'es2022', jsx: 'automatic', loader: { '.js': 'jsx' },
-      plugins: cobertura ? [excluirPruebas, esbuildPluginIstanbul({ filter: /\.jsx?$/, loader: 'jsx', name: 'istanbul' })] : [],
+      plugins: cobertura ? [excluirPruebas, esbuildPluginIstanbul({ filter: /[\\/]src[\\/].*\.jsx?$/, loader: 'jsx', name: 'istanbul' })] : [],
     },
     reporters: cobertura ? ['progress', 'coverage'] : ['progress'],
     coverageReporter: {

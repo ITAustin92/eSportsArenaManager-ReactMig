@@ -10,7 +10,7 @@
     "test": "karma start karma.conf.cjs",
     "preview": "vite preview",
     "test:watch": "karma start karma.conf.cjs --no-single-run --auto-watch",
-    "test:cov": "karma start karma.conf.cjs --coverage",
+    "test:cov": "node -e \"require('fs').rmSync('coverage', { recursive: true, force: true })\" && karma start karma.conf.cjs --coverage",
     "test:e2e": "playwright test"
   },
   "dependencies": {

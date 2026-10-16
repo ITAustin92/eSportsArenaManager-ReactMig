@@ -61,6 +61,20 @@ Playwright añade siete recorridos de integración y capturas, sin reemplazar Ja
 
 Se retiraron Header, Footer, FormInscripcion, el router hash, el CSS monolítico y las pruebas Node obsoletas. Son recuperables en el historial Git; los reemplazos están cubiertos por las nuevas suites.
 
+## Corrección quirúrgica de cobertura y auditoría
+
+Auditoría del 16 de octubre de 2026 sobre e9d9426. La línea base fue lint, 118 pruebas y build aprobados. No se reescribió ningún componente, regla de negocio, dato, helper ni spec existente. Se añadió únicamente MensajeError.spec.js con cuatro casos, para un total de 122 pruebas.
+
+El resumen JSON previo ya excluía las pruebas, pero el HTML conservaba carpetas antiguas de components, datos, logica y pruebas junto a src. Se limpió coverage/ y test:cov ahora repite esa limpieza con fs.rmSync antes de cada ejecución. Las exclusiones de specs, helpers, main.jsx y node_modules quedan explícitas tanto en .nycrc.json como en el plugin previo a Istanbul; el filtro de instrumentación se limita a src. Se mantienen Jasmine, los specs como módulos, JSX automático, loader .js como JSX y singleBundle: false.
+
+La línea base mostraba avisos 404 de imágenes y favicon. Karma ahora sirve public/ y un middleware previo redirige sus rutas al servidor estático de Karma. No se empleó el proxy HTTP de Karma porque su dependencia generaba una advertencia de obsolescencia con Node 24. No se silenciaron advertencias ni se cambiaron dependencias.
+
+Para esta revisión se reutilizó Chrome Headless Shell 156 ya disponible fuera del repositorio mediante CHROME_BIN y CHROME_NO_SANDBOX=1. No se alteraron navegadores personales ni la selección normal de ChromeHeadless.
+
+La auditoría estática no encontró hexadecimales fuera de :root en las hojas propias y JSX, !important ni estilos inline. La revisión de DOM en las nueve vistas confirmó un h1, aria-current="page" en el NavLink activo, botones primarios de 16 px, caption/scope, title del iframe, alt del avatar y autocomplete="nickname". Inicio ya obtiene su h1 de Hero y NavLink agrega aria-current automáticamente: no fue necesario modificar componentes o CSS. Header.jsx, Footer.jsx y FormInscripcion.jsx ya no existían.
+
+.idea y coverage no estaban versionados. Se verificaron las exclusiones de Git, se eliminó .idea y se conservó un respaldo local de sus seis archivos en node_modules/.cache/ep2-auditoria/idea-antes-limpieza.zip. coverage/ se regeneró para revisión local y permanece ignorado. La verificación final de lint, test, test:cov y build terminó con código 0 y sin advertencias; el HTML y JSON incluyen solo 48 archivos de aplicación.
+
 ## Entrega y Git
 
 Una sola rama de funcionalidad, feature/ep2-react-completo, evita subramas artificiales sin trabajo independiente. No se hizo push, merge ni PR. Los commits locales y el ZIP permiten revisar el resultado antes de publicar. La revisión final del docente y la confirmación de integrantes corresponden al equipo.
