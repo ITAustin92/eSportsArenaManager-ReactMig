@@ -1,0 +1,7 @@
+.tarjeta-torneo { border-top: 3px solid var(--color-acento); }
+.tarjeta-torneo-imagen, .tarjeta-torneo-portada { height: 175px; object-fit: cover; }
+.tarjeta-torneo-portada { display: grid; place-items: center; background: var(--color-superficie-alta); font-size: 1.3rem; }
+.tarjeta-torneo-titulo { font-size: 1.25rem; margin: 1rem 0; }
+.tarjeta-torneo-datos { display: grid; grid-template-columns: auto 1fr; gap: .4rem 1rem; font-size: .88rem; }
+.tarjeta-torneo-datos dt { color: var(--color-texto-secundario); font-weight: 400; }
+.tarjeta-torneo-datos dd { text-align: right; margin: 0; }

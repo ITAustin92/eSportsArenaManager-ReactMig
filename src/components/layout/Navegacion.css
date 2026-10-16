@@ -1,0 +1,7 @@
+.navegacion { border-bottom: 1px solid var(--color-borde); background: var(--color-fondo); }
+.navegacion .nav-link { color: var(--color-texto-secundario); padding: .8rem; }
+.navegacion .nav-link:hover, .navegacion .nav-link[aria-current="page"] { color: var(--color-acento); text-decoration: underline; text-underline-offset: .5rem; }
+.navegacion-sesion { display: flex; align-items: center; gap: 1rem; font-size: .8rem; color: var(--color-texto-secundario); }
+@media (max-width: 991px) { .navegacion-sesion { flex-wrap: wrap; padding: .5rem 0; } .navegacion-sesion > span { display: none; } }
+
+@media (min-width: 768px) and (max-width: 1199px) { .navegacion .navbar-collapse { flex-wrap: wrap; } .navegacion-sesion { width: 100%; padding-bottom: .75rem; } }

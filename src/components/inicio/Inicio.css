@@ -1,0 +1,4 @@
+.inicio-banner { display: grid; grid-template-columns: 1fr 1fr; overflow: hidden; margin-bottom: 3rem; }
+.inicio-banner-texto { padding: 2rem; }
+.inicio-banner img { width: 100%; height: 100%; object-fit: cover; min-height: 240px; }
+@media (max-width: 767px) { .inicio-banner { grid-template-columns: 1fr; } .inicio-banner img { height: 200px; min-height: auto; } }

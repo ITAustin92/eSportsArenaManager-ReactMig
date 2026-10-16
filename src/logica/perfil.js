@@ -5,18 +5,8 @@ export function validarApodo(apodo) {
   return ''
 }
 
-export const jugadorInicial = {
-  apodo: 'FakerLATAM',
-  correo: 'jugador@correo.com',
-  victorias: 42,
-  derrotas: 18,
-  equipos: ['KRÜ Esports', 'Agentes Libres LATAM'],
-  historial: [
-    { torneo: 'Copa Latam Valorant', resultado: '1er Lugar' },
-    { torneo: 'Torneo de Verano', resultado: 'Semifinalista' },
-  ],
-  sanciones: [
-    { motivo: 'Abandono de partida (AFK)', estado: 'Cumplida' },
-    { motivo: 'Comportamiento tóxico en chat', estado: 'Vigente' },
-  ],
+export function validarAvatar(archivo) {
+  if (!archivo || !['image/png', 'image/jpeg', 'image/webp'].includes(archivo.type)) return 'Selecciona una imagen PNG, JPEG o WebP.'
+  if (archivo.size > 2 * 1024 * 1024) return 'La imagen no puede superar 2 MB.'
+  return ''
 }

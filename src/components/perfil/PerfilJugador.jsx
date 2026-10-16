@@ -1,62 +1,45 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
+import useAuth from '../auth/useAuth'
 import AvatarJugador from './AvatarJugador'
 import Estadisticas from './Estadisticas'
-import MensajeError from '../compartidos/MensajeError'
-import { validarApodo } from '../../logica/perfil'
+import Campo from '../compartidos/Campo'
+import Boton from '../compartidos/Boton'
+import BadgeEstado from '../compartidos/BadgeEstado'
+import MisInscripciones from '../inscripcion/MisInscripciones'
+import { validarApodo, validarAvatar } from '../../logica/perfil.js'
+import { actualizarJugador } from '../../datos/datos.js'
+import { formatearFecha } from '../../logica/torneos.js'
 
-function PerfilJugador({ jugador, equipos = [], archivoAvatar, onCambiarAvatar, onCambiarApodo }) {
-  const [apodo, setApodo] = useState('')
+function PerfilJugador({ datos }) {
+  const { sesion } = useAuth()
+  const jugador = datos.jugadores.find((item) => item.id === sesion.jugadorId)
+  const [apodo, setApodo] = useState(jugador.apodo)
   const [error, setError] = useState('')
-  const [guardado, setGuardado] = useState(false)
+  const [errorAvatar, setErrorAvatar] = useState('')
+  const [mensaje, setMensaje] = useState('')
   const guardar = (evento) => {
     evento.preventDefault()
-    const mensaje = validarApodo(apodo)
-    setError(mensaje)
-    setGuardado(!mensaje)
-    if (!mensaje) {
-      onCambiarApodo(apodo)
-      setApodo('')
-    }
+    const encontrado = validarApodo(apodo)
+    setError(encontrado)
+    if (encontrado) return
+    try { actualizarJugador(jugador.id, { apodo }, sesion); setMensaje('Apodo actualizado.') } catch (fallo) { setError(fallo.message) }
   }
-
-  return (
-    <div className="contenedor-principal dashboard-perfil">
-      <aside className="columna-perfil">
-        <div className="modulo-detalle tarjeta-jugador">
-          <AvatarJugador archivo={archivoAvatar} onCambiar={onCambiarAvatar} />
-          <h2 id="display-apodo">{jugador.apodo}</h2>
-          <p className="tarjeta-info">{jugador.correo}</p>
-          <hr className="separador-panel" />
-          <h3>Actualizar Apodo</h3>
-          <form id="form-perfil" noValidate onSubmit={guardar}>
-            <div className="grupo-formulario">
-              <label htmlFor="input-apodo">Nuevo Apodo:</label>
-              <input type="text" id="input-apodo" name="apodo" placeholder="Ej: KunAguero" value={apodo} onChange={(evento) => { setApodo(evento.target.value); setError(''); setGuardado(false) }} className={error ? 'input-invalido' : undefined} aria-invalid={!!error} aria-describedby={error ? 'error-apodo' : undefined} />
-              <span className="texto-ayuda">Obligatorio, sin espacios, entre 3 y 15 caracteres.</span>
-              <MensajeError id="error-apodo">{error}</MensajeError>
-            </div>
-            <button type="submit" className="boton-primario boton-ancho">Guardar Cambios</button>
-          </form>
-          {guardado && <div id="mensaje-exito-perfil" style={{ marginTop: 15, padding: 10 }} className="alerta-exito" role="status"><h3 style={{ fontSize: 14, marginBottom: 0 }}>¡Apodo actualizado!</h3></div>}
-        </div>
-      </aside>
-      <section className="columna-datos">
-        <Estadisticas victorias={jugador.victorias} derrotas={jugador.derrotas} />
-        <div className="modulo-detalle">
-          <h2>Mis Equipos</h2>
-          <ul id="lista-mis-equipos" className="lista-perfil">{[...jugador.equipos, ...equipos.map((equipo) => equipo.nombre)].map((equipo) => <li key={equipo} className="item-perfil"><strong>{equipo}</strong></li>)}</ul>
-        </div>
-        <div className="modulo-detalle">
-          <h2>Historial de Torneos</h2>
-          <ul id="lista-historial" className="lista-perfil">{jugador.historial.map((item) => <li key={item.torneo} className="item-perfil"><span>{item.torneo}</span><span className="badge-estado badge-secundario">{item.resultado}</span></li>)}</ul>
-        </div>
-        <div className="modulo-detalle">
-          <h2>Sanciones</h2>
-          <ul id="lista-sanciones" className="lista-perfil">{jugador.sanciones.map((sancion) => <li key={sancion.motivo} className="item-perfil" style={sancion.estado === 'Vigente' ? { borderLeft: '3px solid var(--color-error)' } : undefined}><span>{sancion.motivo}</span><span className={sancion.estado === 'Vigente' ? 'badge-sancion-vigente' : 'badge-sancion-cumplida'}>{sancion.estado}</span></li>)}</ul>
-        </div>
-      </section>
-    </div>
-  )
+  const cambiarAvatar = (evento) => {
+    const archivo = evento.target.files?.[0]
+    if (!archivo) return
+    const encontrado = validarAvatar(archivo)
+    setErrorAvatar(encontrado)
+    if (encontrado) return
+    const lector = new FileReader()
+    lector.onload = () => { try { actualizarJugador(jugador.id, { avatar: lector.result }, sesion); setMensaje('Foto actualizada.') } catch (fallo) { setErrorAvatar(fallo.message) } }
+    lector.onerror = () => setErrorAvatar('No se pudo leer la imagen.')
+    lector.readAsDataURL(archivo)
+  }
+  return <><p className="sobretitulo">Tu trayectoria</p><h1>Perfil de jugador</h1><div className="row g-4"><section className="col-12 col-lg-4"><div className="panel"><AvatarJugador src={jugador.avatar} apodo={jugador.apodo} onCambiar={cambiarAvatar} error={errorAvatar} /><h2 className="mt-3">{jugador.apodo}</h2><p>{jugador.correo}</p><form onSubmit={guardar} noValidate><Campo id="perfil-apodo" nombre="apodo" etiqueta="Nuevo apodo" valor={apodo} onCambiar={(evento) => setApodo(evento.target.value)} error={error} autoComplete="nickname" ayuda="Entre 3 y 15 caracteres, sin espacios." /><Boton type="submit">Guardar apodo</Boton></form>{mensaje && <p className="mt-3" role="status">{mensaje}</p>}</div></section>
+    <div className="col-12 col-lg-8"><Estadisticas victorias={jugador.victorias} derrotas={jugador.derrotas} /><section className="panel mt-4"><h2>Mis equipos</h2>{jugador.equipos.length === 0 ? <p>Aún no perteneces a un equipo.</p> : <ul>{datos.equipos.filter((equipo) => jugador.equipos.includes(equipo.id)).map((equipo) => <li key={equipo.id}>{equipo.nombre} · <BadgeEstado estado={equipo.estado} /></li>)}</ul>}</section>
+    <section className="panel my-4"><h2>Historial de torneos</h2>{jugador.historial.length === 0 ? <p>Aún no hay resultados históricos.</p> : <ul>{jugador.historial.map((item) => <li key={item.id}><Link to={'/torneos/' + item.torneoId}>{item.nombre}</Link> · {item.resultado}</li>)}</ul>}</section>
+    <section className="panel mb-4"><h2>Sanciones</h2>{jugador.sanciones.length === 0 ? <p>Sin sanciones</p> : <ul className="lista-limpia">{jugador.sanciones.map((sancion) => <li key={sancion.id} className="separador-fila"><BadgeEstado estado={sancion.vigente ? 'Vigente' : 'Cumplida'} /><p>{sancion.motivo}</p><p className="texto-secundario">{formatearFecha(sancion.desde)} — {formatearFecha(sancion.hasta)}</p></li>)}</ul>}</section>
+    <MisInscripciones datos={datos} sesion={sesion} /></div></div></>
 }
-
 export default PerfilJugador

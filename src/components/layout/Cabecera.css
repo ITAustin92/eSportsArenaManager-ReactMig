@@ -1,0 +1,6 @@
+.cabecera { padding: 1.2rem 0; background: var(--color-superficie); border-bottom: 1px solid var(--color-borde); }
+.cabecera .container { display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+.cabecera-marca { font-size: 1rem; font-weight: 800; letter-spacing: .07em; color: var(--color-texto); text-decoration: none; }
+.cabecera-marca span { color: var(--color-acento); margin-right: .5rem; }
+.cabecera-edicion { color: var(--color-texto-secundario); font-size: .72rem; letter-spacing: .1em; }
+@media (max-width: 767px) { .cabecera-edicion { display: none; } .cabecera-marca { font-size: .85rem; } }

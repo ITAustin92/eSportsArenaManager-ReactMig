@@ -1,0 +1,2 @@
+.avatar-jugador img { width: 112px; height: 112px; object-fit: cover; border-radius: 50%; background: var(--color-superficie-alta); border: 3px solid var(--color-acento); margin-bottom: 1rem; }
+.avatar-jugador small { color: var(--color-texto-secundario); }

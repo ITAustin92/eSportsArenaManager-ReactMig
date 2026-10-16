@@ -1,0 +1,2 @@
+.campo-ayuda { display: block; margin-top: .4rem; color: var(--color-texto-secundario); }
+.campo [aria-invalid="true"] { border-color: var(--color-error); }

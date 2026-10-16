@@ -1,0 +1,4 @@
+.badge-estado { background: var(--color-superficie-alta); color: var(--color-texto); border: 1px solid var(--color-borde); padding: .45rem .65rem; white-space: normal; }
+.badge-estado.estado-abierto, .badge-estado.estado-habilitado, .badge-estado.estado-cumplida { background: var(--color-acento); color: var(--color-fondo); }
+.badge-estado.estado-en-curso, .badge-estado.estado-en-juego { background: var(--color-accion); color: var(--color-texto); }
+.badge-estado.estado-sancionado, .badge-estado.estado-vigente { color: var(--color-error); }

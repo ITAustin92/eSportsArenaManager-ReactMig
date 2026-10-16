@@ -1,0 +1,6 @@
+.boton { display: inline-flex; align-items: center; justify-content: center; gap: .4rem; padding: .65rem 1rem; border: 1px solid var(--color-borde); border-radius: .6rem; font-size: 1rem; font-weight: 650; text-decoration: none; min-height: 44px; }
+.boton-primario { background: var(--color-accion); color: var(--color-texto); border-color: var(--color-accion); }
+.boton-primario:hover { background: var(--color-accion-hover); color: var(--color-texto); }
+.boton-secundario { background: var(--color-superficie-alta); color: var(--color-texto); }
+.boton-peligro { background: var(--color-superficie); color: var(--color-error); border-color: var(--color-error); }
+.boton:disabled { opacity: .65; cursor: not-allowed; }

@@ -22,3 +22,10 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Reportes regenerables
+coverage/
+.nyc_output/
+.nyc_cache/
+playwright-report/
+test-results/
