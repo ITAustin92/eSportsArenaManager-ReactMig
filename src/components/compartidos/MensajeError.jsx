@@ -1,4 +1,5 @@
-function MensajeError({ children, id, className = 'mensaje-error-campo', style }) {
-  return children ? <div id={id} className={className} style={{ display: 'block', ...style }} role="alert">{children}</div> : null
+import './MensajeError.css'
+function MensajeError({ children, id }) {
+  return children ? <p id={id} className="mensaje-error" role="alert">{children}</p> : null
 }
 export default MensajeError

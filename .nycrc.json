@@ -1,0 +1,22 @@
+{
+  "include": [
+    "src/**/*.js",
+    "src/**/*.jsx"
+  ],
+  "exclude": [
+    "**/*.spec.js",
+    "**/*.spec.jsx",
+    "src/pruebas/**",
+    "src/main.jsx",
+    "node_modules/**"
+  ],
+  "extension": [
+    ".js",
+    ".jsx"
+  ],
+  "all": true,
+  "parserPlugins": [
+    "jsx"
+  ],
+  "cache": false
+}

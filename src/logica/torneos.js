@@ -1,33 +1,54 @@
-export const catalogoTorneos = [
-  { id: 'copa-latam-valorant', nombre: 'Copa Latam Valorant', juego: 'Valorant', modalidad: '5v5', cuposOcupados: 14, cuposMaximos: 16, fechaCierre: '2026-10-15', estado: 'Abierto', imagen: 'img/valorant.jpg' },
-  { id: 'torneo-verano-lol', nombre: 'Torneo de Verano LoL', juego: 'League of Legends', modalidad: '5v5', cuposOcupados: 32, cuposMaximos: 32, fechaCierre: '2026-09-01', estado: 'En Curso', imagen: 'img/lol.png' },
-  { id: 'liga-fin-de-semana', nombre: 'Liga Fin de Semana', juego: 'Rocket League', modalidad: '3v3', cuposOcupados: 4, cuposMaximos: 8, fechaCierre: '2026-11-20', estado: 'Abierto', imagen: 'img/rocket.png' },
-  { id: 'clasificatorias-regionales', nombre: 'Clasificatorias Regionales', juego: 'Valorant', modalidad: '5v5', cuposOcupados: 16, cuposMaximos: 16, fechaCierre: '2026-08-10', estado: 'Finalizado', imagen: 'img/valorant.jpg' },
-  { id: 'copa-rank-street-fighter-6', nombre: 'Copa Rank Street Fighter 6', juego: 'Street Fighter 6', modalidad: '1v1', cuposOcupados: 22, cuposMaximos: 32, fechaCierre: '2026-10-30', estado: 'Abierto', imagen: 'img/sf6.jpg' },
-]
+export const estadosTorneo = ['Abierto', 'En Curso', 'Finalizado']
+export const estadosPartida = ['Programada', 'En juego', 'Finalizada']
 
-export function claseEstado(estado) {
-  const clases = {
-    Abierto: 'estado-abierto',
-    'En Curso': 'estado-en-curso',
-    Finalizado: 'estado-finalizado',
-  }
+export function claseEstado(estado = '') {
+  return 'estado-' + estado.toLowerCase().replaceAll(' ', '-')
+}
 
-  return clases[estado] || ''
+export function cuposDisponibles(torneo) {
+  return Math.max(0, Number(torneo.cupoMax) - torneo.inscritos.length)
 }
 
 export function fechasValidas({ fechaInicio, fechaFin }) {
   return !fechaInicio || !fechaFin || fechaInicio <= fechaFin
 }
 
-export function filtrarTorneos(torneos, filtros = {}) {
-  const texto = (filtros.busqueda ?? '').toLowerCase()
+export function validarFiltros(filtros) {
+  return fechasValidas(filtros) ? {} : { fechaInicio: 'La fecha inicial no puede ser posterior a la final.' }
+}
 
-  return torneos.filter((torneo) => (
-    torneo.nombre.toLowerCase().includes(texto)
-    && (!filtros.juego || filtros.juego === 'Todos' || torneo.juego === filtros.juego)
-    && (!filtros.estado || filtros.estado === 'Todos' || torneo.estado === filtros.estado)
-    && (!filtros.fechaInicio || torneo.fechaCierre >= filtros.fechaInicio)
-    && (!filtros.fechaFin || torneo.fechaCierre <= filtros.fechaFin)
-  ))
+export function filtrarTorneos(torneos, filtros = {}) {
+  if (!fechasValidas(filtros)) return []
+  const texto = (filtros.busqueda ?? '').trim().toLocaleLowerCase('es')
+  return torneos.filter((torneo) =>
+    torneo.nombre.toLocaleLowerCase('es').includes(texto)
+    && (!filtros.juego || torneo.juegoId === filtros.juego)
+    && (!filtros.estado || torneo.estado === filtros.estado)
+    && (!filtros.fechaInicio || torneo.cierreISO.slice(0, 10) >= filtros.fechaInicio)
+    && (!filtros.fechaFin || torneo.cierreISO.slice(0, 10) <= filtros.fechaFin))
+}
+
+export function validarTorneo(datos, anterior = null, hoy = new Date()) {
+  const errores = {}
+  if (!datos.nombre?.trim()) errores.nombre = 'El nombre es obligatorio.'
+  if (!datos.juegoId) errores.juegoId = 'Selecciona un juego.'
+  if (!Number.isInteger(Number(datos.cupoMax)) || Number(datos.cupoMax) <= 0) errores.cupoMax = 'El cupo debe ser un entero positivo.'
+  if (Number(datos.cupoMax) < (anterior?.inscritos.length ?? 0)) errores.cupoMax = 'No puedes reducir el cupo bajo las inscripciones existentes.'
+  const cierre = Date.parse(datos.cierreISO)
+  const inicio = Date.parse(datos.fechaInicio)
+  if (!Number.isFinite(cierre)) errores.cierreISO = 'Ingresa un cierre válido.'
+  else if ((!anterior || datos.cierreISO !== anterior.cierreISO) && cierre < new Date(hoy).getTime()) errores.cierreISO = 'El cierre debe estar en el futuro.'
+  if (!Number.isFinite(inicio) || inicio <= cierre) errores.fechaInicio = 'El inicio debe ser posterior al cierre.'
+  if (!estadosTorneo.includes(datos.estado)) errores.estado = 'Selecciona un estado válido.'
+  if (anterior && anterior.estado !== 'Abierto') {
+    for (const campo of ['juegoId', 'cupoMax', 'cierreISO', 'fechaInicio']) {
+      if (String(datos[campo]) !== String(anterior[campo])) errores[campo] = 'Esta regla queda bloqueada al comenzar el torneo.'
+    }
+    if (datos.estado === 'Abierto' || (anterior.estado === 'Finalizado' && datos.estado !== 'Finalizado')) errores.estado = 'No se puede retroceder el estado del torneo.'
+  }
+  return errores
+}
+
+export function formatearFecha(fecha) {
+  return new Date(fecha).toLocaleString('es-CL', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'America/Santiago' })
 }
