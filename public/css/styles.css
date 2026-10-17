@@ -1,0 +1,995 @@
+/* ============================================================
+   eSports Arena Manager — Hoja de estilos compartida
+   Paleta 1 "Arena Púrpura" (oficial del caso semestral)
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+    /* Paleta 1 declarada en la raíz, tal como exige el caso */
+    --color-fondo: #0E0B16;
+    --color-superficie: #1C1430;
+    --color-superficie-alta: #241A3D;
+    --color-primario: #9146FF;
+    --color-primario-oscuro: #7B35E0;
+    --color-acento: #00F5D4;
+    --color-texto: #F1ECFF;
+    --color-texto-secundario: #A79FC2;
+    --color-error: #FF5C7A;
+    --color-borde: rgba(145, 70, 255, 0.25);
+
+    --radio-borde: 10px;
+    --radio-borde-pequeno: 6px;
+    --fuente-titulos: 'Chakra Petch', 'Inter', sans-serif;
+    --fuente-texto: 'Inter', sans-serif;
+    --ancho-contenido: 1180px;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+    margin: 0;
+    font-family: var(--fuente-texto);
+    background-color: var(--color-fondo);
+    background-image:
+        radial-gradient(circle at 12% 0%, rgba(145, 70, 255, 0.18) 0%, transparent 45%),
+        radial-gradient(circle at 88% 10%, rgba(0, 245, 212, 0.08) 0%, transparent 40%);
+    background-attachment: fixed;
+    color: var(--color-texto);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 {
+    font-family: var(--fuente-titulos);
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    margin: 0 0 12px 0;
+}
+
+p { color: var(--color-texto); }
+a { color: inherit; }
+
+:focus-visible {
+    outline: 2px solid var(--color-acento);
+    outline-offset: 3px;
+}
+
+img { max-width: 100%; display: block; }
+
+/* ---------- Header / navegación (estilo barra fija tipo start.gg) ---------- */
+header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background-color: rgba(28, 20, 48, 0.85);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--color-borde);
+    padding: 16px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.logo {
+    font-family: var(--fuente-titulos);
+    font-weight: 700;
+    font-size: 20px;
+    letter-spacing: 1px;
+    color: var(--color-texto);
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.logo::before {
+    content: "";
+    width: 11px;
+    height: 11px;
+    border-radius: 3px;
+    background: linear-gradient(135deg, var(--color-primario), var(--color-acento));
+    display: inline-block;
+}
+
+nav {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+nav a {
+    color: var(--color-texto-secundario);
+    text-decoration: none;
+    margin-left: 4px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+nav a:hover {
+    color: var(--color-texto);
+    background-color: rgba(145, 70, 255, 0.18);
+}
+
+/* ---------- Botones ---------- */
+.boton-primario {
+    background-color: var(--color-primario);
+    color: #FFFFFF;
+    padding: 12px 26px;
+    border: none;
+    border-radius: 999px;
+    text-decoration: none;
+    display: inline-block;
+    font-family: var(--fuente-texto);
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
+.boton-primario:hover {
+    background-color: var(--color-primario-oscuro);
+    transform: translateY(-1px);
+}
+
+.boton-primario:active { transform: translateY(0); }
+
+.boton-secundario {
+    background-color: transparent;
+    border: 2px solid var(--color-primario);
+    color: var(--color-texto);
+    height: 100%;
+    margin: 0;
+}
+
+.boton-secundario:hover {
+    background-color: rgba(145, 70, 255, 0.2);
+}
+
+.boton-ancho {
+    width: 100%;
+    padding: 14px;
+    font-size: 16px;
+    margin-top: 10px;
+    text-align: center;
+}
+
+/* ---------- Contenedor general ---------- */
+.contenedor-principal {
+    max-width: var(--ancho-contenido);
+    margin: 0 auto;
+    padding: 0 32px;
+}
+
+main { padding-bottom: 60px; min-height: 60vh; }
+
+section { padding: 40px 20px; text-align: center; }
+
+/* ---------- Hero (Vista 1: Inicio) ---------- */
+.hero {
+    padding: 96px 20px 56px;
+    text-align: center;
+}
+
+.hero h1 {
+    font-size: clamp(32px, 5vw, 56px);
+    text-transform: uppercase;
+    line-height: 1.1;
+    background: linear-gradient(135deg, var(--color-texto) 30%, var(--color-acento) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.hero p {
+    color: var(--color-texto-secundario);
+    font-size: 18px;
+    max-width: 460px;
+    margin: 0 auto 28px auto;
+}
+
+/* Módulos genéricos tipo tarjeta (avisos, perfil, etc.) */
+.modulo-detalle {
+    background-color: var(--color-superficie);
+    border: 1px solid var(--color-borde);
+    border-radius: var(--radio-borde);
+    padding: 28px;
+    margin: 20px 0;
+    text-align: left;
+}
+
+.modulo-detalle h2 { font-size: 18px; }
+
+/* ---------- Grilla de torneos y tarjetas ---------- */
+.grilla-torneos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+    padding: 20px 0;
+}
+
+.tarjeta-torneo {
+    background-color: var(--color-superficie);
+    padding: 22px;
+    border-radius: var(--radio-borde);
+    text-align: left;
+    border-top: 3px solid var(--color-acento);
+    border-left: 1px solid var(--color-borde);
+    border-right: 1px solid var(--color-borde);
+    border-bottom: 1px solid var(--color-borde);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+/* NUEVA CLASE: Controla el tamaño de la imagen */
+.imagen-torneo {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    display: block;
+    border-bottom: 1px solid var(--color-borde);
+}
+
+/* Placeholder para juegos sin imagen real todavía (ej: Street Fighter 6) */
+.imagen-torneo-placeholder {
+    width: 100%;
+    height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--color-primario) 0%, var(--color-primario-oscuro) 100%);
+    color: #FFFFFF;
+    font-family: var(--fuente-titulos);
+    font-weight: 700;
+    font-size: 22px;
+    letter-spacing: 1px;
+    border-bottom: 1px solid var(--color-borde);
+}
+
+.tarjeta-torneo:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.35);
+}
+
+.tarjeta-torneo.estado-en-curso { border-top-color: var(--color-primario); }
+.tarjeta-torneo.estado-finalizado { border-top-color: rgba(255, 255, 255, 0.15); }
+
+.tarjeta-torneo h3 {
+    color: var(--color-texto);
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.tarjeta-torneo p {
+    color: var(--color-texto-secundario);
+    font-size: 14px;
+    margin: 4px 0;
+}
+
+.tarjeta-torneo .boton-primario {
+    margin-top: 14px;
+    padding: 9px 20px;
+    font-size: 14px;
+}
+
+/* ---------- Insignias de estado (pill, tipo start.gg) ---------- */
+.badge-estado {
+    background-color: var(--color-acento);
+    color: var(--color-fondo);
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.badge-estado.estado-en-curso { background-color: var(--color-primario); color: #FFFFFF; }
+.badge-estado.estado-en-curso::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #FFFFFF;
+    animation: pulso-estado 1.6s ease-in-out infinite;
+}
+.badge-estado.estado-finalizado { background-color: rgba(255, 255, 255, 0.12); color: var(--color-texto-secundario); }
+
+.badge-secundario { background-color: rgba(255, 255, 255, 0.1); color: var(--color-texto); }
+
+@keyframes pulso-estado {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.35; }
+}
+
+/* ---------- Footer ---------- */
+footer {
+    background-color: var(--color-superficie);
+    border-top: 1px solid var(--color-borde);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    gap: 24px;
+    padding: 36px 32px;
+    margin-top: 40px;
+    text-align: left;
+}
+
+.footer-columna h3 {
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--color-acento);
+    margin-bottom: 10px;
+}
+
+.footer-columna p {
+    color: var(--color-texto-secundario);
+    font-size: 14px;
+    margin: 0;
+}
+
+/* --- ESTILOS PARA LA VISTA 2 (LISTADO DE TORNEOS) --- */
+.filtros-busqueda {
+    text-align: left;
+    padding: 32px 40px 10px;
+}
+
+.contenedor-filtros {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    background-color: var(--color-superficie);
+    padding: 25px;
+    border-radius: var(--radio-borde);
+    align-items: flex-end;
+    justify-content: space-between;
+    border: 1px solid var(--color-borde);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.grupo-filtro {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    min-width: 160px;
+}
+
+.grupo-filtro label {
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: var(--color-acento);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.grupo-filtro input,
+.grupo-filtro select {
+    padding: 12px;
+    border: 1px solid #332950;
+    border-radius: var(--radio-borde-pequeno);
+    background-color: var(--color-fondo);
+    color: var(--color-texto);
+    font-family: inherit;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.grupo-filtro input:focus,
+.grupo-filtro select:focus {
+    border-color: var(--color-primario);
+}
+
+#btn-filtrar {
+    padding: 12px 30px;
+    height: max-content;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.mensaje-vacio {
+    text-align: center;
+    padding: 40px;
+    margin: 20px 40px;
+    background-color: var(--color-superficie);
+    border: 1px dashed var(--color-acento);
+    border-radius: var(--radio-borde);
+}
+
+.mensaje-error {
+    margin: 15px 40px 0;
+    padding: 14px 18px;
+    background-color: rgba(255, 92, 122, 0.1);
+    border-left: 4px solid var(--color-error);
+    border-radius: var(--radio-borde-pequeno);
+    color: var(--color-error);
+    font-weight: 600;
+    font-size: 14px;
+    text-align: left;
+}
+
+.resultados-torneos {
+    text-align: left;
+    padding: 10px 40px 40px;
+}
+
+/* --- ESTILOS PARA LA VISTA 3 (DETALLE DE TORNEO) --- */
+.detalle-cabecera {
+    background: linear-gradient(180deg, var(--color-superficie) 0%, var(--color-fondo) 100%);
+    border-bottom: 2px solid var(--color-primario);
+    margin-bottom: 30px;
+    padding: 48px 40px;
+    text-align: center;
+}
+
+.detalle-cabecera h1 {
+    margin-top: 0;
+    color: var(--color-texto);
+    font-size: 32px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.detalle-cabecera-contenido {
+    max-width: var(--ancho-contenido);
+    margin: 0 auto;
+    padding: 42px 32px;
+}
+
+.detalle-cabecera-contenido h1 {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.separador-detalle {
+    margin: 0 8px;
+    color: var(--color-texto-secundario);
+}
+
+.resumen-cupos-detalle {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    margin: 18px 0 22px;
+    color: var(--color-texto-secundario);
+    font-size: 14px;
+}
+
+.resumen-cupos-detalle strong {
+    color: var(--color-texto);
+}
+
+.mensaje-premios-pendientes {
+    padding: 24px;
+    background-color: var(--color-superficie);
+    border: 1px dashed var(--color-borde);
+    border-radius: var(--radio-borde);
+    color: var(--color-texto-secundario);
+}
+
+.mensaje-premios-pendientes strong {
+    color: var(--color-texto);
+}
+
+.contenedor-columnas-detalle {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    padding: 0 40px;
+    text-align: left;
+}
+
+.columna-principal { flex: 2; min-width: 300px; }
+.columna-lateral { flex: 1; min-width: 300px; }
+
+.seccion-tabla, .seccion-lista, .seccion-premios, .seccion-llaves {
+    text-align: left;
+    padding: 0 0 30px 0;
+}
+
+.texto-secundario {
+    color: var(--color-texto-secundario);
+    font-weight: 500;
+    font-size: 15px;
+}
+
+.tabla-clasificacion {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 10px;
+    margin-bottom: 0;
+}
+
+.tabla-clasificacion th {
+    color: var(--color-acento);
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 12px;
+    padding: 0 15px 10px 15px;
+    border-bottom: 1px solid var(--color-borde);
+}
+
+.tabla-clasificacion td {
+    background-color: var(--color-superficie);
+    padding: 15px;
+}
+
+.tabla-clasificacion tbody tr td:first-child {
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+    border-left: 3px solid transparent;
+}
+
+.tabla-clasificacion tbody tr td:last-child {
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+.tabla-clasificacion tbody tr:hover td:first-child {
+    border-left: 3px solid var(--color-acento);
+}
+.tabla-clasificacion tbody tr:hover td {
+    background-color: var(--color-superficie-alta);
+}
+
+.lista-equipos {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 0;
+}
+
+.lista-equipos li {
+    background-color: transparent;
+    border: 1px solid var(--color-primario);
+    color: var(--color-texto);
+    padding: 8px 16px;
+    border-radius: 999px;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.lista-equipos li:hover {
+    background-color: rgba(145, 70, 255, 0.2);
+}
+
+.lista-partidas {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.tarjeta-partida {
+    background-color: var(--color-superficie);
+    padding: 20px;
+    border-radius: var(--radio-borde);
+    border-left: 4px solid var(--color-primario);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.equipo-partida { font-weight: bold; font-size: 16px; }
+
+.vs { color: var(--color-acento); font-size: 14px; margin: 0 10px; }
+
+.fecha-partida {
+    font-size: 12px;
+    color: var(--color-texto-secundario);
+    display: block;
+    margin-top: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    padding-top: 10px;
+}
+
+.grilla-premios { display: flex; flex-wrap: wrap; gap: 20px; }
+
+.tarjeta-premio {
+    background: linear-gradient(135deg, var(--color-superficie) 0%, var(--color-superficie-alta) 100%);
+    padding: 20px;
+    border-radius: var(--radio-borde);
+    border: 1px solid rgba(255, 215, 0, 0.4);
+    text-align: center;
+    flex: 1;
+    min-width: 140px;
+}
+
+.tarjeta-premio h3 { color: #FFD700; margin-top: 0; }
+
+/* --- ESTILOS PARA FORMULARIOS (Vistas 4, 5 y 6) --- */
+.layout-inscripcion {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 40px;
+}
+
+.panel-formulario {
+    background-color: var(--color-superficie) !important;
+    border: 1px solid var(--color-borde);
+    border-radius: var(--radio-borde);
+    padding: 40px;
+    width: 100%;
+    max-width: 550px;
+    margin: 0 auto 25px auto;
+    box-sizing: border-box;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    text-align: left !important;
+}
+
+.banner-resumen {
+    background: linear-gradient(135deg, var(--color-superficie) 0%, #150F24 100%) !important;
+    border-left: 5px solid var(--color-acento) !important;
+    padding: 25px 40px;
+}
+
+.panel-formulario h2 {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 15px;
+    margin-top: 0;
+    margin-bottom: 25px;
+    font-size: 22px;
+    color: var(--color-texto);
+    text-align: left !important;
+}
+
+.panel-formulario h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: var(--color-texto);
+    font-size: 18px;
+}
+
+.tarjeta-info {
+    color: var(--color-texto-secundario);
+    font-size: 14px;
+    margin: 6px 0;
+}
+
+.etiquetas-resumen { display: flex; gap: 10px; margin-bottom: 15px; }
+
+.grupo-formulario {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 24px;
+    text-align: left !important;
+}
+
+.grupo-formulario label {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--color-texto);
+    margin-bottom: 8px;
+    text-align: left !important;
+}
+
+.grupo-formulario input,
+.grupo-formulario select {
+    width: 100%;
+    box-sizing: border-box;
+    background-color: var(--color-fondo);
+    border: 1px solid rgba(145, 70, 255, 0.4);
+    border-radius: var(--radio-borde-pequeno);
+    padding: 14px;
+    color: var(--color-texto);
+    font-family: inherit;
+    font-size: 15px;
+    transition: all 0.3s ease;
+}
+
+.grupo-formulario input:focus,
+.grupo-formulario select:focus {
+    border-color: var(--color-acento);
+    box-shadow: 0 0 0 3px rgba(0, 245, 212, 0.2);
+    outline: none;
+}
+
+.texto-ayuda {
+    font-size: 12px;
+    color: var(--color-texto-secundario);
+    margin-top: 6px;
+    display: block;
+    text-align: left !important;
+}
+
+.alerta-exito {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: rgba(0, 245, 212, 0.1);
+    border-left: 4px solid var(--color-acento);
+    border-radius: var(--radio-borde-pequeno);
+    text-align: left !important;
+}
+
+.alerta-exito h3 { color: var(--color-acento); margin-top: 0; }
+
+.mensaje-error-campo {
+    display: none;
+    color: var(--color-error);
+    font-size: 13px;
+    font-weight: bold;
+    margin-top: 6px;
+    text-align: left !important;
+}
+
+.input-invalido {
+    border-color: var(--color-error) !important;
+}
+
+/* Los select con error mantienen la misma apariencia del resto del formulario. */
+select.input-invalido {
+    background-color: var(--color-fondo) !important;
+    color: var(--color-texto) !important;
+}
+
+select.input-invalido option {
+    background-color: var(--color-superficie);
+    color: var(--color-texto);
+}
+
+/* --- ESTILOS PARA LA VISTA 5 (GESTIÓN DE EQUIPO) --- */
+.separador-panel {
+    border: 0;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.1);
+    margin: 30px 0;
+}
+
+.gestor-agregado {
+    display: flex;
+    gap: 10px;
+    align-items: stretch;
+    margin-bottom: 10px;
+}
+
+.lista-integrantes-equipo {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 20px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.item-integrante {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--color-fondo);
+    padding: 12px 15px;
+    border-radius: var(--radio-borde-pequeno);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.item-integrante-info { display: flex; flex-direction: column; }
+.item-nombre { font-weight: bold; font-size: 14px; }
+.item-rol { font-size: 12px; color: var(--color-texto-secundario); }
+
+.btn-eliminar-jugador {
+    background-color: transparent;
+    color: var(--color-error);
+    border: 1px solid var(--color-error);
+    border-radius: 999px;
+    padding: 4px 10px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-eliminar-jugador:hover {
+    background-color: var(--color-error);
+    color: #FFFFFF;
+}
+
+/* --- ESTILOS PARA LA VISTA 6 (PERFIL DE JUGADOR) --- */
+.dashboard-perfil { display: flex; flex-wrap: wrap; gap: 30px; align-items: flex-start; }
+
+.columna-perfil { flex: 1; min-width: 280px; max-width: 380px; }
+.columna-datos { flex: 2; min-width: 300px; display: flex; flex-direction: column; gap: 20px; }
+
+.tarjeta-jugador { text-align: center; padding-top: 40px; }
+
+/* --- NUEVAS CLASES PARA EL AVATAR INTERACTIVO --- */
+.contenedor-avatar {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 20px auto;
+    border-radius: 50%;
+    border: 4px solid var(--color-superficie);
+    box-shadow: 0 0 0 2px var(--color-primario);
+    overflow: hidden; /* Corta la foto para que no se salga del círculo */
+    cursor: pointer;
+}
+
+.avatar-jugador {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, var(--color-primario), var(--color-acento));
+    background-size: cover; 
+    background-position: center; 
+    transition: background-image 0.3s ease;
+}
+
+.overlay-avatar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: #FFFFFF;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 13px;
+    font-weight: bold;
+    opacity: 0; /* Oculto por defecto */
+    transition: opacity 0.3s ease;
+    cursor: pointer;
+}
+
+.contenedor-avatar:hover .overlay-avatar {
+    opacity: 1; /* Aparece al pasar el ratón */
+}
+/* ------------------------------------------------- */
+
+.tarjeta-jugador h2 {
+    margin: 0 0 5px 0;
+    border: none;
+    padding: 0;
+    font-size: 28px;
+    text-align: center !important;
+}
+
+.tarjeta-jugador h3 {
+    text-align: left;
+    margin-top: 0;
+    font-size: 16px;
+    color: var(--color-texto);
+}
+
+.grilla-estadisticas {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 20px;
+}
+
+.caja-stat { text-align: center; padding: 30px 20px; margin-bottom: 0; }
+
+.caja-stat h3 {
+    margin: 0 0 10px 0;
+    border: none;
+    padding: 0;
+    font-size: 14px;
+    color: var(--color-texto-secundario);
+    text-transform: uppercase;
+}
+
+.numero-stat { font-size: 48px; font-weight: 800; line-height: 1; }
+.numero-stat.acento { color: var(--color-acento); }
+.numero-stat.error { color: var(--color-error); }
+
+.lista-perfil {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.item-perfil {
+    background-color: var(--color-fondo);
+    padding: 15px;
+    border-radius: var(--radio-borde-pequeno);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.badge-sancion-vigente {
+    background-color: rgba(255, 92, 122, 0.2);
+    color: var(--color-error);
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.badge-sancion-cumplida {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--color-texto-secundario);
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+/* ---------- Banner destacado con imagen (Cierres de inscripción) ---------- */
+.banner-destacado {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0; /* Quitamos el padding por defecto para que la imagen toque los bordes */
+    overflow: hidden; /* Evita que la imagen se salga de las esquinas redondeadas */
+}
+
+.banner-texto {
+    padding: 32px;
+    flex: 1; /* Permite que el texto tome el espacio sobrante */
+}
+
+.banner-texto p {
+    font-size: 16px;
+    color: var(--color-texto-secundario);
+    margin-bottom: 15px;
+}
+
+.banner-imagen {
+    width: 450px; /* Ancho fijo para la imagen */
+    height: 140%;
+    min-height: 200px;
+    object-fit: cover; /* Recorta la imagen sin aplastarla */
+    border-left: 2px solid var(--color-primario);
+}
+
+/* ---------- Video embebido (relación 16:9 responsiva) ---------- */
+.contenedor-video {
+    position: relative;
+    width: 100%;
+    padding-top: 56.25%; /* 16:9 */
+    border-radius: var(--radio-borde);
+    overflow: hidden;
+    border: 1px solid var(--color-borde);
+}
+
+.contenedor-video iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+/* ---------- Responsivo ---------- */
+@media (max-width: 768px) {
+    header { padding: 14px 20px; }
+    nav a { padding: 6px 10px; font-size: 13px; }
+    .hero { padding: 64px 16px 40px; }
+    .detalle-cabecera-contenido { padding: 32px 20px; }
+    .detalle-cabecera-contenido h1 { font-size: 28px; }
+    .separador-detalle { display: none; }
+    .contenedor-columnas-detalle { padding: 0 20px; }
+    .panel-formulario { padding: 26px; }
+    .filtros-busqueda, .resultados-torneos { padding-left: 20px; padding-right: 20px; }
+}
+
+@media (max-width: 480px) {
+    .logo { font-size: 17px; }
+    .hero h1 { font-size: 30px; }
+    footer { flex-direction: column; text-align: left; }
+}
+/* Inscripción bloqueada para torneos en curso o sin cupos. */
+.mensaje-bloqueo-torneo {
+    margin-bottom: 18px;
+}
+
+form button:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
