@@ -2,23 +2,26 @@
 
 Fecha: 16 de octubre de 2026.
 
-## Corrección de TablaRanking y documentación
+## Ampliación de pruebas de comportamiento
 
 TablaRanking ahora conserva el orden de las filas recibidas. DetalleTorneo ordena la clasificación por puntos y diferencia antes de entregarla a la tabla. Se actualizó el caso obligatorio de la tabla y se añadió una prueba de integración en el detalle que verifica el orden y la inmutabilidad de los datos originales.
+
+Sobre esa base se añadieron 65 pruebas de comportamiento para inicio, equipos, inscripciones, perfil y administración. Las vistas se montan con el servicio real y almacenamiento en memoria; se comprueban interacciones, mensajes, persistencia y ausencia de cambios parciales cuando ocurre un error. El código de la aplicación no cambió en esta ampliación. Se ajustó el helper de clics para emitir eventos cancelables y comprobar enlaces de React Router.
 
 | Comprobación ejecutada en esta corrección | Resultado |
 |---|---|
 | npm run lint | Código 0; sin errores ni advertencias |
 | npm run build | Código 0; sin errores ni advertencias; bundle de producción generado |
-| npm run test:cov | Código 0; 130 pruebas aprobadas; líneas 90,89%, sentencias 84,86%, ramas 83,35%, funciones 81,17% |
+| npm run test:cov | Código 0; 195 pruebas aprobadas; líneas 99,52%, sentencias 98,53%, ramas 94,1%, funciones 97,35% |
+| npm run test:e2e | Código 0; 12 recorridos aprobados; capturas de las nueve vistas a 360/768/1280 px actualizadas |
 
-Entorno de esta ejecución: Node 24.22.0 y Edge 155.0.0.0 mediante el launcher ChromeHeadless de Karma. El primer intento en el entorno restringido no pudo iniciar Edge por permisos; la repetición fuera de ese entorno pasó usando el perfil temporal de Karma. No se usó CHROME_NO_SANDBOX=1. npm test no se repitió por separado: test:cov ejecutó la misma suite con instrumentación.
+Entorno de esta ejecución: Node 24.22.0 y Edge 155.0.0.0 mediante el launcher ChromeHeadless de Karma. Las pruebas se ejecutaron fuera del entorno restringido, con perfiles temporales y sin CHROME_NO_SANDBOX=1. npm test no se repitió por separado: test:cov ejecutó la misma suite con instrumentación. Playwright usó Edge mediante CHROME_BIN y emitió avisos de configuración de color NO_COLOR/FORCE_COLOR; no hubo pruebas fallidas.
 
 Se corrigieron las referencias a develop y al PR #2, los archivos heredados que siguen presentes, el breakpoint navbar-expand-sm (576 px), el contrato T08 y la evidencia de cobertura. DECISIONES.md enlaza la configuración esbuild del profesor y explica la diferencia con el caso PDF.
 
 La última ejecución incluye el botón Iniciar sesión, ubicado en el mismo espacio derecho y con el mismo componente Boton secundario que Cerrar sesión. El spec integrado verifica que abre el formulario desde el catálogo. Tras este ajuste se repitieron test:cov, lint y build con los resultados de la tabla.
 
-Las secciones siguientes conservan evidencia de la ejecución anterior: doce recorridos Playwright, nueve vistas a 360/768/1280 px, permisos, CRUD, inspección visual y contraste. No se repitieron esos recorridos ni se regeneraron las 31 capturas en esta corrección.
+Los doce recorridos Playwright se repitieron y regeneraron las 31 capturas. Se inspeccionaron las capturas de inicio a 1280 px y perfil a 360 px; las comprobaciones automáticas recorrieron las nueve vistas a 360/768/1280 px. Las descripciones de restauración estética y mediciones de contraste siguientes se conservan como evidencia anterior; no se repitieron los cálculos de contraste.
 
 ## Restauración estética (evidencia anterior)
 
@@ -28,7 +31,7 @@ Cabecera y navegación comparten fondo e incorporan insignia con degradado. El m
 
 Las pestañas de rondas funcionan con clic, flechas, Home y End y comparten estado con el selector móvil #ronda. Se comprobaron la carga y persistencia de una foto, el rechazo de un archivo inválido, los filtros en vivo y la preferencia de movimiento reducido. La búsqueda estática de 59 archivos CSS/JSX no encontró colores hexadecimales fuera de :root ni !important; los degradados y sombras usan variables. Las cinco imágenes coinciden con EP1 mediante SHA-256.
 
-En esa restauración se conservaron los 18 specs existentes y se añadió InteraccionesTorneo.spec.js con siete casos; estetica.spec.js añadió cinco recorridos. La suite resultante tenía 129 pruebas. La corrección actual modifica TablaRanking y su integración en DetalleTorneo y eleva el total a 130. La cobertura actual incluye 49 archivos de producción, sin specs ni helpers.
+En esa restauración se conservaron los 18 specs existentes y se añadió InteraccionesTorneo.spec.js con siete casos; estetica.spec.js añadió cinco recorridos. La suite resultante tenía 129 pruebas. La corrección posterior de TablaRanking elevó el total a 130, y la ampliación actual a 195 en 26 archivos spec. La cobertura incluye 49 archivos de producción, sin specs ni helpers.
 
 El commit f6ef8f3 retiró coverage/, playwright-report/ y test-results/ del índice conservando sus archivos locales. .gitignore contiene sus exclusiones. Las afirmaciones previas de que coverage/ ya estaba fuera de Git eran incorrectas; los documentos y logs requeridos siguen versionados en docs/.
 
@@ -60,7 +63,7 @@ Cálculo de luminancia sRGB y relación (Lmayor + 0,05) / (Lmenor + 0,05). Se ve
 
 Esto valida los pares de color, no sustituye una auditoría completa WCAG. Bootstrap usa sus estilos internos; la revisión de hex e !important se aplica a las hojas propias, no a dependencias ni a SVG heredados.
 
-## Recorridos de navegador (ejecución anterior)
+## Recorridos de navegador (ejecución actual)
 
 1. Acceso directo de visitante, retorno después del login, recarga, cierre y denegación de roles.
 2. CRUD de juegos/torneos, fechas inválidas y protección de relaciones.
@@ -75,12 +78,12 @@ Esto valida los pares de color, no sustituye una auditoría completa WCAG. Boots
 11. Imágenes originales visibles, barras de cupos y filtros inmediatos.
 12. Elevación de tarjetas, foco visible y movimiento reducido.
 
-La ejecución anterior terminó con 12 passed, según salida-e2e.txt. En esa revisión se inspeccionaron visualmente capturas de las nueve vistas, incluido el perfil comparado con EP1. El iframe externo se bloquea en las pruebas: no se certifica su reproducción ni se presenta esta revisión como una auditoría WCAG completa.
+La ejecución actual terminó con 12 passed, según salida-e2e.txt. Se actualizaron las capturas de las nueve vistas y se inspeccionaron visualmente inicio a 1280 px y perfil a 360 px. El iframe externo se bloquea en los E2E: no se certifica su reproducción ni se presenta esta revisión como una auditoría WCAG completa.
 
 ## Evidencias
 
-- salida-pruebas.txt: salida real del último test:cov, con 130 casos; sin secuencias de control ANSI.
-- salida-e2e.txt: salida real de los doce recorridos anteriores, no repetidos en esta corrección.
+- salida-pruebas.txt: salida real del último test:cov, con 195 casos; sin secuencias de control ANSI.
+- salida-e2e.txt: salida real de los doce recorridos actuales.
 - COBERTURA_TESTING.md: porcentajes por archivo.
 - capturas/: vistas y validación.
 - DECISIONES.md: incidencias del entorno y alcance.

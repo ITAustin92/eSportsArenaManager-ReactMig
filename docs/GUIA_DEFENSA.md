@@ -55,6 +55,8 @@ npm run test:cov
 
 Abrir coverage/html/index.html. “Líneas” indica qué líneas instrumentadas se ejecutaron; “ramas” indica alternativas de condicionales. Un porcentaje alto no prueba ausencia de errores. Los tests/helpers se excluyen y el arranque main.jsx no se instrumenta. Los recorridos de Playwright se reportan por separado, no se suman artificialmente a Jasmine.
 
+La suite actual contiene 195 casos. Para demostrar pruebas de comportamiento, elegir ejemplos como agregar un integrante repetido en FormEquipo.spec.js, confirmar una baja y liberar el cupo en MisInscripciones.spec.js o simular un error de FileReader en PerfilJugador.spec.js. Explicar la preparación, la interacción y el resultado observable. En las vistas integradas, arena.jsx usa el servicio real con almacenamiento en memoria y VistaSuscrita actualiza la pantalla tras una escritura exitosa. Una prueba que hace fallar setItem debe demostrar que la pantalla y los datos siguen conservando el estado anterior.
+
 Si Chrome no se encuentra, establecer CHROME_BIN con la ruta real. Las opciones especiales del contenedor están documentadas, pero no son necesarias en un equipo habitual con Chrome.
 
 ## Bootstrap a tres anchos

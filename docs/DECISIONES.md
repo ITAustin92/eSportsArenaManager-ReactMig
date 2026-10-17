@@ -90,6 +90,14 @@ Los colores, degradados y sombras están centralizados en :root; los bordes deco
 
 La configuración de cobertura y MensajeError.spec.js ya cumplían tras 1c3f1db: se conservaron y verificaron. No cambiaron datos, reglas de negocio, helpers, firmas ni los 18 specs existentes. Se añadieron siete pruebas unitarias de cupos/rondas y cinco recorridos de navegador. Las capturas y los informes se actualizaron con resultados reales.
 
+## Ampliación de pruebas de comportamiento
+
+La ampliación de comportamiento incorpora 65 casos en siete nuevos archivos spec: Inicio, FormEquipo, GestionEquipos, MisInscripciones, PerfilJugador, FormulariosAdmin y PanelAdmin. Las vistas se prueban con el servicio real y almacenamiento en memoria mediante arena.jsx y VistaSuscrita.jsx; ambos helpers quedan fuera de la cobertura de aplicación. FileReader se controla con un espía para verificar carga y errores; setItem se espía para comprobar que un fallo de persistencia no publica cambios parciales.
+
+El helper clicEn ahora emite MouseEvent con cancelable: true. Los clics de enlaces deben permitir preventDefault para que React Router intercepte la navegación; el valor predeterminado anterior provocó una recarga completa al probar los enlaces de inicio. El resto de los helpers y las firmas de producción se mantienen.
+
+Pasaron 195 pruebas unitarias/de componentes, lint, build y los doce recorridos Playwright; se actualizaron las capturas y los logs. El código de la aplicación no se modificó en esta ampliación. COBERTURA_TESTING.md publica la cobertura y VERIFICACION_FINAL.md identifica la ejecución y sus límites.
+
 ## Entrega y Git
 
 El desarrollo de feature/ep2-react-completo se integró en develop mediante el [PR #2](https://github.com/ITAustin92/eSportsArenaManager-ReactMig/pull/2). El commit f6ef8f3 retiró los reportes generados del índice. develop es la base actual de EP2; la integración posterior en main se revisa mediante PR. La entrega debe identificar su rama/commit e incluir un ZIP actualizado: git archive empaqueta HEAD y omite cambios pendientes. README.md y GUIA_DEFENSA.md contienen los comandos de revisión.

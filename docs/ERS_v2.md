@@ -26,7 +26,7 @@ Usuarios: visitante, jugador y administrador. Los datos son ficticios y se manti
 | esbuild / Istanbul | Transformación JSX e instrumentación |
 | Playwright | Recorridos completos y evidencias responsivas |
 
-Las versiones exactas están fijadas por package-lock.json. La verificación de la corrección de TablaRanking empleó Node 24.22.0 y Edge 155 mediante el launcher ChromeHeadless de Karma. Las pruebas y resultados se detallan en COBERTURA_TESTING.md; los recorridos y capturas de Playwright corresponden a la ejecución anterior.
+Las versiones exactas están fijadas por package-lock.json. La verificación actual empleó Node 24.22.0 y Edge 155: 195 pruebas Jasmine/Karma y doce recorridos Playwright aprobados. Las pruebas y resultados se detallan en COBERTURA_TESTING.md; las capturas de las nueve vistas se actualizaron en esta ejecución.
 
 ### Carpetas
 
@@ -168,16 +168,16 @@ Campo, Boton, BadgeEstado y MensajeError son compartidos. Los resultados filtrad
 
 | RF / RNF | Implementación | Evidencia de prueba |
 |---|---|---|
-| RF01, RNF03 | Inicio, Hero, TorneosDestacados | Playwright “vistas y navegación responsivas” |
+| RF01, RNF03 | Inicio, Hero, TorneosDestacados | Inicio.spec.js; Playwright “vistas y navegación responsivas” |
 | RF02 | CatalogoTorneos, filtros, filtrarTorneos | torneos.spec.js; App.spec.js |
 | RF03, RF05 | DetalleTorneo, ListaPartidas, LlaveTorneo | DetalleTorneo.spec.js; LlaveTorneo.spec.js |
 | RF04 | ranking.js, DetalleTorneo, TablaRanking | ranking.spec.js; DetalleTorneo.spec.js; TablaRanking.spec.js |
 | RF06–09 | inscripcion.js, equipos.js, FormularioInscripcion | inscripcion.spec.js; equipos.spec.js; FormularioInscripcion.spec.js |
-| RF10, RF18 | datos.js, Inscripcion, MisInscripciones | datos.spec.js; Playwright inscripción |
-| RF11 | FormEquipo, ListaIntegrantes, GestionEquipos | equipos.spec.js; datos.spec.js; Playwright CRUD equipo |
-| RF12 | PerfilJugador, AvatarJugador | perfil.spec.js; App.spec.js; Playwright perfil |
+| RF10, RF18 | datos.js, Inscripcion, MisInscripciones | datos.spec.js; MisInscripciones.spec.js; Playwright inscripción |
+| RF11 | FormEquipo, ListaIntegrantes, GestionEquipos | equipos.spec.js; FormEquipo.spec.js; GestionEquipos.spec.js; datos.spec.js; Playwright CRUD equipo |
+| RF12 | PerfilJugador, AvatarJugador | perfil.spec.js; PerfilJugador.spec.js; App.spec.js; Playwright perfil |
 | RF13–14 | acceso, sesion, AuthProvider, RutaProtegida | acceso.spec.js; sesion.spec.js; RutaProtegida.spec.js; App.spec.js; Playwright permisos |
-| RF15–16 | PanelAdmin, FormTorneo, FormJuego, datos | juegos.spec.js; torneos.spec.js; datos.spec.js; Playwright CRUD admin |
+| RF15–16 | PanelAdmin, FormTorneo, FormJuego, datos | juegos.spec.js; torneos.spec.js; FormulariosAdmin.spec.js; PanelAdmin.spec.js; datos.spec.js; Playwright CRUD admin |
 | RF17 | EquiposRegistrados | App.spec.js; capturas administrativas |
 | RNF01, RNF05 | src y configuración | lint, build y pruebas de inmutabilidad |
 | RNF02, RNF04 | index.css, Campo, layouts | revisión estática, contraste y capturas |

@@ -13,7 +13,7 @@ export function prepararDOM() {
   }
 }
 export function clicEn(elemento) {
-  act(() => elemento.dispatchEvent(new MouseEvent('click', { bubbles: true })))
+  act(() => elemento.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true })))
 }
 export function escribir(elemento, valor) {
   act(() => {
