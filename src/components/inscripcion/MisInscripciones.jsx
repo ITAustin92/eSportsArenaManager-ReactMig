@@ -17,7 +17,11 @@ function MisInscripciones({ datos, sesion }) {
     try { actualizarInscripcion(editando, { correo }, sesion); setEditando(null); setError(''); setMensaje('Contacto actualizado.') } catch (fallo) { setError(fallo.message) }
   }
   const cancelar = (id) => {
-    try { eliminarInscripcion(id, sesion); setConfirmarId(null); setError(''); setMensaje('Inscripción cancelada; el cupo volvió a estar disponible.') } catch (fallo) { setError(fallo.message) }
+    try {
+      eliminarInscripcion(id, sesion)
+      if (editando === id) { setEditando(null); setCorreo('') }
+      setConfirmarId(null); setError(''); setMensaje('Inscripción cancelada; el cupo volvió a estar disponible.')
+    } catch (fallo) { setError(fallo.message) }
   }
   return <section className="panel"><h2>Mis inscripciones</h2><MensajeError>{error}</MensajeError>{mensaje && <p role="status">{mensaje}</p>}
     {propias.length === 0 ? <p>No tienes inscripciones.</p> : <ul className="lista-limpia">{propias.map((item) => <li className="separador-fila" key={item.id}><Link to={'/torneos/' + item.torneoId}>{datos.torneos.find((torneo) => torneo.id === item.torneoId)?.nombre}</Link><p>{item.correo}</p><div className="acciones"><Boton variante="secundario" onClick={() => { setEditando(item.id); setCorreo(item.correo); setError('') }}>Editar contacto</Boton><Boton variante="peligro" onClick={() => setConfirmarId(item.id)}>Cancelar inscripción</Boton></div>{confirmarId === item.id && <div className="confirmacion"><p>¿Cancelar esta inscripción y liberar su cupo?</p><div className="acciones"><Boton variante="peligro" onClick={() => cancelar(item.id)}>Sí, cancelar inscripción</Boton><Boton variante="secundario" onClick={() => setConfirmarId(null)}>Volver</Boton></div></div>}</li>)}</ul>}

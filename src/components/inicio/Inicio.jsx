@@ -2,10 +2,12 @@ import './Inicio.css'
 import { Link } from 'react-router-dom'
 import Hero from './Hero'
 import TorneosDestacados from './TorneosDestacados'
-import { formatearFecha } from '../../logica/torneos.js'
+import { cuposDisponibles, formatearFecha, inscripcionAbierta } from '../../logica/torneos.js'
+import useAhora from '../../logica/useAhora.js'
 
 function Inicio({ datos }) {
-  const proximos = datos.torneos.filter((torneo) => torneo.estado === 'Abierto').sort((a, b) => a.cierreISO.localeCompare(b.cierreISO))
+  const ahora = useAhora()
+  const proximos = datos.torneos.filter((torneo) => inscripcionAbierta(torneo, ahora) && cuposDisponibles(torneo) > 0).sort((a, b) => Date.parse(a.cierreISO) - Date.parse(b.cierreISO))
   return <><Hero />
     {proximos.length > 0 && <section className="inicio-banner card"><div className="inicio-banner-texto"><p className="sobretitulo">Próximo cierre</p><h2>{proximos[0].nombre}</h2><p>{formatearFecha(proximos[0].cierreISO)}</p><Link className="boton boton-primario" to={'/inscripcion?torneo=' + proximos[0].id}>Inscribirse ahora</Link></div><img src="/img/valorant-cierre.jpg" alt="Escena competitiva de Valorant" /></section>}
     <TorneosDestacados torneos={datos.torneos.filter((torneo) => torneo.estado !== 'Finalizado')} juegos={datos.juegos} />

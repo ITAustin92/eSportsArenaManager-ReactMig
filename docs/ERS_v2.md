@@ -26,7 +26,7 @@ Usuarios: visitante, jugador y administrador. Los datos son ficticios y se manti
 | esbuild / Istanbul | Transformación JSX e instrumentación |
 | Playwright | Recorridos completos y evidencias responsivas |
 
-Las versiones exactas están fijadas por package-lock.json. La verificación actual empleó Node 24.22.0 y Edge 155: 195 pruebas Jasmine/Karma y doce recorridos Playwright aprobados. Las pruebas y resultados se detallan en COBERTURA_TESTING.md; las capturas de las nueve vistas se actualizaron en esta ejecución.
+Las versiones exactas están fijadas por package-lock.json. La verificación actual empleó Node 24.22.0 y Edge 155: 242 pruebas Jasmine/Karma y catorce recorridos Playwright aprobados. Las pruebas y resultados se detallan en COBERTURA_TESTING.md; las capturas de las nueve vistas se actualizaron en esta ejecución.
 
 ### Carpetas
 
@@ -77,14 +77,14 @@ localStorage guarda arena-ep2-datos-v1; sessionStorage guarda arena-ep2-sesion-v
 | ID | Requisito y aceptación |
 |---|---|
 | RF01 | Inicio muestra hero, torneos destacados, próximo cierre, video e información institucional. |
-| RF02 | Catálogo filtra en vivo por nombre, juego, estado y rango de cierre. Un rango invertido informa error; cero coincidencias muestra vacío. |
+| RF02 | Catálogo filtra en vivo por nombre, juego, estado y rango del día de cierre en America/Santiago, coherente con la fecha visible. Un rango invertido informa error; cero coincidencias muestra vacío. |
 | RF03 | Detalle por id muestra datos, inscritos, premios, ranking y partidas. Id inexistente redirige al catálogo. |
 | RF04 | DetalleTorneo prepara el ranking por puntos descendentes y luego diferencia de puntaje, sin mutar el original. TablaRanking renderiza una fila por participante respetando exactamente el orden recibido. |
 | RF05 | Partidas muestran ronda, horario y estado textual. La ronda visible es local; rival ausente indica “Participante por definir”. |
 | RF06 | Inscripción exige correo y modalidad compatible; nunca permite cupos negativos ni inscripciones cuando se supera el cierre. |
 | RF07 | Se bloquea duplicidad por torneo y participante, incluso si se intenta directamente desde el servicio. |
 | RF08 | Solo el capitán inscribe un equipo completo y habilitado; equipos inactivos, incompletos o sancionados se bloquean. |
-| RF09 | Una sanción vigente y dentro de sus fechas bloquea; una cumplida no bloquea. Se revisan jugador, equipo e integrantes. |
+| RF09 | Una sanción vigente y dentro de sus fechas bloquea; una cumplida no bloquea. Se revisan jugador, equipo e integrantes. Las etiquetas de sanción del perfil y consulta administrativa distinguen Vigente, Programada y Cumplida mediante la misma regla temporal. |
 | RF10 | El formulario confirma participante, torneo y contacto sin afirmar que se envió un correo. El perfil permite editar contacto/cancelar antes del cierre. |
 | RF11 | CRUD de equipos propios con nombre único, capitán titular, integrantes no repetidos, plantilla exacta, suplentes enteros 0–2, clave mínima de seis y confirmación coincidente. |
 | RF12 | Perfil presenta estadísticas, equipos, historial y sanciones; permite apodo de 3–15 caracteres sin espacios y avatar de tipo/tamaño admitido. |
@@ -93,7 +93,7 @@ localStorage guarda arena-ep2-datos-v1; sessionStorage guarda arena-ep2-sesion-v
 | RF15 | Admin realiza CRUD de juegos y torneos; exige cupo entero positivo e inicio posterior al cierre. |
 | RF16 | Reglas críticas de torneos iniciados y relaciones referenciadas no se destruyen mediante edición/eliminación. |
 | RF17 | Admin consulta equipos, integrantes con nombre/apodo/correo/rol, sanciones, torneos enlazados, resultados, posición y premios finales; dispone de búsqueda y estado vacío. |
-| RF18 | Los cambios actualizan React y persisten al recargar; fallos del almacenamiento se informan sin publicar cambios parciales. |
+| RF18 | Los cambios actualizan React y persisten al recargar; fallos del almacenamiento se informan sin publicar cambios parciales. Se valida la estructura persistida y se respalda el original inválido antes de regenerar la demostración. Los plazos visibles se revisan cada segundo y al volver a la pestaña. |
 
 ## 6. Requisitos no funcionales
 

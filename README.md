@@ -54,6 +54,8 @@ Se conservan las seis vistas de EP1, sus imágenes y la estructura de la base Re
 
 Los cambios se guardan en localStorage y actualizan las pantallas inmediatamente. La sesión se guarda en sessionStorage sin contraseña. No hay backend, cuentas reales, envío de correos, pago ni sincronización multiusuario. Las claves de equipo se validan, pero no se almacenan. El frontend no ofrece seguridad real frente a manipulación del navegador.
 
+Al cargar se valida la estructura de los datos guardados. Si no es compatible o está incompleta, se conserva el texto original en `arena-ep2-datos-v1-respaldo-invalido` antes de regenerar la demostración. Si falla el respaldo, la carga usa la semilla en memoria y no sobrescribe el original. Los datos válidos se conservan al recargar.
+
 Los torneos abiertos reciben fechas futuras al inicializar la demostración; quedan fijadas al guardar. El ranking histórico y los marcadores detallados son datos ficticios de ejemplo. Consultar docs/DECISIONES.md para alcance y restricciones.
 
 Para reiniciar únicamente esta demostración, abrir la consola en el sitio y ejecutar:

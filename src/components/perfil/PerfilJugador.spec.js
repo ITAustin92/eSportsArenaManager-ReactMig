@@ -52,6 +52,20 @@ describe('perfil del jugador', () => {
     expect([...dom.contenedor.querySelectorAll('.badge-estado')].map((nodo) => nodo.textContent).join(' ')).toContain('Cumplida')
   })
 
+  it('muestra como cumplida una sanción vencida aunque conserve el flag vigente', () => {
+    f.jugador.sanciones = [{ id: 'expirada', motivo: 'Expirada', vigente: true, desde: '2000-01-01', hasta: '2000-02-01' }]
+    montar()
+    expect(dom.contenedor.querySelector('.estado-cumplida')).not.toBeNull()
+    expect(dom.contenedor.querySelector('.estado-vigente')).toBeNull()
+  })
+
+  it('distingue una sanción programada que todavía no bloquea', () => {
+    f.jugador.sanciones = [{ id: 'futura', motivo: 'Futura', vigente: true, desde: '2099-01-01', hasta: '2099-02-01' }]
+    montar()
+    expect(dom.contenedor.querySelector('.estado-programada')).not.toBeNull()
+    expect(dom.contenedor.querySelector('.estado-vigente')).toBeNull()
+  })
+
   it('rechaza un apodo inválido sin modificar la ficha', () => {
     montar(); apodo('con espacio')
     expect(dom.contenedor.querySelector('#perfil-apodo-error').textContent).toContain('espacios')

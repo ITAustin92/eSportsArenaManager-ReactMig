@@ -2,18 +2,20 @@
 
 Fecha: 16 de octubre de 2026.
 
-## Ampliación de pruebas de comportamiento
+## Correcciones de fechas, sanciones, edición y recuperación
 
 TablaRanking ahora conserva el orden de las filas recibidas. DetalleTorneo ordena la clasificación por puntos y diferencia antes de entregarla a la tabla. Se actualizó el caso obligatorio de la tabla y se añadió una prueba de integración en el detalle que verifica el orden y la inmutabilidad de los datos originales.
 
 Sobre esa base se añadieron 65 pruebas de comportamiento para inicio, equipos, inscripciones, perfil y administración. Las vistas se montan con el servicio real y almacenamiento en memoria; se comprueban interacciones, mensajes, persistencia y ausencia de cambios parciales cuando ocurre un error. El código de la aplicación no cambió en esta ampliación. Se ajustó el helper de clics para emitir eventos cancelables y comprobar enlaces de React Router.
 
+Después se corrigieron los filtros por día de Santiago, el orden de cierres con zonas distintas, las etiquetas temporales de sanciones, el borrador de contacto al cancelar y la aceptación de datos incompletos. Las vistas actualizan el reloj cada segundo y al recuperar foco/visibilidad. Los datos inválidos se respaldan antes de regenerar la demostración. Estas correcciones añaden 47 regresiones unitarias y dos E2E.
+
 | Comprobación ejecutada en esta corrección | Resultado |
 |---|---|
 | npm run lint | Código 0; sin errores ni advertencias |
 | npm run build | Código 0; sin errores ni advertencias; bundle de producción generado |
-| npm run test:cov | Código 0; 195 pruebas aprobadas; líneas 99,52%, sentencias 98,53%, ramas 94,1%, funciones 97,35% |
-| npm run test:e2e | Código 0; 12 recorridos aprobados; capturas de las nueve vistas a 360/768/1280 px actualizadas |
+| npm run test:cov | Código 0; 242 pruebas aprobadas; líneas 99,56%, sentencias 98,67%, ramas 94,81%, funciones 97,64% |
+| npm run test:e2e | Código 0; 14 recorridos aprobados; capturas de las nueve vistas a 360/768/1280 px actualizadas |
 
 Entorno de esta ejecución: Node 24.22.0 y Edge 155.0.0.0 mediante el launcher ChromeHeadless de Karma. Las pruebas se ejecutaron fuera del entorno restringido, con perfiles temporales y sin CHROME_NO_SANDBOX=1. npm test no se repitió por separado: test:cov ejecutó la misma suite con instrumentación. Playwright usó Edge mediante CHROME_BIN y emitió avisos de configuración de color NO_COLOR/FORCE_COLOR; no hubo pruebas fallidas.
 
@@ -21,7 +23,7 @@ Se corrigieron las referencias a develop y al PR #2, los archivos heredados que 
 
 La última ejecución incluye el botón Iniciar sesión, ubicado en el mismo espacio derecho y con el mismo componente Boton secundario que Cerrar sesión. El spec integrado verifica que abre el formulario desde el catálogo. Tras este ajuste se repitieron test:cov, lint y build con los resultados de la tabla.
 
-Los doce recorridos Playwright se repitieron y regeneraron las 31 capturas. Se inspeccionaron las capturas de inicio a 1280 px y perfil a 360 px; las comprobaciones automáticas recorrieron las nueve vistas a 360/768/1280 px. Las descripciones de restauración estética y mediciones de contraste siguientes se conservan como evidencia anterior; no se repitieron los cálculos de contraste.
+Los catorce recorridos Playwright pasaron y se regeneraron las 31 capturas. Las comprobaciones automáticas recorrieron las nueve vistas a 360/768/1280 px. Las descripciones de restauración estética, inspección visual previa y mediciones de contraste siguientes se conservan como evidencia anterior; no se repitieron los cálculos de contraste.
 
 ## Restauración estética (evidencia anterior)
 
@@ -31,7 +33,7 @@ Cabecera y navegación comparten fondo e incorporan insignia con degradado. El m
 
 Las pestañas de rondas funcionan con clic, flechas, Home y End y comparten estado con el selector móvil #ronda. Se comprobaron la carga y persistencia de una foto, el rechazo de un archivo inválido, los filtros en vivo y la preferencia de movimiento reducido. La búsqueda estática de 59 archivos CSS/JSX no encontró colores hexadecimales fuera de :root ni !important; los degradados y sombras usan variables. Las cinco imágenes coinciden con EP1 mediante SHA-256.
 
-En esa restauración se conservaron los 18 specs existentes y se añadió InteraccionesTorneo.spec.js con siete casos; estetica.spec.js añadió cinco recorridos. La suite resultante tenía 129 pruebas. La corrección posterior de TablaRanking elevó el total a 130, y la ampliación actual a 195 en 26 archivos spec. La cobertura incluye 49 archivos de producción, sin specs ni helpers.
+En esa restauración se conservaron los 18 specs existentes y se añadió InteraccionesTorneo.spec.js con siete casos; estetica.spec.js añadió cinco recorridos. La suite pasó después de 129 a 130 y a 195 pruebas. Actualmente contiene 242 casos en 28 archivos spec, con 51 archivos de producción instrumentados, sin specs ni helpers.
 
 El commit f6ef8f3 retiró coverage/, playwright-report/ y test-results/ del índice conservando sus archivos locales. .gitignore contiene sus exclusiones. Las afirmaciones previas de que coverage/ ya estaba fuera de Git eran incorrectas; los documentos y logs requeridos siguen versionados en docs/.
 
@@ -43,7 +45,7 @@ Se recorrieron de nuevo las nueve vistas en un navegador aislado a 1280 px: Inic
 
 El registro anterior describía una búsqueda de estilos y comprobaciones de las vistas. La aplicación actual incluye un estilo inline calculado y justificado en BarraCupos. Header.jsx, Footer.jsx y FormInscripcion.jsx siguen presentes como archivos heredados, aunque App utiliza sus reemplazos; se corrige la afirmación anterior de que habían sido eliminados. La prueba T08 ahora comprueba el orden recibido exigido por el caso.
 
-En aquella auditoría se registraron 48 entradas de aplicación y sus páginas HTML, sin specs, helpers, main.jsx ni node_modules. La ejecución actual contiene 49 archivos; COBERTURA_TESTING.md publica los porcentajes actuales por archivo.
+En aquella auditoría se registraron 48 entradas de aplicación y sus páginas HTML, sin specs, helpers, main.jsx ni node_modules. La ejecución actual contiene 51 archivos; COBERTURA_TESTING.md publica los porcentajes actuales por archivo.
 
 .gitignore incluye node_modules/, dist/, coverage/, playwright-report/, test-results/, .idea/ y .DS_Store. La retirada de los reportes del índice se realizó en f6ef8f3; coverage/ se regeneró localmente al ejecutar la suite actual.
 
@@ -77,13 +79,17 @@ Esto valida los pares de color, no sustituye una auditoría completa WCAG. Boots
 10. Pestañas de rondas y selector móvil sincronizados.
 11. Imágenes originales visibles, barras de cupos y filtros inmediatos.
 12. Elevación de tarjetas, foco visible y movimiento reducido.
+13. Filtro de cierre coherente con el día mostrado en Santiago.
+14. Recuperación de datos incompletos, respaldo del original y acceso al perfil.
 
-La ejecución actual terminó con 12 passed, según salida-e2e.txt. Se actualizaron las capturas de las nueve vistas y se inspeccionaron visualmente inicio a 1280 px y perfil a 360 px. El iframe externo se bloquea en los E2E: no se certifica su reproducción ni se presenta esta revisión como una auditoría WCAG completa.
+La ejecución actual terminó con 14 passed, según salida-e2e.txt. Se actualizaron las capturas de las nueve vistas. El iframe externo se bloquea en los E2E: no se certifica su reproducción ni se presenta esta revisión como una auditoría WCAG completa.
 
 ## Evidencias
 
-- salida-pruebas.txt: salida real del último test:cov, con 195 casos; sin secuencias de control ANSI.
-- salida-e2e.txt: salida real de los doce recorridos actuales.
+- Se reprodujo y corrigió un fallo dependiente del orden en useAhora.spec.js: el espía de clearInterval restauraba un temporizador simulado después de desmontar el reloj de Jasmine. La prueba de limpieza quedó en un bloque separado con temporizadores reales. Las 242 pruebas pasaron con las semillas 1, 42 y 98765; después se repitieron test:cov y lint con código 0. No cambió el código de producción por esta corrección.
+- salida-orden-pruebas.txt: salida de las tres ejecuciones con semillas explícitas, todas con código 0.
+- salida-pruebas.txt: salida real del último test:cov, con 242 casos; sin secuencias de control ANSI.
+- salida-e2e.txt: salida real de los catorce recorridos actuales.
 - COBERTURA_TESTING.md: porcentajes por archivo.
 - capturas/: vistas y validación.
 - DECISIONES.md: incidencias del entorno y alcance.

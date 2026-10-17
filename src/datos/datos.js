@@ -3,6 +3,7 @@ import { validarJuego } from '../logica/juegos.js'
 import { normalizarNombre, validarEquipo } from '../logica/equipos.js'
 import { validarInscripcion } from '../logica/inscripcion.js'
 import { validarApodo } from '../logica/perfil.js'
+import { datosGuardadosValidos } from './validarDatos.js'
 
 export const usuariosPrueba = [
   { id: 'u-admin', nombre: 'Administración Demo', correo: 'admin@arena.example', clave: 'Admin123!', rol: 'admin', jugadorId: null },
@@ -436,15 +437,24 @@ const oyentes = new Set()
 
 export function inicializarDatos(storage = globalThis.localStorage) {
   almacenamiento = storage
+  let textoGuardado = null
+  let recuperar = false
   try {
-    const guardado = JSON.parse(storage?.getItem(claveDatos) ?? 'null')
-    base = guardado?.version === 1 && ['juegos', 'torneos', 'equipos', 'jugadores', 'inscripciones', 'resultados'].every((clave) => Array.isArray(guardado[clave]))
-      ? guardado : crearDatosIniciales()
+    textoGuardado = storage?.getItem(claveDatos) ?? null
+    const guardado = JSON.parse(textoGuardado ?? 'null')
+    const valido = datosGuardadosValidos(guardado, usuariosPrueba.filter((usuario) => usuario.jugadorId).map((usuario) => usuario.jugadorId))
+    recuperar = Boolean(textoGuardado) && !valido
+    base = valido ? guardado : crearDatosIniciales()
   } catch {
+    recuperar = Boolean(textoGuardado)
     base = crearDatosIniciales()
   }
   // Fija las fechas de la demostración desde la primera carga.
-  try { storage?.setItem(claveDatos, JSON.stringify(base)) } catch { /* Los próximos cambios informan si el almacenamiento sigue bloqueado. */ }
+  // Conserva el original inválido antes de sustituirlo. Si falla el respaldo, no lo sobrescribe.
+  try {
+    if (recuperar) storage?.setItem(claveDatos + '-respaldo-invalido', textoGuardado)
+    storage?.setItem(claveDatos, JSON.stringify(base))
+  } catch { /* Los próximos cambios informan si el almacenamiento sigue bloqueado. */ }
   return copiar(base)
 }
 

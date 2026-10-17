@@ -13,6 +13,12 @@ export function tieneSancionActiva(sanciones = [], hoy = new Date()) {
     && (!sancion.hasta || Date.parse(sancion.hasta) >= ahora))
 }
 
+export function estadoSancion(sancion, hoy = Date.now()) {
+  if (tieneSancionActiva([sancion], hoy)) return 'Vigente'
+  if (sancion.vigente && Date.parse(sancion.desde) > new Date(hoy).getTime()) return 'Programada'
+  return 'Cumplida'
+}
+
 export function tipoPermitido(juego) {
   return juego?.modalidad === '1v1' ? 'jugador' : 'equipo'
 }

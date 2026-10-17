@@ -46,7 +46,7 @@ Se usa la paleta Arena púrpura. El botón usa una variante más oscura del prim
 
 Los componentes sin reglas visuales particulares usan utilidades compartidas; no se crearon archivos CSS vacíos. Los que tienen estilos propios los importan en su primera línea. Las tablas tienen desplazamiento horizontal local en pantallas pequeñas.
 
-Las fechas administrativas se introducen en ISO con zona explícita, con ejemplo visible; así se conserva exactamente el instante original al editar reglas bloqueadas y se evita desplazarlo por la zona del equipo. La visualización pública usa America/Santiago. Los filtros de fecha usan la fecha ISO de cierre, tal como se almacena.
+Las fechas administrativas se introducen en ISO con zona explícita, con ejemplo visible; así se conserva exactamente el instante original al editar reglas bloqueadas y se evita desplazarlo por la zona del equipo. La visualización pública y los filtros usan el día de America/Santiago, incluidos sus cambios de horario. Los próximos cierres se ordenan por Date.parse, no por el texto ISO, para admitir zonas horarias distintas.
 
 ## Pruebas y entorno
 
@@ -60,7 +60,7 @@ Cobertura: karma-coverage + esbuild-plugin-istanbul. Un plugin previo excluye sp
 
 La ejecución anterior utilizó Chrome for Testing 156 mediante CHROME_BIN y CHROME_NO_SANDBOX=1 dentro de un contenedor aislado. La corrección de TablaRanking se verificó con Edge 155, seleccionado por el fallback de karma.conf.cjs, fuera del entorno restringido y sin esa variable. Ambas ejecuciones utilizaron perfiles temporales de pruebas. Los resultados actuales se identifican en VERIFICACION_FINAL.md.
 
-Playwright contiene doce recorridos de integración y capturas, sin reemplazar Jasmine/Karma. El iframe externo se bloquea durante esos recorridos: no se verifica disponibilidad ni reproducción de YouTube. En la ejecución anterior se mantuvo Vite en un proceso separado y se usó ARENA_EXTERNAL_SERVER=1 para evitar el cierre automático de procesos de Windows. Los comandos normales siguen disponibles para el equipo.
+Playwright contiene catorce recorridos de integración y capturas, sin reemplazar Jasmine/Karma. El iframe externo se bloquea durante esos recorridos: no se verifica disponibilidad ni reproducción de YouTube. En una ejecución anterior se mantuvo Vite en un proceso separado y se usó ARENA_EXTERNAL_SERVER=1 para evitar el cierre automático de procesos de Windows. Los comandos normales siguen disponibles para el equipo.
 
 Header.jsx, Footer.jsx, FormInscripcion.jsx, src/logica/navegacion.js, src/logica/detallesTorneos.js, public/css/styles.css y tests/migracion.test.js siguen presentes como archivos heredados. App usa Cabecera, PieDePagina, FormularioInscripcion, BrowserRouter y la fuente de datos actual. npm test ejecuta los specs de src/ mediante Karma; no ejecuta tests/migracion.test.js. La existencia de los archivos heredados no debe confundirse con su uso en la aplicación actual.
 
@@ -96,7 +96,15 @@ La ampliación de comportamiento incorpora 65 casos en siete nuevos archivos spe
 
 El helper clicEn ahora emite MouseEvent con cancelable: true. Los clics de enlaces deben permitir preventDefault para que React Router intercepte la navegación; el valor predeterminado anterior provocó una recarga completa al probar los enlaces de inicio. El resto de los helpers y las firmas de producción se mantienen.
 
-Pasaron 195 pruebas unitarias/de componentes, lint, build y los doce recorridos Playwright; se actualizaron las capturas y los logs. El código de la aplicación no se modificó en esta ampliación. COBERTURA_TESTING.md publica la cobertura y VERIFICACION_FINAL.md identifica la ejecución y sus límites.
+En esa ampliación pasaron 195 pruebas unitarias/de componentes, lint, build y doce recorridos Playwright; se actualizaron las capturas y los logs. El código de la aplicación no se modificó en aquella fase. COBERTURA_TESTING.md publica la cobertura actual y VERIFICACION_FINAL.md identifica la ejecución y sus límites.
+
+## Correcciones de fechas, estados y recuperación
+
+- useAhora actualiza las vistas cada segundo y al recuperar foco o visibilidad; retira su intervalo y listeners al desmontar. Inicio, detalle e inscripción dejan de ofrecer acciones vencidas sin necesitar una recarga. Inicio y detalle también consideran los cupos disponibles.
+- La etiqueta de sanción usa la misma comprobación temporal que tieneSancionActiva: Vigente durante su intervalo inclusivo, Programada antes del inicio y Cumplida después o si el registro ya no está vigente. Perfil y consulta administrativa comparten esta regla.
+- Cancelar una inscripción cierra su edición de contacto solo cuando la baja se guarda correctamente; un error conserva el borrador para reintentar.
+- validarDatos.js comprueba tipos, campos y arreglos anidados, ids únicos, fechas, juegos referenciados e integrantes/capitanes existentes. También exige los jugadores vinculados a las cuentas de prueba. Un JSON inválido se respalda en arena-ep2-datos-v1-respaldo-invalido antes de regenerar la demostración. Si falla ese respaldo, la inicialización no sobrescribe el original; usa la semilla en memoria. Los datos válidos conservan sus cambios al recargar.
+- Se añadieron 47 regresiones Jasmine/Karma y dos recorridos Playwright. El total actual es 242 pruebas y catorce recorridos; los resultados detallados están en VERIFICACION_FINAL.md.
 
 ## Entrega y Git
 

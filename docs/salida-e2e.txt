@@ -2,24 +2,26 @@
 > esportsarenamanager-react@2.0.0 test:e2e
 > playwright test
 
-[WebServer] (node:16308) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (node:29112) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
 [WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
 
-Running 12 tests using 1 worker
+Running 14 tests using 1 worker
 
-(node:31008) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(node:29912) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
 (Use `node --trace-warnings ...` to show where the warning was created)
-  ok  1 tests\e2e\arena.spec.js:22:1 › permisos por URL, retorno tras login, recarga y cierre de sesión (4.4s)
-  ok  2 tests\e2e\arena.spec.js:39:1 › CRUD completo de juegos y torneos desde administración (4.8s)
-  ok  3 tests\e2e\arena.spec.js:74:1 › inscripción válida, bloqueo incompleto, edición, cancelación y perfil persistente (3.1s)
-  ok  4 tests\e2e\arena.spec.js:102:1 › creación, edición y eliminación de equipo con integrantes controlados (2.8s)
-  ok  5 tests\e2e\arena.spec.js:125:3 › vistas y navegación responsivas a 360 px (4.6s)
-  ok  6 tests\e2e\arena.spec.js:125:3 › vistas y navegación responsivas a 768 px (4.7s)
-  ok  7 tests\e2e\arena.spec.js:125:3 › vistas y navegación responsivas a 1280 px (4.8s)
-  ok  8 tests\e2e\estetica.spec.js:14:1 › perfil centrado, selector accesible y foto persistente sin control blanco (2.2s)
-  ok  9 tests\e2e\estetica.spec.js:48:1 › menú horizontal desde 576 px y hamburguesa solo en móviles estrechos (933ms)
-  ok 10 tests\e2e\estetica.spec.js:68:1 › rondas accesibles con mouse, teclado y selector móvil sincronizados (832ms)
-  ok 11 tests\e2e\estetica.spec.js:88:1 › imágenes EP1 visibles, cupos accesibles y filtros inmediatos (1.3s)
-  ok 12 tests\e2e\estetica.spec.js:109:1 › tarjetas con elevación y respeto de movimiento reducido (903ms)
+  ok  1 tests\e2e\arena.spec.js:5:1 › filtra el cierre por el mismo día mostrado en Santiago (2.0s)
+  ok  2 tests\e2e\arena.spec.js:25:1 › recupera datos incompletos conservando un respaldo y permite abrir el perfil (1.9s)
+  ok  3 tests\e2e\arena.spec.js:57:1 › permisos por URL, retorno tras login, recarga y cierre de sesión (3.6s)
+  ok  4 tests\e2e\arena.spec.js:74:1 › CRUD completo de juegos y torneos desde administración (5.0s)
+  ok  5 tests\e2e\arena.spec.js:109:1 › inscripción válida, bloqueo incompleto, edición, cancelación y perfil persistente (2.7s)
+  ok  6 tests\e2e\arena.spec.js:137:1 › creación, edición y eliminación de equipo con integrantes controlados (2.8s)
+  ok  7 tests\e2e\arena.spec.js:160:3 › vistas y navegación responsivas a 360 px (4.8s)
+  ok  8 tests\e2e\arena.spec.js:160:3 › vistas y navegación responsivas a 768 px (5.6s)
+  ok  9 tests\e2e\arena.spec.js:160:3 › vistas y navegación responsivas a 1280 px (5.0s)
+  ok 10 tests\e2e\estetica.spec.js:14:1 › perfil centrado, selector accesible y foto persistente sin control blanco (1.3s)
+  ok 11 tests\e2e\estetica.spec.js:48:1 › menú horizontal desde 576 px y hamburguesa solo en móviles estrechos (978ms)
+  ok 12 tests\e2e\estetica.spec.js:68:1 › rondas accesibles con mouse, teclado y selector móvil sincronizados (846ms)
+  ok 13 tests\e2e\estetica.spec.js:88:1 › imágenes EP1 visibles, cupos accesibles y filtros inmediatos (1.4s)
+  ok 14 tests\e2e\estetica.spec.js:109:1 › tarjetas con elevación y respeto de movimiento reducido (1.9s)
 
-  12 passed (37.8s)
+  14 passed (42.5s)

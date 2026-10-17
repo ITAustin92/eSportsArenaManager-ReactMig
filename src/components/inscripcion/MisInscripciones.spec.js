@@ -94,4 +94,21 @@ describe('inscripciones del jugador', () => {
     expect(obtenerDatos()).toEqual(antes)
     expect(dom.contenedor.querySelector('.confirmacion')).not.toBeNull()
   })
+
+  it('cierra el borrador de contacto al cancelar la misma inscripción', () => {
+    montar(); clic('Editar contacto')
+    escribir(dom.contenedor.querySelector('#editar-correo'), 'borrador@arena.example')
+    clic('Cancelar inscripción'); clic('Sí, cancelar inscripción')
+    expect(dom.contenedor.querySelector('form')).toBeNull()
+    expect(dom.contenedor.textContent).toContain('No tienes inscripciones.')
+  })
+
+  it('conserva el formulario de contacto cuando la cancelación falla', () => {
+    montar(); clic('Editar contacto')
+    escribir(dom.contenedor.querySelector('#editar-correo'), 'pendiente@arena.example')
+    spyOn(storage, 'setItem').and.throwError('Sin espacio')
+    clic('Cancelar inscripción'); clic('Sí, cancelar inscripción')
+    expect(dom.contenedor.querySelector('#editar-correo').value).toBe('pendiente@arena.example')
+    expect(obtenerDatos().inscripciones.some((item) => item.id === registro.id)).toBeTrue()
+  })
 })

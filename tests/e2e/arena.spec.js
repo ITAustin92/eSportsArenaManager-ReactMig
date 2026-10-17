@@ -2,6 +2,41 @@ import { test, expect } from '@playwright/test'
 const jugador = { correo: 'felipe@arena.example', clave: 'Jugador123!' }
 const admin = { correo: 'admin@arena.example', clave: 'Admin123!' }
 
+test('filtra el cierre por el mismo día mostrado en Santiago', async ({ page }) => {
+  await page.goto('/torneos')
+  await expect(page.locator('.tarjeta-torneo')).toHaveCount(5)
+  const nombre = await page.evaluate(() => {
+    const datos = JSON.parse(localStorage.getItem('arena-ep2-datos-v1'))
+    datos.torneos[0].cierreISO = '2030-01-02T01:00:00Z'
+    datos.torneos[0].fechaInicio = '2030-01-03T01:00:00Z'
+    localStorage.setItem('arena-ep2-datos-v1', JSON.stringify(datos))
+    return datos.torneos[0].nombre
+  })
+  await page.reload()
+  await page.getByLabel('Cierre desde', { exact: true }).fill('2030-01-01')
+  await page.getByLabel('Cierre hasta', { exact: true }).fill('2030-01-01')
+  await expect(page.locator('.tarjeta-torneo')).toHaveCount(1)
+  await expect(page.locator('.tarjeta-torneo')).toContainText(nombre)
+  await page.getByLabel('Cierre desde', { exact: true }).fill('2030-01-02')
+  await page.getByLabel('Cierre hasta', { exact: true }).fill('2030-01-02')
+  await expect(page.locator('.tarjeta-torneo')).toHaveCount(0)
+})
+
+test('recupera datos incompletos conservando un respaldo y permite abrir el perfil', async ({ page }) => {
+  await entrar(page, jugador)
+  const original = await page.evaluate(() => {
+    const datos = JSON.parse(localStorage.getItem('arena-ep2-datos-v1'))
+    datos.jugadores = [null]
+    const texto = JSON.stringify(datos)
+    localStorage.setItem('arena-ep2-datos-v1', texto)
+    return texto
+  })
+  await page.reload()
+  await expect(page.getByRole('heading', { name: 'Perfil de jugador', exact: true })).toBeVisible()
+  expect(await page.evaluate(() => localStorage.getItem('arena-ep2-datos-v1-respaldo-invalido'))).toBe(original)
+  await expect(page.getByText('felipe@arena.example', { exact: true })).toBeVisible()
+})
+
 async function entrar(page, usuario) {
   await page.goto('/login')
   await page.getByLabel('Correo', { exact: true }).fill(usuario.correo)

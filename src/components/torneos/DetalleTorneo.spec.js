@@ -1,11 +1,26 @@
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
+import { act } from 'react'
 import DetalleTorneo from './DetalleTorneo'
 import { fixture } from '../../pruebas/fixtures'
 import { prepararDOM, escribir } from '../../pruebas/dom'
 describe('DetalleTorneo', () => {
-  let dom, f
-  beforeEach(() => { dom = prepararDOM(); f = fixture() })
-  afterEach(() => dom.limpiar())
+  let dom, f, reloj
+  beforeEach(() => { dom = prepararDOM(); f = fixture(); reloj = false })
+  afterEach(() => { dom.limpiar(); if (reloj) jasmine.clock().uninstall() })
+  const montar = () => dom.renderizar(<MemoryRouter initialEntries={['/torneos/' + f.torneo.id]}><Routes><Route path="/torneos/:id" element={<DetalleTorneo datos={f.datos} />} /></Routes></MemoryRouter>)
+  it('retira la acción de inscripción cuando vence el plazo con la vista abierta', () => {
+    jasmine.clock().install(); reloj = true; jasmine.clock().mockDate(new Date('2030-01-01T12:00:00Z'))
+    f.torneo.cierreISO = '2030-01-01T12:00:01Z'; montar()
+    expect(dom.contenedor.querySelector('a[href^="/inscripcion"]')).not.toBeNull()
+    act(() => jasmine.clock().tick(2000))
+    expect(dom.contenedor.querySelector('a[href^="/inscripcion"]')).toBeNull()
+    expect(dom.contenedor.textContent).toContain('El plazo de inscripción terminó.')
+  })
+  it('explica que no hay cupos y no ofrece inscribir un equipo', () => {
+    f.torneo.cupoMax = f.torneo.inscritos.length; montar()
+    expect(dom.contenedor.querySelector('a[href^="/inscripcion"]')).toBeNull()
+    expect(dom.contenedor.textContent).toContain('No quedan cupos disponibles.')
+  })
   it('entrega la clasificación ordenada a la tabla sin modificar los datos del torneo', () => {
     f.torneo.ranking = [
       { participanteId: 'b', nombre: 'B', puntos: 3, aFavor: 2, enContra: 1, victorias: 1, derrotas: 1 },
