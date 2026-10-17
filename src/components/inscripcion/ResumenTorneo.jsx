@@ -1,24 +1,6 @@
-import { detallesTorneos } from '../../logica/detallesTorneos'
-
-function ResumenTorneo({ torneo, torneos, onCambiar }) {
-  return (
-    <section className="panel-formulario banner-resumen" id="resumen-torneo">
-      <div className="grupo-formulario">
-        <label htmlFor="selector-torneo">Torneo:</label>
-        <select id="selector-torneo" name="torneoSeleccionado" autoComplete="off" value={torneo.id} onChange={(evento) => onCambiar(evento.target.value)}>
-          {torneos.map((item) => <option key={item.id} value={item.id}>{item.nombre} ({item.juego})</option>)}
-        </select>
-        <span className="texto-ayuda">Elige el torneo al que quieres inscribirte.</span>
-      </div>
-      <h2 id="nombre-torneo-resumen">{torneo.nombre}</h2>
-      <div className="etiquetas-resumen">
-        <span className="badge-estado" id="badge-estado-torneo">{torneo.estado === 'Abierto' ? 'Inscripciones Abiertas' : torneo.estado}</span>
-        <span className="badge-estado badge-secundario" id="badge-modalidad-torneo">{torneo.modalidad}</span>
-      </div>
-      <p className="tarjeta-info"><strong>Cierre de inscripción:</strong> <span id="fecha-cierre-torneo">{detallesTorneos[torneo.id].infoGeneral.fechaCierre}</span></p>
-      <p className="tarjeta-info"><strong>Cupos disponibles:</strong> <span id="cupos-torneo">{torneo.cuposMaximos - torneo.cuposOcupados}</span></p>
-    </section>
-  )
+import BadgeEstado from '../compartidos/BadgeEstado'
+import { cuposDisponibles, formatearFecha } from '../../logica/torneos.js'
+function ResumenTorneo({ torneo, juego }) {
+  return <aside className="panel"><p className="sobretitulo">Tu próxima competencia</p><h2>{torneo.nombre}</h2><BadgeEstado estado={torneo.estado} /><p className="mt-3">{juego.nombre} · {juego.modalidad}</p><p>Cierre: {formatearFecha(torneo.cierreISO)}</p><p><strong>{cuposDisponibles(torneo)}</strong> cupos disponibles</p></aside>
 }
-
 export default ResumenTorneo

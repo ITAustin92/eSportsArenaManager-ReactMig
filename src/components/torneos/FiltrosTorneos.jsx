@@ -1,65 +1,12 @@
-function FiltrosTorneos({ filtros, onCambiar, onFiltrar, errorFechas }) {
-  return (
-    <section className="filtros-busqueda">
-      <h2>Explorar Torneos</h2>
-      <form id="form-filtros" className="contenedor-filtros" onSubmit={onFiltrar}>
-        <div className="grupo-filtro">
-          <label htmlFor="buscar-nombre">Buscar por nombre:</label>
-          <input
-            type="text"
-            id="buscar-nombre"
-            placeholder="Ej: Copa Latam..."
-            value={filtros.busqueda}
-            onChange={(evento) => onCambiar('busqueda', evento.target.value)}
-          />
-        </div>
-        <div className="grupo-filtro">
-          <label htmlFor="filtro-juego">Juego:</label>
-          <select id="filtro-juego" value={filtros.juego} onChange={(evento) => onCambiar('juego', evento.target.value)}>
-            {['Todos', 'Valorant', 'League of Legends', 'Rocket League', 'Street Fighter 6'].map((juego) => (
-              <option key={juego} value={juego}>{juego}</option>
-            ))}
-          </select>
-        </div>
-        <div className="grupo-filtro">
-          <label htmlFor="filtro-estado">Estado:</label>
-          <select id="filtro-estado" value={filtros.estado} onChange={(evento) => onCambiar('estado', evento.target.value)}>
-            {['Todos', 'Abierto', 'En Curso', 'Finalizado'].map((estado) => (
-              <option key={estado} value={estado}>{estado}</option>
-            ))}
-          </select>
-        </div>
-        <div className="grupo-filtro">
-          <label htmlFor="fecha-inicio">Desde:</label>
-          <input
-            type="date"
-            id="fecha-inicio"
-            value={filtros.fechaInicio}
-            onChange={(evento) => onCambiar('fechaInicio', evento.target.value)}
-            aria-invalid={errorFechas || undefined}
-            aria-describedby={errorFechas ? 'mensaje-error-fechas' : undefined}
-          />
-        </div>
-        <div className="grupo-filtro">
-          <label htmlFor="fecha-fin">Hasta:</label>
-          <input
-            type="date"
-            id="fecha-fin"
-            value={filtros.fechaFin}
-            onChange={(evento) => onCambiar('fechaFin', evento.target.value)}
-            aria-invalid={errorFechas || undefined}
-            aria-describedby={errorFechas ? 'mensaje-error-fechas' : undefined}
-          />
-        </div>
-        <button type="submit" id="btn-filtrar" className="boton-primario">Filtrar</button>
-      </form>
-      {errorFechas && (
-        <p id="mensaje-error-fechas" className="mensaje-error" role="alert">
-          La fecha de inicio no puede ser posterior a la fecha de fin.
-        </p>
-      )}
-    </section>
-  )
+import Campo from '../compartidos/Campo'
+import { estadosTorneo } from '../../logica/torneos.js'
+function FiltrosTorneos({ filtros, juegos, errores, onCambiar }) {
+  return <form className="panel row g-3 mx-0" noValidate onSubmit={(evento) => evento.preventDefault()}>
+    <div className="col-12 col-md-6 col-lg-4"><Campo id="filtro-busqueda" nombre="busqueda" etiqueta="Buscar torneo" valor={filtros.busqueda} onCambiar={onCambiar} /></div>
+    <div className="col-12 col-md-6 col-lg-4"><Campo id="filtro-juego" nombre="juego" etiqueta="Juego" valor={filtros.juego} onCambiar={onCambiar} opciones={[{ valor: '', etiqueta: 'Todos los juegos' }, ...juegos.map((juego) => ({ valor: juego.id, etiqueta: juego.nombre }))]} /></div>
+    <div className="col-12 col-md-6 col-lg-4"><Campo id="filtro-estado" nombre="estado" etiqueta="Estado" valor={filtros.estado} onCambiar={onCambiar} opciones={[{ valor: '', etiqueta: 'Todos los estados' }, ...estadosTorneo.map((estado) => ({ valor: estado, etiqueta: estado }))]} /></div>
+    <div className="col-12 col-md-6"><Campo id="filtro-desde" nombre="fechaInicio" etiqueta="Cierre desde" tipo="date" valor={filtros.fechaInicio} onCambiar={onCambiar} error={errores.fechaInicio} /></div>
+    <div className="col-12 col-md-6"><Campo id="filtro-hasta" nombre="fechaFin" etiqueta="Cierre hasta" tipo="date" valor={filtros.fechaFin} onCambiar={onCambiar} /></div>
+  </form>
 }
-
 export default FiltrosTorneos

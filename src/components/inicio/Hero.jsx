@@ -1,20 +1,6 @@
-function Hero({ onExplorar }) {
-  const explorar = (evento) => {
-    if (!onExplorar || evento.button !== 0 || evento.ctrlKey || evento.metaKey || evento.shiftKey || evento.altKey) return
-
-    evento.preventDefault()
-    onExplorar()
-  }
-
-  return (
-    <section className="hero">
-      <h1>DOMINA LA ARENA</h1>
-      <p>Compite en los mejores torneos de la región.</p>
-      <a href="#torneos" className="boton-primario" onClick={explorar}>
-        Ver todos los torneos
-      </a>
-    </section>
-  )
+import './Hero.css'
+import { Link } from 'react-router-dom'
+function Hero() {
+  return <section className="hero"><p className="sobretitulo">El próximo desafío comienza aquí</p><h1>Domina la arena</h1><p className="hero-descripcion">Compite con tu escuadra, sigue los resultados y encuentra tu próximo torneo.</p><Link className="boton boton-primario" to="/torneos">Explorar torneos <span aria-hidden="true">↗</span></Link></section>
 }
-
 export default Hero

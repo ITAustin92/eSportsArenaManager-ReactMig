@@ -1,53 +1,15 @@
+import './Inicio.css'
+import { Link } from 'react-router-dom'
 import Hero from './Hero'
 import TorneosDestacados from './TorneosDestacados'
+import { formatearFecha } from '../../logica/torneos.js'
 
-function Inicio({ onExplorarTorneos, onInscribirse }) {
-  const inscribirse = (evento) => {
-    if (!onInscribirse || evento.button !== 0 || evento.ctrlKey || evento.metaKey || evento.shiftKey || evento.altKey) return
-
-    evento.preventDefault()
-    onInscribirse()
-  }
-
-  return (
-    <div className="contenedor-principal">
-      <Hero onExplorar={onExplorarTorneos} />
-
-      <section className="modulo-detalle banner-destacado">
-        <div className="banner-texto">
-          <h2>⚠️ Próximo cierre de inscripción</h2>
-          <p>Liga Valorant LATAM - Cierre: Hoy 23:59 hrs</p>
-          <a
-            href="#inscripcion"
-            className="boton-primario"
-            style={{ marginTop: 10 }}
-            onClick={inscribirse}
-          >
-            Inscribirse ahora
-          </a>
-        </div>
-        <img
-          src="img/valorant-cierre.jpg"
-          alt="Imagen promocional del torneo de Valorant"
-          className="banner-imagen"
-        />
-      </section>
-
-      <TorneosDestacados onExplorar={onExplorarTorneos} />
-
-      <section className="modulo-detalle">
-        <h2>Gran Final - Smash Ultimate</h2>
-        <div className="contenedor-video">
-          <iframe
-            src="https://www.youtube.com/embed/m6CrWBOxecY"
-            title="EVO 2019: Grand Final Smash Ultimate"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-          />
-        </div>
-      </section>
-    </div>
-  )
+function Inicio({ datos }) {
+  const proximos = datos.torneos.filter((torneo) => torneo.estado === 'Abierto').sort((a, b) => a.cierreISO.localeCompare(b.cierreISO))
+  return <><Hero />
+    {proximos.length > 0 && <section className="inicio-banner card"><div className="inicio-banner-texto"><p className="sobretitulo">Próximo cierre</p><h2>{proximos[0].nombre}</h2><p>{formatearFecha(proximos[0].cierreISO)}</p><Link className="boton boton-primario" to={'/inscripcion?torneo=' + proximos[0].id}>Inscribirse ahora</Link></div><img src="/img/valorant-cierre.jpg" alt="Escena competitiva de Valorant" /></section>}
+    <TorneosDestacados torneos={datos.torneos.filter((torneo) => torneo.estado !== 'Finalizado')} juegos={datos.juegos} />
+    <section className="panel mt-5"><p className="sobretitulo">La emoción de competir</p><h2>Gran Final · Smash Ultimate</h2><div className="ratio ratio-16x9 mt-3"><iframe src="https://www.youtube-nocookie.com/embed/m6CrWBOxecY" title="EVO 2019: Gran Final de Smash Ultimate" loading="lazy" allow="fullscreen; picture-in-picture" allowFullScreen /></div></section>
+  </>
 }
-
 export default Inicio
