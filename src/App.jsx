@@ -1,76 +1,33 @@
-import { useEffect, useState } from 'react'
+import './App.css'
+import { Link, Route, Routes } from 'react-router-dom'
 import Layout from './components/layout/Layout'
 import Inicio from './components/inicio/Inicio'
 import CatalogoTorneos from './components/torneos/CatalogoTorneos'
 import DetalleTorneo from './components/torneos/DetalleTorneo'
-import FormInscripcion from './components/inscripcion/FormInscripcion'
-import FormEquipo from './components/equipos/FormEquipo'
+import Inscripcion from './components/inscripcion/Inscripcion'
+import GestionEquipos from './components/equipos/GestionEquipos'
 import PerfilJugador from './components/perfil/PerfilJugador'
-import { catalogoTorneos } from './logica/torneos'
-import { equiposIniciales } from './logica/inscripcion'
-import { jugadorInicial } from './logica/perfil'
-import { resolverRuta } from './logica/navegacion'
-
-const titulos = {
-  inicio: 'Inicio',
-  torneos: 'Listado de Torneos',
-  detalle: 'Detalle de Torneo',
-  inscripcion: 'Inscripción',
-  equipos: 'Gestión de Equipo',
-  perfil: 'Perfil de Jugador',
-}
-
-function leerRuta() {
-  return resolverRuta(window.location.hash)
-}
+import Login from './components/auth/Login'
+import RutaProtegida from './components/auth/RutaProtegida'
+import PanelAdmin from './components/admin/PanelAdmin'
+import EquiposRegistrados from './components/admin/EquiposRegistrados'
+import useDatos from './datos/useDatos'
 
 function App() {
-  const [ruta, setRuta] = useState(leerRuta)
-  const [equipos, setEquipos] = useState([])
-  const [jugador, setJugador] = useState(jugadorInicial)
-  const [archivoAvatar, setArchivoAvatar] = useState(null)
-
-  useEffect(() => {
-    const sincronizarRuta = () => setRuta(leerRuta())
-    window.addEventListener('hashchange', sincronizarRuta)
-    return () => window.removeEventListener('hashchange', sincronizarRuta)
-  }, [])
-
-  useEffect(() => {
-    window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
-  }, [ruta.vista, ruta.torneoId])
-
-  const navegar = (vista, torneoId) => {
-    // El hash permite enlaces directos, recarga y Atrás/Adelante sin un servidor de rutas.
-    window.location.hash = torneoId ? `${vista}?id=${encodeURIComponent(torneoId)}` : vista
-  }
-
-  const torneoSeleccionado = catalogoTorneos.find((torneo) => torneo.id === ruta.torneoId) ?? catalogoTorneos[0]
-
-  return (
-    <Layout vistaActiva={ruta.vista} onNavegar={navegar}>
-      <title>{`${titulos[ruta.vista]} - eSports Arena Manager`}</title>
-      {ruta.vista === 'inicio' && (
-        <Inicio
-          onExplorarTorneos={() => navegar('torneos')}
-          onInscribirse={() => navegar('inscripcion')}
-        />
-      )}
-      {ruta.vista === 'torneos' && (
-        <CatalogoTorneos onSeleccionarTorneo={(id) => navegar('detalle', id)} />
-      )}
-      {ruta.vista === 'detalle' && <DetalleTorneo torneo={torneoSeleccionado} />}
-      {ruta.vista === 'inscripcion' && (
-        <FormInscripcion key={torneoSeleccionado.id} torneo={torneoSeleccionado} torneos={catalogoTorneos}
-          equipos={[...equiposIniciales, ...equipos]} onCambiarTorneo={(id) => navegar('inscripcion', id)} />
-      )}
-      {ruta.vista === 'equipos' && <FormEquipo equipos={equipos} onGuardar={(equipo) => setEquipos((actuales) => [...actuales, equipo])} />}
-      {ruta.vista === 'perfil' && (
-        <PerfilJugador jugador={jugador} equipos={equipos} archivoAvatar={archivoAvatar}
-          onCambiarAvatar={setArchivoAvatar} onCambiarApodo={(apodo) => setJugador((actual) => ({ ...actual, apodo }))} />
-      )}
-    </Layout>
-  )
+  const { datos, error, cargando } = useDatos()
+  return <Layout>{cargando ? <section aria-busy="true"><h1>Cargando la arena</h1><p role="status">Preparando datos…</p></section> : error ? <section><h1>No se pudo cargar</h1><p role="alert">{error}</p></section> :
+    <Routes>
+      <Route path="/" element={<Inicio datos={datos} />} />
+      <Route path="/torneos" element={<CatalogoTorneos datos={datos} />} />
+      <Route path="/torneos/:id" element={<DetalleTorneo datos={datos} />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/inscripcion" element={<RutaProtegida><Inscripcion datos={datos} /></RutaProtegida>} />
+      <Route path="/equipos" element={<RutaProtegida><GestionEquipos datos={datos} /></RutaProtegida>} />
+      <Route path="/perfil" element={<RutaProtegida><PerfilJugador datos={datos} /></RutaProtegida>} />
+      <Route path="/admin" element={<RutaProtegida><PanelAdmin datos={datos} /></RutaProtegida>} />
+      <Route path="/admin/equipos" element={<RutaProtegida><EquiposRegistrados datos={datos} /></RutaProtegida>} />
+      <Route path="*" element={<section className="panel"><h1>Página no encontrada</h1><p>Error 404. Esta dirección no existe.</p><Link to="/">Volver al inicio</Link></section>} />
+    </Routes>}
+  </Layout>
 }
-
 export default App

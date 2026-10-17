@@ -1,3 +1,4 @@
-/* Armazón de la aplicación. Los estilos de cada sección vivirán junto a su componente. */
 .app { min-height: 100vh; display: flex; flex-direction: column; }
-.contenido-principal { width: min(1120px, calc(100% - 32px)); margin: 0 auto; padding: 32px 0; flex: 1; }
+.app-contenido { flex: 1; padding-top: 2rem; padding-bottom: 3rem; }
+.salto-contenido { position: absolute; left: 1rem; top: -5rem; z-index: 10; padding: .75rem; background: var(--color-superficie); }
+.salto-contenido:focus { top: .5rem; }

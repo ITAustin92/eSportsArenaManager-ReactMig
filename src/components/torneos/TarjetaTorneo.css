@@ -1,0 +1,9 @@
+.tarjeta-torneo { background: var(--color-superficie); border: 1px solid var(--color-borde); border-top: 3px solid var(--color-acento); border-radius: 16px; overflow: hidden; box-shadow: var(--sombra-panel); transition: transform var(--duracion-interaccion) ease, box-shadow var(--duracion-interaccion) ease, border-color var(--duracion-interaccion) ease; }
+.tarjeta-torneo:hover, .tarjeta-torneo:focus-within { border-color: var(--color-primario); border-top-color: var(--color-acento); box-shadow: var(--sombra-elevada); }
+@media (hover: hover) and (prefers-reduced-motion: no-preference) { .tarjeta-torneo:hover { transform: translateY(-3px); } }
+.tarjeta-torneo-imagen, .tarjeta-torneo-portada { height: 175px; object-fit: cover; }
+.tarjeta-torneo-portada { display: grid; place-items: center; background: var(--degradado-accion); font-size: 1.3rem; }
+.tarjeta-torneo-titulo { font-size: 1.25rem; margin: 1rem 0; }
+.tarjeta-torneo-datos { display: grid; grid-template-columns: auto 1fr; gap: .4rem 1rem; font-size: .88rem; }
+.tarjeta-torneo-datos dt { color: var(--color-texto-secundario); font-weight: 400; }
+.tarjeta-torneo-datos dd { text-align: right; margin: 0; }

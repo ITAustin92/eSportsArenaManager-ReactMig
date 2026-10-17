@@ -1,0 +1,1 @@
+.mensaje-error { color: var(--color-error); background: var(--color-error-suave); border-left: 3px solid var(--color-error); border-radius: 8px; padding: .65rem .8rem; margin: .5rem 0; font-size: .95rem; overflow-wrap: anywhere; }

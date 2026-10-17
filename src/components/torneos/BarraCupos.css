@@ -1,0 +1,2 @@
+.barra-cupos { width: 100%; height: 8px; overflow: hidden; border-radius: 999px; background: var(--color-fondo); margin: .35rem 0 1rem; }
+.barra-cupos-relleno { display: block; height: 100%; border-radius: inherit; background: var(--degradado-marca); transition: width var(--duracion-interaccion) ease; }
