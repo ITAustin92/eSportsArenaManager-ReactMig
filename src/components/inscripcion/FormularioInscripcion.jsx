@@ -3,13 +3,14 @@ import Campo from '../compartidos/Campo'
 import Boton from '../compartidos/Boton'
 import MensajeError from '../compartidos/MensajeError'
 import { tipoPermitido, validarInscripcion } from '../../logica/inscripcion.js'
+import useAhora from '../../logica/useAhora.js'
 
 function FormularioInscripcion({ torneo, juego, equipos, jugador, jugadores, inscripciones, onEnviar }) {
   const [datos, setDatos] = useState({ tipoParticipante: '', equipoId: '', correo: jugador.correo })
   const [errores, setErrores] = useState({})
   const [errorEnvio, setErrorEnvio] = useState('')
   const [confirmacion, setConfirmacion] = useState(null)
-  const [hoy] = useState(() => new Date())
+  const hoy = useAhora()
   const equipo = equipos.find((item) => item.id === datos.equipoId)
   const contexto = { torneo, juego, equipo, jugador, jugadores, inscripciones }
   const validacion = validarInscripcion(datos, { ...contexto, hoy })

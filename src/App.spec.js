@@ -56,7 +56,10 @@ describe('aplicación integrada', () => {
     expect(sessionStorage.getItem(claveSesion)).toBeNull()
   })
   it('distingue formato inválido de credenciales incorrectas', async () => {
-    await montar('/login'); enviar(dom.contenedor.querySelector('form'))
+    await montar('/torneos')
+    clicEn(boton('Iniciar sesión'))
+    expect(dom.contenedor.querySelector('h1').textContent).toBe('Iniciar sesión')
+    enviar(dom.contenedor.querySelector('form'))
     expect(dom.contenedor.textContent).toContain('al menos 6')
     escribir(dom.contenedor.querySelector('#login-correo'), jugador.correo); escribir(dom.contenedor.querySelector('#login-clave'), 'incorrecta')
     enviar(dom.contenedor.querySelector('form')); expect(dom.contenedor.textContent).toContain('Correo o clave incorrectos')

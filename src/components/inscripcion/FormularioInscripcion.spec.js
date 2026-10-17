@@ -1,4 +1,5 @@
 import FormularioInscripcion from './FormularioInscripcion'
+import { act } from 'react'
 import { fixture } from '../../pruebas/fixtures'
 import { prepararDOM, escribir, enviar, clicEn } from '../../pruebas/dom'
 describe('FormularioInscripcion', () => {
@@ -31,5 +32,33 @@ describe('FormularioInscripcion', () => {
     escribir(dom.contenedor.querySelector('#ins-tipo'), 'equipo'); escribir(dom.contenedor.querySelector('#ins-equipo'), 'e-demo'); escribir(dom.contenedor.querySelector('#ins-correo'), 'a@arena.example')
     onEnviar.and.throwError('Error simulado'); enviar(dom.contenedor.querySelector('form'))
     expect(dom.contenedor.textContent).toContain('Error simulado')
+  })
+})
+
+describe('plazo de inscripción con la página abierta', () => {
+  let dom, f, onEnviar
+  beforeEach(() => {
+    jasmine.clock().install(); jasmine.clock().mockDate(new Date('2030-01-01T12:00:00Z'))
+    dom = prepararDOM(); f = fixture(new Date()); f.torneo.cierreISO = '2030-01-01T12:00:01Z'
+    onEnviar = jasmine.createSpy('onEnviar')
+    dom.renderizar(<FormularioInscripcion torneo={f.torneo} juego={f.juego} equipos={f.datos.equipos} jugador={f.jugador} jugadores={f.jugadores} inscripciones={f.inscripciones} onEnviar={onEnviar} />)
+    escribir(dom.contenedor.querySelector('#ins-tipo'), 'equipo'); escribir(dom.contenedor.querySelector('#ins-equipo'), 'e-demo')
+  })
+  afterEach(() => { dom.limpiar(); jasmine.clock().uninstall() })
+
+  it('deshabilita el envío al superar el cierre sin recargar ni editar un campo', () => {
+    expect(dom.contenedor.querySelector('button[type="submit"]').disabled).toBeFalse()
+    act(() => jasmine.clock().tick(2000))
+    expect(dom.contenedor.querySelector('button[type="submit"]').disabled).toBeTrue()
+    expect(dom.contenedor.textContent).toContain('El plazo de inscripción terminó.')
+    enviar(dom.contenedor.querySelector('form'))
+    expect(onEnviar).not.toHaveBeenCalled()
+  })
+
+  it('actualiza el bloqueo al regresar a la ventana después de que venza el plazo', () => {
+    jasmine.clock().mockDate(new Date('2030-01-01T13:00:00Z'))
+    act(() => window.dispatchEvent(new Event('focus')))
+    expect(dom.contenedor.querySelector('button[type="submit"]').disabled).toBeTrue()
+    expect(dom.contenedor.textContent).toContain('El plazo de inscripción terminó.')
   })
 })

@@ -1,6 +1,19 @@
 export const estadosTorneo = ['Abierto', 'En Curso', 'Finalizado']
 export const estadosPartida = ['Programada', 'En juego', 'Finalizada']
 
+const formatoDia = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Santiago', year: 'numeric', month: '2-digit', day: '2-digit' })
+
+export function fechaSantiago(fecha) {
+  const partes = formatoDia.formatToParts(new Date(fecha))
+  const valor = (tipo) => partes.find((parte) => parte.type === tipo).value
+  return valor('year') + '-' + valor('month') + '-' + valor('day')
+}
+
+export function inscripcionAbierta(torneo, hoy = Date.now()) {
+  const cierre = Date.parse(torneo.cierreISO)
+  return torneo.estado === 'Abierto' && Number.isFinite(cierre) && new Date(hoy).getTime() <= cierre
+}
+
 export function claseEstado(estado = '') {
   return 'estado-' + estado.toLowerCase().replaceAll(' ', '-')
 }
@@ -24,8 +37,8 @@ export function filtrarTorneos(torneos, filtros = {}) {
     torneo.nombre.toLocaleLowerCase('es').includes(texto)
     && (!filtros.juego || torneo.juegoId === filtros.juego)
     && (!filtros.estado || torneo.estado === filtros.estado)
-    && (!filtros.fechaInicio || torneo.cierreISO.slice(0, 10) >= filtros.fechaInicio)
-    && (!filtros.fechaFin || torneo.cierreISO.slice(0, 10) <= filtros.fechaFin))
+    && (!filtros.fechaInicio || fechaSantiago(torneo.cierreISO) >= filtros.fechaInicio)
+    && (!filtros.fechaFin || fechaSantiago(torneo.cierreISO) <= filtros.fechaFin))
 }
 
 export function validarTorneo(datos, anterior = null, hoy = new Date()) {

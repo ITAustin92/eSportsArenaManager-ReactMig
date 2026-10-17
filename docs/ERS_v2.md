@@ -15,7 +15,7 @@ Usuarios: visitante, jugador y administrador. Los datos son ficticios y se manti
 | Herramienta | Uso |
 |---|---|
 | VS Code u otro editor | Edición del proyecto por el equipo |
-| Git / GitHub | Historial local y revisión mediante PR posterior |
+| Git / GitHub | Historial colaborativo e integración mediante PR; base de EP2 en develop |
 | Node y npm | Instalación reproducible con package-lock.json |
 | Vite | Desarrollo y compilación |
 | React / React DOM | Componentes funcionales, props, estado y efectos |
@@ -26,7 +26,7 @@ Usuarios: visitante, jugador y administrador. Los datos son ficticios y se manti
 | esbuild / Istanbul | Transformación JSX e instrumentación |
 | Playwright | Recorridos completos y evidencias responsivas |
 
-Las versiones exactas están fijadas por package-lock.json. La ejecución final empleó Node 24.21.0 y Chrome for Testing 156. Las pruebas y resultados se detallan en COBERTURA_TESTING.md.
+Las versiones exactas están fijadas por package-lock.json. La verificación actual empleó Node 24.22.0 y Edge 155: 242 pruebas Jasmine/Karma y catorce recorridos Playwright aprobados. Las pruebas y resultados se detallan en COBERTURA_TESTING.md; las capturas de las nueve vistas se actualizaron en esta ejecución.
 
 ### Carpetas
 
@@ -77,14 +77,14 @@ localStorage guarda arena-ep2-datos-v1; sessionStorage guarda arena-ep2-sesion-v
 | ID | Requisito y aceptación |
 |---|---|
 | RF01 | Inicio muestra hero, torneos destacados, próximo cierre, video e información institucional. |
-| RF02 | Catálogo filtra en vivo por nombre, juego, estado y rango de cierre. Un rango invertido informa error; cero coincidencias muestra vacío. |
+| RF02 | Catálogo filtra en vivo por nombre, juego, estado y rango del día de cierre en America/Santiago, coherente con la fecha visible. Un rango invertido informa error; cero coincidencias muestra vacío. |
 | RF03 | Detalle por id muestra datos, inscritos, premios, ranking y partidas. Id inexistente redirige al catálogo. |
-| RF04 | Ranking ordena por puntos descendentes y luego diferencia de puntaje; no muta el original. |
+| RF04 | DetalleTorneo prepara el ranking por puntos descendentes y luego diferencia de puntaje, sin mutar el original. TablaRanking renderiza una fila por participante respetando exactamente el orden recibido. |
 | RF05 | Partidas muestran ronda, horario y estado textual. La ronda visible es local; rival ausente indica “Participante por definir”. |
 | RF06 | Inscripción exige correo y modalidad compatible; nunca permite cupos negativos ni inscripciones cuando se supera el cierre. |
 | RF07 | Se bloquea duplicidad por torneo y participante, incluso si se intenta directamente desde el servicio. |
 | RF08 | Solo el capitán inscribe un equipo completo y habilitado; equipos inactivos, incompletos o sancionados se bloquean. |
-| RF09 | Una sanción vigente y dentro de sus fechas bloquea; una cumplida no bloquea. Se revisan jugador, equipo e integrantes. |
+| RF09 | Una sanción vigente y dentro de sus fechas bloquea; una cumplida no bloquea. Se revisan jugador, equipo e integrantes. Las etiquetas de sanción del perfil y consulta administrativa distinguen Vigente, Programada y Cumplida mediante la misma regla temporal. |
 | RF10 | El formulario confirma participante, torneo y contacto sin afirmar que se envió un correo. El perfil permite editar contacto/cancelar antes del cierre. |
 | RF11 | CRUD de equipos propios con nombre único, capitán titular, integrantes no repetidos, plantilla exacta, suplentes enteros 0–2, clave mínima de seis y confirmación coincidente. |
 | RF12 | Perfil presenta estadísticas, equipos, historial y sanciones; permite apodo de 3–15 caracteres sin espacios y avatar de tipo/tamaño admitido. |
@@ -93,14 +93,14 @@ localStorage guarda arena-ep2-datos-v1; sessionStorage guarda arena-ep2-sesion-v
 | RF15 | Admin realiza CRUD de juegos y torneos; exige cupo entero positivo e inicio posterior al cierre. |
 | RF16 | Reglas críticas de torneos iniciados y relaciones referenciadas no se destruyen mediante edición/eliminación. |
 | RF17 | Admin consulta equipos, integrantes con nombre/apodo/correo/rol, sanciones, torneos enlazados, resultados, posición y premios finales; dispone de búsqueda y estado vacío. |
-| RF18 | Los cambios actualizan React y persisten al recargar; fallos del almacenamiento se informan sin publicar cambios parciales. |
+| RF18 | Los cambios actualizan React y persisten al recargar; fallos del almacenamiento se informan sin publicar cambios parciales. Se valida la estructura persistida y se respalda el original inválido antes de regenerar la demostración. Los plazos visibles se revisan cada segundo y al volver a la pestaña. |
 
 ## 6. Requisitos no funcionales
 
 | ID | Requisito verificable |
 |---|---|
 | RNF01 | Componentes funcionales por área, lógica pura separada y estado inmutable. |
-| RNF02 | Bootstrap y CSS propio sin !important ni hex fuera de :root; sin estilos inline de presentación. |
+| RNF02 | Bootstrap y CSS propio sin !important ni hex fuera de :root. La única excepción inline es el ancho calculado de BarraCupos, justificado con un comentario técnico. |
 | RNF03 | Vistas verificadas a 360, 768 y 1280 px, sin desbordamiento horizontal de la página; tablas pueden desplazarse internamente. |
 | RNF04 | Accesibilidad descrita en sección 3, estados no dependientes solo de color. |
 | RNF05 | Vite produce build y oxlint termina sin errores. |
@@ -168,16 +168,16 @@ Campo, Boton, BadgeEstado y MensajeError son compartidos. Los resultados filtrad
 
 | RF / RNF | Implementación | Evidencia de prueba |
 |---|---|---|
-| RF01, RNF03 | Inicio, Hero, TorneosDestacados | Playwright “vistas y navegación responsivas” |
+| RF01, RNF03 | Inicio, Hero, TorneosDestacados | Inicio.spec.js; Playwright “vistas y navegación responsivas” |
 | RF02 | CatalogoTorneos, filtros, filtrarTorneos | torneos.spec.js; App.spec.js |
 | RF03, RF05 | DetalleTorneo, ListaPartidas, LlaveTorneo | DetalleTorneo.spec.js; LlaveTorneo.spec.js |
-| RF04 | ranking.js, TablaRanking | ranking.spec.js; TablaRanking.spec.js |
+| RF04 | ranking.js, DetalleTorneo, TablaRanking | ranking.spec.js; DetalleTorneo.spec.js; TablaRanking.spec.js |
 | RF06–09 | inscripcion.js, equipos.js, FormularioInscripcion | inscripcion.spec.js; equipos.spec.js; FormularioInscripcion.spec.js |
-| RF10, RF18 | datos.js, Inscripcion, MisInscripciones | datos.spec.js; Playwright inscripción |
-| RF11 | FormEquipo, ListaIntegrantes, GestionEquipos | equipos.spec.js; datos.spec.js; Playwright CRUD equipo |
-| RF12 | PerfilJugador, AvatarJugador | perfil.spec.js; App.spec.js; Playwright perfil |
+| RF10, RF18 | datos.js, Inscripcion, MisInscripciones | datos.spec.js; MisInscripciones.spec.js; Playwright inscripción |
+| RF11 | FormEquipo, ListaIntegrantes, GestionEquipos | equipos.spec.js; FormEquipo.spec.js; GestionEquipos.spec.js; datos.spec.js; Playwright CRUD equipo |
+| RF12 | PerfilJugador, AvatarJugador | perfil.spec.js; PerfilJugador.spec.js; App.spec.js; Playwright perfil |
 | RF13–14 | acceso, sesion, AuthProvider, RutaProtegida | acceso.spec.js; sesion.spec.js; RutaProtegida.spec.js; App.spec.js; Playwright permisos |
-| RF15–16 | PanelAdmin, FormTorneo, FormJuego, datos | juegos.spec.js; torneos.spec.js; datos.spec.js; Playwright CRUD admin |
+| RF15–16 | PanelAdmin, FormTorneo, FormJuego, datos | juegos.spec.js; torneos.spec.js; FormulariosAdmin.spec.js; PanelAdmin.spec.js; datos.spec.js; Playwright CRUD admin |
 | RF17 | EquiposRegistrados | App.spec.js; capturas administrativas |
 | RNF01, RNF05 | src y configuración | lint, build y pruebas de inmutabilidad |
 | RNF02, RNF04 | index.css, Campo, layouts | revisión estática, contraste y capturas |

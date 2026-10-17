@@ -1,10 +1,18 @@
-import { inscripcionFueraDePlazo, tieneSancionActiva, validarInscripcion, tipoPermitido } from './inscripcion'
+import { inscripcionFueraDePlazo, tieneSancionActiva, validarInscripcion, tipoPermitido, estadoSancion } from './inscripcion'
 import { fixture } from '../pruebas/fixtures'
 describe('inscripcionFueraDePlazo', () => {
   ;[['2029-12-31T23:59:59Z', false], ['2030-01-01T00:00:00Z', false], ['2030-01-01T00:00:01Z', true]].forEach(([hoy, esperado]) => it('evalúa el borde ' + hoy, () => expect(inscripcionFueraDePlazo('2030-01-01T00:00:00Z', hoy)).toBe(esperado)))
   it('rechaza una fecha inválida', () => expect(inscripcionFueraDePlazo('inválida')).toBeTrue())
 })
 describe('tieneSancionActiva', () => {
+  it('mantiene la etiqueta coherente con el bloqueo antes, durante y después de la sanción', () => {
+    const sancion = { vigente: true, desde: '2030-01-01T12:00:00Z', hasta: '2030-01-01T13:00:00Z' }
+    expect(estadoSancion(sancion, '2030-01-01T11:00:00Z')).toBe('Programada')
+    expect(estadoSancion(sancion, sancion.desde)).toBe('Vigente')
+    expect(estadoSancion(sancion, sancion.hasta)).toBe('Vigente')
+    expect(estadoSancion(sancion, '2030-01-01T13:00:00.001Z')).toBe('Cumplida')
+    expect(estadoSancion({ ...sancion, vigente: false }, sancion.desde)).toBe('Cumplida')
+  })
   it('bloquea vigente y permite cumplida, expirada o futura', () => {
     expect(tieneSancionActiva([{ vigente: true }])).toBeTrue()
     expect(tieneSancionActiva([{ vigente: false }])).toBeFalse()

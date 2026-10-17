@@ -5,7 +5,7 @@ Integrantes: Ángel Quintero, Luis Ahumada y Cristian Villavicencio.
 
 ## Instalar y ejecutar
 
-Requisitos: Node compatible con Vite (20.19+ de la rama 20, o 22.12+; se verificó con 24.21.0), npm y Chrome para las pruebas Karma. Las cuentas son ficticias; no utilizar contraseñas reales.
+Requisitos: Node compatible con Vite (20.19+ de la rama 20, o 22.12+; se verificó con 24.22.0), npm y Chrome para las pruebas Karma. En Windows, karma.conf.cjs puede usar Edge como alternativa Chromium. Las cuentas son ficticias; no utilizar contraseñas reales.
 
 ```sh
 npm ci
@@ -53,6 +53,8 @@ Visitantes que abren una ruta privada van a login y conservan el destino. Un usu
 Se conservan las seis vistas de EP1, sus imágenes y la estructura de la base React. Se agregan roles, Bootstrap, estado compartido, validaciones puras y datos simulados con CRUD.
 
 Los cambios se guardan en localStorage y actualizan las pantallas inmediatamente. La sesión se guarda en sessionStorage sin contraseña. No hay backend, cuentas reales, envío de correos, pago ni sincronización multiusuario. Las claves de equipo se validan, pero no se almacenan. El frontend no ofrece seguridad real frente a manipulación del navegador.
+
+Al cargar se valida la estructura de los datos guardados. Si no es compatible o está incompleta, se conserva el texto original en `arena-ep2-datos-v1-respaldo-invalido` antes de regenerar la demostración. Si falla el respaldo, la carga usa la semilla en memoria y no sobrescribe el original. Los datos válidos se conservan al recargar.
 
 Los torneos abiertos reciben fechas futuras al inicializar la demostración; quedan fijadas al guardar. El ranking histórico y los marcadores detallados son datos ficticios de ejemplo. Consultar docs/DECISIONES.md para alcance y restricciones.
 
@@ -128,16 +130,18 @@ docs/               ERS, decisiones, defensa, pruebas y capturas
 - docs/DECISIONES.md: decisiones y límites.
 - docs/capturas/LEEME.md: inventario de evidencia.
 
-La entrega está en feature/ep2-react-completo con commits locales. Revisar los cambios antes de ejecutar:
+La base de EP2 está integrada en `develop`: el [PR #2](https://github.com/ITAustin92/eSportsArenaManager-ReactMig/pull/2) incorporó los cambios de `feature/ep2-react-completo`. El commit `f6ef8f3` retiró los reportes generados del índice. Para revisar el estado y las diferencias con `main`:
 
 ```sh
-git push -u origin feature/ep2-react-completo
+git status --short --branch
+git log --oneline -5
+git diff main...develop --stat
 ```
 
-Después crear el PR hacia main. No se hizo push automáticamente. Para un ZIP limpio de lo versionado:
+La integración de `develop` en `main` se revisa mediante un PR. Al entregar, indicar la rama y el commit que contienen el proyecto completo. Para generar un ZIP de la versión confirmada, primero guardar los cambios de la entrega en un commit y ejecutar:
 
 ```sh
 git archive --format=zip --prefix=eSportsArenaManager-ReactMig/ --output=../eSportsArenaManager-EP2.zip HEAD
 ```
 
-El paquete no necesita node_modules, .git, .idea, dist ni reportes regenerables; sí incluye código, lockfile, pruebas, documentos y capturas.
+`git archive` incluye únicamente lo confirmado en `HEAD`; no incluye cambios pendientes. El paquete contiene código, lockfile, pruebas, documentos y capturas. `node_modules/`, `.git/`, `.idea/`, `dist/`, `coverage/`, `playwright-report/` y `test-results/` quedan fuera. Los documentos de cobertura y logs de evidencia se conservan en `docs/`.

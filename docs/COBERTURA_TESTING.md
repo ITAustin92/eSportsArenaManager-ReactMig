@@ -4,26 +4,28 @@ Fecha: 16 de octubre de 2026. Evidencia: ejecución real, no estimaciones.
 
 ## Resultado Jasmine/Karma
 
-- npm test: 129 pruebas aprobadas, distribuidas en 19 archivos spec.
-- npm run test:cov: 129 pruebas aprobadas; 49 archivos de aplicación instrumentados.
-- Sentencias: 84.81% (810/955).
-- Ramas: 83.35% (566/679).
-- Funciones: 81.06% (274/338).
-- Líneas: 90.88% (568/625).
+- npm run test:cov: 242 pruebas aprobadas, distribuidas en 28 archivos spec; 51 archivos de aplicación instrumentados.
+- La ejecución actual usa la misma suite Jasmine/Karma de npm test, con instrumentación de cobertura. No se repitió npm test por separado.
+- Sentencias: 98.67% (1042/1056).
+- Ramas: 94.81% (749/790).
+- Funciones: 97.64% (373/382).
+- Líneas: 99.56% (683/686).
+
+Se corrigió una contaminación de temporizadores entre pruebas en useAhora.spec.js, separando el espía de limpieza del reloj simulado de Jasmine. Las 242 pruebas también aprobaron con las semillas aleatorias 1, 42 y 98765 (salida-orden-pruebas.txt), antes de repetir la ejecución de cobertura indicada arriba.
 
 No se incluyen specs, helpers de prueba, node_modules, CSS, imágenes ni main.jsx en estos porcentajes. App.spec.js importa la aplicación, por lo que se instrumentan también las vistas y formularios, no solamente las funciones puras. La cobertura de Playwright NO está agregada a estos números.
 
 ## Entorno y configuración
 
-Node 24.21.0; Chrome Headless Shell 156.0.8078.4 (el agente del navegador reporta Windows 10), Jasmine 4.6.1, Karma 6.4.4, karma-jasmine 5.1, karma-chrome-launcher 3.2, karma-esbuild 2.3, karma-coverage e esbuild-plugin-istanbul. Consultar package-lock.json para resoluciones exactas.
+Ejecución actual: Node 24.22.0 y Edge 155.0.0.0 (identificación reportada por Karma: Windows 10), mediante el launcher ChromeHeadless y el fallback Chromium de karma.conf.cjs. Jasmine 4.6.1, Karma 6.4.4, karma-jasmine 5.1, karma-chrome-launcher 3.2, karma-esbuild 2.3, karma-coverage y esbuild-plugin-istanbul. Consultar package-lock.json para resoluciones exactas.
 
 karma.conf.cjs conserva frameworks jasmine, patrón src/**/*.spec.js*, JSX automático y loader .js como JSX. singleRun es el valor por defecto; test:watch lo desactiva. singleBundle: false resuelve el problema de rutas temporales Windows documentado en DECISIONES.md.
 
 La instrumentación Istanbul se activa con --coverage. El plugin previo de Karma y .nycrc.json excluyen explícitamente `**/*.spec.js`, `**/*.spec.jsx`, `src/pruebas/**`, `src/main.jsx` y `node_modules/**`; el instrumentador solo recibe archivos dentro de src/. Reportes: HTML, text-summary, JSON completo y JSON resumen.
 
-test:cov elimina coverage/ con Node antes de ejecutar Karma. Se verificaron los 49 archivos del resumen JSON y los enlaces de coverage/html/index.html: no contienen specs ni helpers y existe un único árbol de fuentes bajo coverage/html/src/, sin las carpetas antiguas duplicadas. La tabla siguiente corresponde a la ejecución de 129 pruebas posterior a la restauración estética de EP1.
+test:cov elimina coverage/ con Node antes de ejecutar Karma. El resumen JSON actual contiene 51 archivos de aplicación, sin specs ni helpers. La tabla siguiente corresponde a la ejecución de 242 pruebas posterior a las correcciones de fechas, sanciones, edición y recuperación de datos; se obtiene de coverage/coverage-summary.json.
 
-La ejecución aislada utilizó CHROME_BIN hacia Chrome Headless Shell y CHROME_NO_SANDBOX=1. Esta última opción no es necesaria ni aconsejada para navegación habitual. No se cambió la seguridad del navegador del usuario. Karma sirve las imágenes y el favicon locales para evitar avisos 404, sin silenciar advertencias.
+El primer intento dentro del entorno restringido falló al iniciar Edge por errores de permisos, antes de ejecutar los casos. La suite se repitió fuera de ese entorno y terminó con código 0, sin CHROME_NO_SANDBOX=1 y usando el perfil temporal de Karma. Karma sirve las imágenes y el favicon locales para evitar avisos 404, sin silenciar advertencias. La configuración esbuild coincide con el repositorio docente enlazado en DECISIONES.md.
 
 ## Casos obligatorios
 
@@ -36,7 +38,7 @@ La ejecución aislada utilizó CHROME_BIN hacia Chrome Headless Shell y CHROME_N
 | T05 | Sanciones | Vigente, cumplida, expirada, futura | Solo vigente dentro del intervalo bloquea | Aprobado |
 | T06 | Plantilla completa | Tamaño correcto/incorrecto, capitán, repetidos | Solo plantilla válida se acepta | Aprobado |
 | T07 | Tarjeta | Props de torneo y juego | Nombre, juego, estado, enlace y alt | Aprobado |
-| T08 | Tabla | Dos participantes desordenados | Dos filas en orden, caption y scope | Aprobado |
+| T08 | Tabla | Participantes B, A, en orden distinto al de clasificación | Dos filas B, A conservando el orden recibido; posiciones 1, 2, caption y scope | Aprobado |
 | T09 | Formulario bloqueado | Equipo incompleto + espía onEnviar | disabled y cero invocaciones | Aprobado |
 | T10 | Llave pendiente | Rival nulo | Participante por definir | Aprobado |
 
@@ -63,6 +65,18 @@ La ejecución aislada utilizó CHROME_BIN hacia Chrome Headless Shell y CHROME_N
 | T27 | BarraCupos | Cambio de ocupación, capacidad cero, ocupación negativa o excesiva | Porcentaje entre 0 y 100 y texto accesible actualizado; aprobado |
 | T28 | Rondas sincronizadas | Clic, selector móvil, flechas, Home, End y Tab | Partidas, selección y foco coherentes; aprobado |
 | T29 | Rondas vacías | Torneo sin partidas | Mensaje de ausencia y sin pestañas vacías; aprobado |
+| T30 | Clasificación en el detalle | Ranking B, A, C con diferencias y puntos distintos | DetalleTorneo entrega C, A, B a la tabla sin modificar el ranking original; aprobado |
+| T31 | Inicio: 8 casos | Destacados, próximos cierres, enlaces, ausencia de abiertos, vacío, zonas horarias y vencimiento | Contenido correcto, cierres disponibles y navegación sin alterar los datos; aprobado |
+| T32 | FormEquipo: 9 casos | Obligatorios, selección, duplicados, creación, claves, nombre único, suplentes, error y cancelación | Callback solo válido, errores accesibles y borrador conservado; aprobado |
+| T33 | GestionEquipos: 9 casos | Crear/editar/eliminar, cancelar, equipo inscrito, fallo de persistencia y vacío | Lista y relaciones actualizadas; operaciones bloqueadas sin cambios parciales; aprobado |
+| T34 | MisInscripciones: 12 casos | Propiedad, edición, correo inválido, cancelación, plazo, borrador abierto y fallos de almacenamiento | Contacto persistido o cupo liberado solo después de guardar correctamente; borrador retirado solo al cancelar con éxito; aprobado |
+| T35 | PerfilJugador: 14 casos | Datos, vacíos, sanciones, apodo, tipo/tamaño de archivo, lectura y persistencia de foto | Ficha, relaciones y avatar actualizados; sanciones vencidas/futuras bien etiquetadas; errores conservan el estado anterior; aprobado |
+| T36 | Formularios admin: 10 casos | Campos, fechas, reglas bloqueadas, tamaño, callbacks, reintento y cancelación | Solo se entregan borradores válidos y se explican fallos; aprobado |
+| T37 | PanelAdmin: 10 casos | Crear/editar/eliminar torneo, editar juego, descartar, relaciones, vacíos y almacenamiento | CRUD reflejado en pantalla, sin persistir operaciones rechazadas; aprobado |
+| T38 | Fechas y plazos | Día de Santiago, horario de invierno, ISO equivalentes y límite exacto | Filtro coherente con la fecha visible y orden por instante real; aprobado |
+| T39 | Reloj de vistas: 4 casos | Avance simulado, foco, visibilidad y desmontaje | Hora actualizada y temporizadores/listeners retirados; aprobado |
+| T40 | Datos guardados: 28 casos | Campos/arreglos anidados, ids, referencias, JSON ilegible, respaldo, fallo al respaldar y recarga válida | Se rechaza el contenido inválido y se conserva su original antes de regenerar; los cambios válidos persisten; aprobado |
+| T41 | Formulario y detalle al vencer | Cierre alcanzado con vista abierta y regreso a la ventana | Se retira o bloquea la acción y se explica el plazo vencido; aprobado |
 
 ## Espías, aislamiento y async
 
@@ -72,7 +86,23 @@ Cada prueba crea fixtures frescos; las pruebas DOM desmontan la raíz dentro de 
 
 MensajeError.spec.js reutiliza prepararDOM/renderizar de src/pruebas/dom.jsx y su configuración IS_REACT_ACT_ENVIRONMENT. Durante esta restauración se conservaron intactos los 18 specs existentes, incluido MensajeError.spec.js, y se añadió InteraccionesTorneo.spec.js con siete casos. La búsqueda en todo src/ no encontró fit, xit, fdescribe ni xdescribe.
 
-Playwright verifica doce recorridos: los siete existentes y cinco nuevos para avatar accesible y persistente, menú a 575/576 px, rondas sincronizadas, imágenes/filtros/cupos y movimiento reducido. Sus resultados no se mezclan con la cobertura unitaria.
+Playwright verifica catorce recorridos: los doce anteriores de permisos, CRUD, inscripción, vistas responsivas, avatar, menú, rondas, imágenes y movimiento reducido, más dos regresiones de filtro por fecha de Santiago y recuperación de datos incompletos con respaldo. Sus resultados no se mezclan con la cobertura unitaria.
+
+La corrección previa de TablaRanking pasó de 129 a 130 pruebas; la ampliación de comportamiento añadió 65 casos, llegando a 195. Las correcciones actuales suman 47 regresiones y elevan el total a 242. Los catorce recorridos Playwright pasaron y se actualizaron las 31 capturas. La salida actual está en salida-e2e.txt.
+
+La suite también incluye el acceso a sesión: Iniciar sesión es un botón secundario en el mismo espacio derecho que Cerrar sesión. App.spec.js comprueba que abre el formulario desde el catálogo; la prueba de inicio/cierre sigue comprobando el flujo autenticado.
+
+Los helpers arena.jsx y VistaSuscrita.jsx montan las vistas con contexto de sesión, router y suscripción al servicio real usando almacenamiento en memoria. Cada vista recibe las escrituras publicadas por el servicio, permitiendo comprobar pantalla y persistencia juntas. El desmontaje elimina la suscripción y cada caso prepara datos nuevos. Los fallos de almacenamiento se provocan con spyOn; FileReader se sustituye por un espía para controlar éxito y error sin temporizadores. clicEn ahora genera un MouseEvent cancelable, necesario para que React Router intercepte los enlaces igual que en un clic real; antes este detalle causó una recarga de Karma al probar la navegación de inicio.
+
+| Área reforzada | Líneas antes | Líneas actuales |
+|---|---:|---:|
+| Inicio, Hero y TorneosDestacados | 0% | 100% |
+| FormEquipo | 44.44% | 100% |
+| GestionEquipos | 66.66% | 100% |
+| MisInscripciones | 64.28% | 100% |
+| PerfilJugador | 65.38% | 100% |
+| FormTorneo | 64.28% | 100% |
+| PanelAdmin | 73.33% | 100% |
 
 ## Porcentajes reales por archivo
 
@@ -81,10 +111,10 @@ Fuente: coverage/coverage-summary.json del último npm run test:cov. Todos los v
 | Archivo | Sentencias | Ramas | Funciones | Líneas |
 |---|---:|---:|---:|---:|
 | src/App.jsx | 100 | 75 | 100 | 100 |
-| src/components/admin/EquiposRegistrados.jsx | 100 | 95 | 100 | 100 |
-| src/components/admin/FormJuego.jsx | 88.88 | 50 | 100 | 100 |
-| src/components/admin/FormTorneo.jsx | 47.61 | 43.75 | 57.14 | 64.28 |
-| src/components/admin/PanelAdmin.jsx | 66 | 60 | 52.63 | 73.33 |
+| src/components/admin/EquiposRegistrados.jsx | 100 | 94.44 | 100 | 100 |
+| src/components/admin/FormJuego.jsx | 100 | 100 | 100 | 100 |
+| src/components/admin/FormTorneo.jsx | 100 | 100 | 100 | 100 |
+| src/components/admin/PanelAdmin.jsx | 98 | 96 | 94.73 | 100 |
 | src/components/auth/AuthContext.js | 100 | 100 | 100 | 100 |
 | src/components/auth/AuthProvider.jsx | 84 | 100 | 85.71 | 100 |
 | src/components/auth/Login.jsx | 100 | 70 | 100 | 100 |
@@ -94,45 +124,47 @@ Fuente: coverage/coverage-summary.json del último npm run test:cov. Todos los v
 | src/components/compartidos/Boton.jsx | 100 | 100 | 100 | 100 |
 | src/components/compartidos/Campo.jsx | 100 | 100 | 100 | 100 |
 | src/components/compartidos/MensajeError.jsx | 100 | 100 | 100 | 100 |
-| src/components/equipos/FormEquipo.jsx | 34.04 | 25 | 38.09 | 44.44 |
-| src/components/equipos/GestionEquipos.jsx | 44.11 | 50 | 38.46 | 66.66 |
-| src/components/equipos/ListaIntegrantes.jsx | 33.33 | 16.66 | 33.33 | 100 |
-| src/components/inicio/Hero.jsx | 0 | 100 | 0 | 0 |
-| src/components/inicio/Inicio.jsx | 0 | 0 | 0 | 0 |
-| src/components/inicio/TorneosDestacados.jsx | 0 | 0 | 0 | 0 |
+| src/components/equipos/FormEquipo.jsx | 100 | 95 | 100 | 100 |
+| src/components/equipos/GestionEquipos.jsx | 100 | 100 | 100 | 100 |
+| src/components/equipos/ListaIntegrantes.jsx | 100 | 100 | 100 | 100 |
+| src/components/inicio/Hero.jsx | 100 | 100 | 100 | 100 |
+| src/components/inicio/Inicio.jsx | 100 | 100 | 100 | 100 |
+| src/components/inicio/TorneosDestacados.jsx | 100 | 100 | 100 | 100 |
 | src/components/inscripcion/FormularioInscripcion.jsx | 100 | 95 | 100 | 100 |
 | src/components/inscripcion/Inscripcion.jsx | 84.61 | 66.66 | 71.42 | 88.88 |
-| src/components/inscripcion/MisInscripciones.jsx | 30.3 | 37.5 | 16.66 | 64.28 |
+| src/components/inscripcion/MisInscripciones.jsx | 100 | 100 | 100 | 100 |
 | src/components/inscripcion/ResumenTorneo.jsx | 100 | 100 | 100 | 100 |
 | src/components/layout/Cabecera.jsx | 100 | 100 | 100 | 100 |
 | src/components/layout/Layout.jsx | 100 | 50 | 100 | 100 |
-| src/components/layout/Navegacion.jsx | 75 | 75 | 50 | 85.71 |
+| src/components/layout/Navegacion.jsx | 81.25 | 75 | 62.5 | 87.5 |
 | src/components/layout/PieDePagina.jsx | 100 | 100 | 100 | 100 |
-| src/components/perfil/AvatarJugador.jsx | 100 | 60 | 100 | 100 |
+| src/components/perfil/AvatarJugador.jsx | 100 | 100 | 100 | 100 |
 | src/components/perfil/Estadisticas.jsx | 100 | 100 | 100 | 100 |
-| src/components/perfil/PerfilJugador.jsx | 55 | 43.75 | 72.72 | 65.38 |
+| src/components/perfil/PerfilJugador.jsx | 100 | 100 | 100 | 100 |
 | src/components/torneos/BarraCupos.jsx | 100 | 100 | 100 | 100 |
 | src/components/torneos/CatalogoTorneos.jsx | 100 | 100 | 100 | 100 |
-| src/components/torneos/DetalleTorneo.jsx | 100 | 84.37 | 100 | 100 |
+| src/components/torneos/DetalleTorneo.jsx | 100 | 87.17 | 100 | 100 |
 | src/components/torneos/FiltrosTorneos.jsx | 75 | 100 | 75 | 100 |
 | src/components/torneos/ListaPartidas.jsx | 100 | 100 | 100 | 100 |
 | src/components/torneos/LlaveTorneo.jsx | 100 | 75 | 100 | 100 |
 | src/components/torneos/TablaRanking.jsx | 100 | 100 | 100 | 100 |
 | src/components/torneos/TarjetaTorneo.jsx | 100 | 75 | 100 | 100 |
-| src/datos/datos.js | 99.63 | 95.56 | 100 | 100 |
+| src/datos/datos.js | 99.64 | 96.91 | 100 | 100 |
 | src/datos/useDatos.js | 88.23 | 50 | 85.71 | 90 |
+| src/datos/validarDatos.js | 100 | 100 | 100 | 100 |
 | src/logica/acceso.js | 100 | 94.73 | 100 | 100 |
 | src/logica/equipos.js | 100 | 91.83 | 100 | 100 |
-| src/logica/inscripcion.js | 100 | 93.84 | 100 | 100 |
+| src/logica/inscripcion.js | 100 | 93.05 | 100 | 100 |
 | src/logica/juegos.js | 100 | 100 | 100 | 100 |
 | src/logica/perfil.js | 100 | 100 | 100 | 100 |
 | src/logica/ranking.js | 100 | 100 | 100 | 100 |
 | src/logica/sesion.js | 100 | 87.5 | 100 | 100 |
-| src/logica/torneos.js | 100 | 98.27 | 100 | 100 |
+| src/logica/torneos.js | 100 | 98.38 | 100 | 100 |
+| src/logica/useAhora.js | 100 | 100 | 100 | 100 |
 
 ## Interpretación y límites
 
-Las ramas no cubiertas incluyen errores de almacenamiento/sesión del navegador, algunos caminos alternativos de formularios administrativos, FileReader y confirmaciones de edición. El CRUD central y las reglas críticas sí tienen suites específicas. La línea JSX puede contener varios callbacks: por eso líneas, funciones y ramas miden aspectos diferentes.
+Las tres líneas sin cubrir corresponden a caminos de Inscripcion, Navegacion y useDatos. Las ramas restantes incluyen alternativas de permisos/sesión, algunos valores por defecto, estados de inscripción y errores de carga. Los formularios principales, FileReader, fallos de persistencia y confirmaciones de edición/cancelación ahora tienen pruebas de comportamiento. La línea JSX puede contener varios callbacks: por eso líneas, funciones y ramas miden aspectos diferentes. El 100% de líneas de una vista no significa que todas sus ramas o todos los escenarios posibles estén cubiertos.
 
 Los diez casos obligatorios pasan, pero eso no certifica accesibilidad completa, seguridad, compatibilidad en todos los navegadores ni reproducción de YouTube. Los recorridos responsivos y la inspección de capturas complementan la suite.
 
