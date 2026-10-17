@@ -59,7 +59,7 @@ Si Chrome no se encuentra, establecer CHROME_BIN con la ruta real. Las opciones 
 
 ## Bootstrap a tres anchos
 
-Mostrar src/main.jsx: Bootstrap primero, luego index.css y utilidades. Mostrar col-12 col-md-6 col-lg-4 del catálogo: una columna móvil, dos en tablet y tres en escritorio. Mostrar navbar-expand-md, estado expandida y aria-expanded. Las tablas usan table-responsive; no ensanchan toda la página.
+Mostrar src/main.jsx: Bootstrap primero, luego index.css y utilidades. Mostrar col-12 col-md-6 col-lg-4 del catálogo: una columna móvil, dos en tablet y tres en escritorio. Mostrar navbar-expand-sm: el menú se expande desde 576 px y usa el estado expandida y aria-expanded bajo ese ancho. Las tablas usan table-responsive; no ensanchan toda la página.
 
 Comparar docs/capturas/catalogo-360.png, catalogo-768.png y catalogo-1280.png. La grilla viene de Bootstrap; los colores, tarjetas y botones vienen de las variables propias.
 
@@ -80,23 +80,17 @@ Aclaración indispensable: en un frontend estático esta doble comprobación mej
 git branch --show-current
 git log --oneline -5
 git status --short
-git diff main...feature/ep2-react-completo --stat
+git diff main...develop --stat
 ```
 
-La rama de entrega es feature/ep2-react-completo, creada desde develop. Los commits están en español. Antes del PR revisar diferencias respecto de main: pueden incluir avances anteriores de develop. No se debe fusionar a ciegas.
-
-Cuando el equipo haya revisado la entrega:
-
-```sh
-git push -u origin feature/ep2-react-completo
-```
-
-Crear después el PR hacia main. El agente no hizo ese push ni publicó un PR.
+La base de EP2 está en develop. El PR #2 integró feature/ep2-react-completo en esa rama, y f6ef8f3 retiró coverage/, playwright-report/ y test-results/ del índice. Mostrar las contribuciones de los integrantes y explicar sus tareas. Antes de integrar develop en main mediante PR, revisar sus diferencias. Identificar el commit de entrega; git archive empaqueta únicamente lo confirmado en HEAD.
 
 ## Preguntas frecuentes
 
 - ¿Por qué cambia una pantalla al guardar en otra? Ambas reciben la misma instantánea actualizada de useDatos.
 - ¿Por qué copiar antes de sort? sort modifica el arreglo; ordenarRanking trabaja con [...ranking].
+- ¿Dónde se ordena la clasificación? DetalleTorneo llama ordenarRanking antes de pasar las filas. TablaRanking conserva el orden recibido y muestra una fila por participante; su prueba usa una entrada B, A y exige mantener B, A. La prueba del detalle verifica que la pantalla siga ordenada por puntos y diferencia sin modificar los datos.
+- ¿Por qué se usa esbuild? La configuración del repositorio cacc92/Fullstack2-React del profesor también usa Jasmine/Karma con karma-esbuild. DECISIONES.md enlaza la referencia y explica la diferencia con la lista webpack/Babel del caso.
 - ¿Por qué no usar índice como key? Un id estable mantiene la identidad al agregar/eliminar/reordenar.
 - ¿Qué ocurre con un cupo lleno? validarInscripcion lo bloquea y el servicio vuelve a validar al escribir.
 - ¿Qué ocurre con un equipo sancionado? No se puede inscribir; el perfil/admin muestra el motivo y fechas.

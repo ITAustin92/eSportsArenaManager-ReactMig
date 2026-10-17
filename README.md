@@ -5,7 +5,7 @@ Integrantes: Ángel Quintero, Luis Ahumada y Cristian Villavicencio.
 
 ## Instalar y ejecutar
 
-Requisitos: Node compatible con Vite (20.19+ de la rama 20, o 22.12+; se verificó con 24.21.0), npm y Chrome para las pruebas Karma. Las cuentas son ficticias; no utilizar contraseñas reales.
+Requisitos: Node compatible con Vite (20.19+ de la rama 20, o 22.12+; se verificó con 24.22.0), npm y Chrome para las pruebas Karma. En Windows, karma.conf.cjs puede usar Edge como alternativa Chromium. Las cuentas son ficticias; no utilizar contraseñas reales.
 
 ```sh
 npm ci
@@ -128,16 +128,18 @@ docs/               ERS, decisiones, defensa, pruebas y capturas
 - docs/DECISIONES.md: decisiones y límites.
 - docs/capturas/LEEME.md: inventario de evidencia.
 
-La entrega está en feature/ep2-react-completo con commits locales. Revisar los cambios antes de ejecutar:
+La base de EP2 está integrada en `develop`: el [PR #2](https://github.com/ITAustin92/eSportsArenaManager-ReactMig/pull/2) incorporó los cambios de `feature/ep2-react-completo`. El commit `f6ef8f3` retiró los reportes generados del índice. Para revisar el estado y las diferencias con `main`:
 
 ```sh
-git push -u origin feature/ep2-react-completo
+git status --short --branch
+git log --oneline -5
+git diff main...develop --stat
 ```
 
-Después crear el PR hacia main. No se hizo push automáticamente. Para un ZIP limpio de lo versionado:
+La integración de `develop` en `main` se revisa mediante un PR. Al entregar, indicar la rama y el commit que contienen el proyecto completo. Para generar un ZIP de la versión confirmada, primero guardar los cambios de la entrega en un commit y ejecutar:
 
 ```sh
 git archive --format=zip --prefix=eSportsArenaManager-ReactMig/ --output=../eSportsArenaManager-EP2.zip HEAD
 ```
 
-El paquete no necesita node_modules, .git, .idea, dist ni reportes regenerables; sí incluye código, lockfile, pruebas, documentos y capturas.
+`git archive` incluye únicamente lo confirmado en `HEAD`; no incluye cambios pendientes. El paquete contiene código, lockfile, pruebas, documentos y capturas. `node_modules/`, `.git/`, `.idea/`, `dist/`, `coverage/`, `playwright-report/` y `test-results/` quedan fuera. Los documentos de cobertura y logs de evidencia se conservan en `docs/`.

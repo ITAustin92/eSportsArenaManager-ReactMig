@@ -15,7 +15,7 @@ Usuarios: visitante, jugador y administrador. Los datos son ficticios y se manti
 | Herramienta | Uso |
 |---|---|
 | VS Code u otro editor | Edición del proyecto por el equipo |
-| Git / GitHub | Historial local y revisión mediante PR posterior |
+| Git / GitHub | Historial colaborativo e integración mediante PR; base de EP2 en develop |
 | Node y npm | Instalación reproducible con package-lock.json |
 | Vite | Desarrollo y compilación |
 | React / React DOM | Componentes funcionales, props, estado y efectos |
@@ -26,7 +26,7 @@ Usuarios: visitante, jugador y administrador. Los datos son ficticios y se manti
 | esbuild / Istanbul | Transformación JSX e instrumentación |
 | Playwright | Recorridos completos y evidencias responsivas |
 
-Las versiones exactas están fijadas por package-lock.json. La ejecución final empleó Node 24.21.0 y Chrome for Testing 156. Las pruebas y resultados se detallan en COBERTURA_TESTING.md.
+Las versiones exactas están fijadas por package-lock.json. La verificación de la corrección de TablaRanking empleó Node 24.22.0 y Edge 155 mediante el launcher ChromeHeadless de Karma. Las pruebas y resultados se detallan en COBERTURA_TESTING.md; los recorridos y capturas de Playwright corresponden a la ejecución anterior.
 
 ### Carpetas
 
@@ -79,7 +79,7 @@ localStorage guarda arena-ep2-datos-v1; sessionStorage guarda arena-ep2-sesion-v
 | RF01 | Inicio muestra hero, torneos destacados, próximo cierre, video e información institucional. |
 | RF02 | Catálogo filtra en vivo por nombre, juego, estado y rango de cierre. Un rango invertido informa error; cero coincidencias muestra vacío. |
 | RF03 | Detalle por id muestra datos, inscritos, premios, ranking y partidas. Id inexistente redirige al catálogo. |
-| RF04 | Ranking ordena por puntos descendentes y luego diferencia de puntaje; no muta el original. |
+| RF04 | DetalleTorneo prepara el ranking por puntos descendentes y luego diferencia de puntaje, sin mutar el original. TablaRanking renderiza una fila por participante respetando exactamente el orden recibido. |
 | RF05 | Partidas muestran ronda, horario y estado textual. La ronda visible es local; rival ausente indica “Participante por definir”. |
 | RF06 | Inscripción exige correo y modalidad compatible; nunca permite cupos negativos ni inscripciones cuando se supera el cierre. |
 | RF07 | Se bloquea duplicidad por torneo y participante, incluso si se intenta directamente desde el servicio. |
@@ -100,7 +100,7 @@ localStorage guarda arena-ep2-datos-v1; sessionStorage guarda arena-ep2-sesion-v
 | ID | Requisito verificable |
 |---|---|
 | RNF01 | Componentes funcionales por área, lógica pura separada y estado inmutable. |
-| RNF02 | Bootstrap y CSS propio sin !important ni hex fuera de :root; sin estilos inline de presentación. |
+| RNF02 | Bootstrap y CSS propio sin !important ni hex fuera de :root. La única excepción inline es el ancho calculado de BarraCupos, justificado con un comentario técnico. |
 | RNF03 | Vistas verificadas a 360, 768 y 1280 px, sin desbordamiento horizontal de la página; tablas pueden desplazarse internamente. |
 | RNF04 | Accesibilidad descrita en sección 3, estados no dependientes solo de color. |
 | RNF05 | Vite produce build y oxlint termina sin errores. |
@@ -171,7 +171,7 @@ Campo, Boton, BadgeEstado y MensajeError son compartidos. Los resultados filtrad
 | RF01, RNF03 | Inicio, Hero, TorneosDestacados | Playwright “vistas y navegación responsivas” |
 | RF02 | CatalogoTorneos, filtros, filtrarTorneos | torneos.spec.js; App.spec.js |
 | RF03, RF05 | DetalleTorneo, ListaPartidas, LlaveTorneo | DetalleTorneo.spec.js; LlaveTorneo.spec.js |
-| RF04 | ranking.js, TablaRanking | ranking.spec.js; TablaRanking.spec.js |
+| RF04 | ranking.js, DetalleTorneo, TablaRanking | ranking.spec.js; DetalleTorneo.spec.js; TablaRanking.spec.js |
 | RF06–09 | inscripcion.js, equipos.js, FormularioInscripcion | inscripcion.spec.js; equipos.spec.js; FormularioInscripcion.spec.js |
 | RF10, RF18 | datos.js, Inscripcion, MisInscripciones | datos.spec.js; Playwright inscripción |
 | RF11 | FormEquipo, ListaIntegrantes, GestionEquipos | equipos.spec.js; datos.spec.js; Playwright CRUD equipo |

@@ -4,26 +4,26 @@ Fecha: 16 de octubre de 2026. Evidencia: ejecución real, no estimaciones.
 
 ## Resultado Jasmine/Karma
 
-- npm test: 129 pruebas aprobadas, distribuidas en 19 archivos spec.
-- npm run test:cov: 129 pruebas aprobadas; 49 archivos de aplicación instrumentados.
-- Sentencias: 84.81% (810/955).
+- npm run test:cov: 130 pruebas aprobadas, distribuidas en 19 archivos spec; 49 archivos de aplicación instrumentados.
+- La ejecución actual usa la misma suite Jasmine/Karma de npm test, con instrumentación de cobertura. No se repitió npm test por separado.
+- Sentencias: 84.86% (813/958).
 - Ramas: 83.35% (566/679).
-- Funciones: 81.06% (274/338).
-- Líneas: 90.88% (568/625).
+- Funciones: 81.17% (276/340).
+- Líneas: 90.89% (569/626).
 
 No se incluyen specs, helpers de prueba, node_modules, CSS, imágenes ni main.jsx en estos porcentajes. App.spec.js importa la aplicación, por lo que se instrumentan también las vistas y formularios, no solamente las funciones puras. La cobertura de Playwright NO está agregada a estos números.
 
 ## Entorno y configuración
 
-Node 24.21.0; Chrome Headless Shell 156.0.8078.4 (el agente del navegador reporta Windows 10), Jasmine 4.6.1, Karma 6.4.4, karma-jasmine 5.1, karma-chrome-launcher 3.2, karma-esbuild 2.3, karma-coverage e esbuild-plugin-istanbul. Consultar package-lock.json para resoluciones exactas.
+Ejecución actual: Node 24.22.0 y Edge 155.0.0.0 (identificación reportada por Karma: Windows 10), mediante el launcher ChromeHeadless y el fallback Chromium de karma.conf.cjs. Jasmine 4.6.1, Karma 6.4.4, karma-jasmine 5.1, karma-chrome-launcher 3.2, karma-esbuild 2.3, karma-coverage y esbuild-plugin-istanbul. Consultar package-lock.json para resoluciones exactas.
 
 karma.conf.cjs conserva frameworks jasmine, patrón src/**/*.spec.js*, JSX automático y loader .js como JSX. singleRun es el valor por defecto; test:watch lo desactiva. singleBundle: false resuelve el problema de rutas temporales Windows documentado en DECISIONES.md.
 
 La instrumentación Istanbul se activa con --coverage. El plugin previo de Karma y .nycrc.json excluyen explícitamente `**/*.spec.js`, `**/*.spec.jsx`, `src/pruebas/**`, `src/main.jsx` y `node_modules/**`; el instrumentador solo recibe archivos dentro de src/. Reportes: HTML, text-summary, JSON completo y JSON resumen.
 
-test:cov elimina coverage/ con Node antes de ejecutar Karma. Se verificaron los 49 archivos del resumen JSON y los enlaces de coverage/html/index.html: no contienen specs ni helpers y existe un único árbol de fuentes bajo coverage/html/src/, sin las carpetas antiguas duplicadas. La tabla siguiente corresponde a la ejecución de 129 pruebas posterior a la restauración estética de EP1.
+test:cov elimina coverage/ con Node antes de ejecutar Karma. El resumen JSON actual contiene 49 archivos de aplicación, sin specs ni helpers. La tabla siguiente corresponde a la ejecución de 130 pruebas posterior a la corrección de TablaRanking; se obtiene de coverage/coverage-summary.json.
 
-La ejecución aislada utilizó CHROME_BIN hacia Chrome Headless Shell y CHROME_NO_SANDBOX=1. Esta última opción no es necesaria ni aconsejada para navegación habitual. No se cambió la seguridad del navegador del usuario. Karma sirve las imágenes y el favicon locales para evitar avisos 404, sin silenciar advertencias.
+El primer intento dentro del entorno restringido falló al iniciar Edge por errores de permisos, antes de ejecutar los casos. La suite se repitió fuera de ese entorno y terminó con código 0, sin CHROME_NO_SANDBOX=1 y usando el perfil temporal de Karma. Karma sirve las imágenes y el favicon locales para evitar avisos 404, sin silenciar advertencias. La configuración esbuild coincide con el repositorio docente enlazado en DECISIONES.md.
 
 ## Casos obligatorios
 
@@ -36,7 +36,7 @@ La ejecución aislada utilizó CHROME_BIN hacia Chrome Headless Shell y CHROME_N
 | T05 | Sanciones | Vigente, cumplida, expirada, futura | Solo vigente dentro del intervalo bloquea | Aprobado |
 | T06 | Plantilla completa | Tamaño correcto/incorrecto, capitán, repetidos | Solo plantilla válida se acepta | Aprobado |
 | T07 | Tarjeta | Props de torneo y juego | Nombre, juego, estado, enlace y alt | Aprobado |
-| T08 | Tabla | Dos participantes desordenados | Dos filas en orden, caption y scope | Aprobado |
+| T08 | Tabla | Participantes B, A, en orden distinto al de clasificación | Dos filas B, A conservando el orden recibido; posiciones 1, 2, caption y scope | Aprobado |
 | T09 | Formulario bloqueado | Equipo incompleto + espía onEnviar | disabled y cero invocaciones | Aprobado |
 | T10 | Llave pendiente | Rival nulo | Participante por definir | Aprobado |
 
@@ -63,6 +63,7 @@ La ejecución aislada utilizó CHROME_BIN hacia Chrome Headless Shell y CHROME_N
 | T27 | BarraCupos | Cambio de ocupación, capacidad cero, ocupación negativa o excesiva | Porcentaje entre 0 y 100 y texto accesible actualizado; aprobado |
 | T28 | Rondas sincronizadas | Clic, selector móvil, flechas, Home, End y Tab | Partidas, selección y foco coherentes; aprobado |
 | T29 | Rondas vacías | Torneo sin partidas | Mensaje de ausencia y sin pestañas vacías; aprobado |
+| T30 | Clasificación en el detalle | Ranking B, A, C con diferencias y puntos distintos | DetalleTorneo entrega C, A, B a la tabla sin modificar el ranking original; aprobado |
 
 ## Espías, aislamiento y async
 
@@ -73,6 +74,10 @@ Cada prueba crea fixtures frescos; las pruebas DOM desmontan la raíz dentro de 
 MensajeError.spec.js reutiliza prepararDOM/renderizar de src/pruebas/dom.jsx y su configuración IS_REACT_ACT_ENVIRONMENT. Durante esta restauración se conservaron intactos los 18 specs existentes, incluido MensajeError.spec.js, y se añadió InteraccionesTorneo.spec.js con siete casos. La búsqueda en todo src/ no encontró fit, xit, fdescribe ni xdescribe.
 
 Playwright verifica doce recorridos: los siete existentes y cinco nuevos para avatar accesible y persistente, menú a 575/576 px, rondas sincronizadas, imágenes/filtros/cupos y movimiento reducido. Sus resultados no se mezclan con la cobertura unitaria.
+
+La corrección actual ajustó TablaRanking.spec.js para exigir el orden recibido y añadió un caso en DetalleTorneo.spec.js que verifica la ordenación en la vista. La suite pasó de 129 a 130 pruebas. Los doce recorridos de Playwright y sus capturas corresponden a la ejecución anterior guardada en salida-e2e.txt; no se repitieron en esta corrección.
+
+La última ejecución también incluye el cambio del acceso a sesión: Iniciar sesión es un botón secundario en el mismo espacio derecho que Cerrar sesión. App.spec.js comprueba que el botón abre el formulario desde el catálogo; la prueba de inicio/cierre de sesión sigue comprobando el flujo autenticado. La suite conserva sus 130 casos.
 
 ## Porcentajes reales por archivo
 
@@ -106,7 +111,7 @@ Fuente: coverage/coverage-summary.json del último npm run test:cov. Todos los v
 | src/components/inscripcion/ResumenTorneo.jsx | 100 | 100 | 100 | 100 |
 | src/components/layout/Cabecera.jsx | 100 | 100 | 100 | 100 |
 | src/components/layout/Layout.jsx | 100 | 50 | 100 | 100 |
-| src/components/layout/Navegacion.jsx | 75 | 75 | 50 | 85.71 |
+| src/components/layout/Navegacion.jsx | 81.25 | 75 | 62.5 | 87.5 |
 | src/components/layout/PieDePagina.jsx | 100 | 100 | 100 | 100 |
 | src/components/perfil/AvatarJugador.jsx | 100 | 60 | 100 | 100 |
 | src/components/perfil/Estadisticas.jsx | 100 | 100 | 100 | 100 |
