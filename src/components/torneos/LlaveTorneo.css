@@ -1,1 +1,4 @@
 .llave-torneo { display: grid; grid-template-columns: 1fr auto 1fr; gap: .8rem; align-items: center; text-align: center; padding: 1rem 0; }
+.llave-torneo strong { min-width: 0; overflow-wrap: anywhere; padding: .75rem .5rem; border: 1px solid var(--color-borde); border-radius: 10px; background: var(--color-fondo); font-size: .9rem; transition: border-color var(--duracion-interaccion) ease; }
+.llave-torneo:hover strong { border-color: var(--color-primario); }
+.llave-torneo > span { font-size: .75rem; font-weight: 800; }

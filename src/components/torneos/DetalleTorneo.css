@@ -1,0 +1,9 @@
+.detalle-cabecera { background: var(--degradado-panel); border-left: 3px solid var(--color-primario); }
+.detalle-cabecera .barra-cupos { max-width: 26rem; }
+.rondas-pestanas { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: 1.25rem; }
+.ronda-pestana { min-height: 44px; padding: .5rem .85rem; border: 1px solid var(--color-borde-control); border-radius: 999px; background: var(--color-superficie); color: var(--color-texto-secundario); font-size: .9rem; font-weight: 600; transition: background-color var(--duracion-interaccion) ease, border-color var(--duracion-interaccion) ease; }
+.ronda-pestana:hover { border-color: var(--color-primario); color: var(--color-texto); }
+.ronda-pestana[aria-selected="true"] { background: var(--color-primario-suave); color: var(--color-acento); border-color: var(--color-primario); }
+.detalle-rondas [role="tabpanel"] { border-radius: var(--radio); }
+@media (min-width: 576px) { .ronda-selector { display: none; } }
+@media (max-width: 575px) { .rondas-pestanas { display: none; } }

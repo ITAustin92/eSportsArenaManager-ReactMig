@@ -75,6 +75,18 @@ La auditoría estática no encontró hexadecimales fuera de :root en las hojas p
 
 .idea y coverage no estaban versionados. Se verificaron las exclusiones de Git, se eliminó .idea y se conservó un respaldo local de sus seis archivos en node_modules/.cache/ep2-auditoria/idea-antes-limpieza.zip. coverage/ se regeneró para revisión local y permanece ignorado. La verificación final de lint, test, test:cov y build terminó con código 0 y sin advertencias; el HTML y JSON incluyen solo 48 archivos de aplicación.
 
+## Restauración estética de EP1
+
+Se usó como referencia directa el proyecto eSportsArenaManagerII-FrontEnd-main del Escritorio, especialmente css/styles.css y vista_6.html. Se recuperaron fondo con luz radial, degradado púrpura/turquesa, tarjetas de 16 px, insignias y botones píldora. Las cinco imágenes de public/img/ coinciden por SHA-256 con EP1.
+
+El perfil centra identidad y avatar de 116 px, mantiene el input de archivo accesible mediante una clase propia y muestra su foco sobre la etiqueta Cambiar foto. El formulario conserva sus textos e identificadores y añade Actualizar Apodo y botón a ancho completo. La cabecera y navegación comparten fondo; navbar-expand-sm mantiene los enlaces horizontales desde 576 px.
+
+BarraCupos comparte un indicador accesible entre tarjetas y detalle. Su único estilo inline es un ancho calculado con los datos del torneo, justificado en español. Las pestañas de rondas usan el mismo estado que #ronda, conservado para móvil y pruebas; admiten flechas, Home y End con foco visible. Se respetan las preferencias de movimiento reducido.
+
+Los colores, degradados y sombras están centralizados en :root; los bordes decorativos suaves se separan del borde de controles para conservar contraste. Los enlaces usan explícitamente el acento para evitar el azul predeterminado de Bootstrap. El degradado de botones utiliza tonos oscuros con contraste de texto mínimo medido de 6,09:1.
+
+La configuración de cobertura y MensajeError.spec.js ya cumplían tras 1c3f1db: se conservaron y verificaron. No cambiaron datos, reglas de negocio, helpers, firmas ni los 18 specs existentes. Se añadieron siete pruebas unitarias de cupos/rondas y cinco recorridos de navegador. Las capturas y los informes se actualizaron con resultados reales.
+
 ## Entrega y Git
 
 Una sola rama de funcionalidad, feature/ep2-react-completo, evita subramas artificiales sin trabajo independiente. No se hizo push, merge ni PR. Los commits locales y el ZIP permiten revisar el resultado antes de publicar. La revisión final del docente y la confirmación de integrantes corresponden al equipo.

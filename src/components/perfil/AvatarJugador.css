@@ -1,2 +1,12 @@
-.avatar-jugador img { width: 112px; height: 112px; object-fit: cover; border-radius: 50%; background: var(--color-superficie-alta); border: 3px solid var(--color-acento); margin-bottom: 1rem; }
-.avatar-jugador small { color: var(--color-texto-secundario); }
+.avatar-jugador { display: flex; flex-direction: column; align-items: center; width: 100%; gap: .85rem; }
+.avatar-retrato { width: 116px; height: 116px; flex-shrink: 0; overflow: hidden; border-radius: 50%; background: var(--degradado-marca); box-shadow: var(--sombra-avatar); margin-bottom: .6rem; transition: transform var(--duracion-interaccion) ease; }
+.avatar-retrato img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.avatar-retrato .avatar-predeterminado { padding: 27px; object-fit: contain; }
+.avatar-control { position: relative; }
+/* El input conserva el foco y la activación por teclado sin mostrar el control nativo. */
+.avatar-archivo { position: absolute; width: 1px; height: 1px; padding: 0; border: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.avatar-cambiar { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: .45rem 1.1rem; border: 1px solid var(--color-primario); border-radius: 999px; background: var(--color-superficie-alta); color: var(--color-texto); font-size: .9rem; font-weight: 600; cursor: pointer; transition: background-color var(--duracion-interaccion) ease, box-shadow var(--duracion-interaccion) ease; }
+.avatar-cambiar:hover { background: var(--color-primario-suave); box-shadow: var(--sombra-foco); }
+.avatar-archivo:focus-visible + .avatar-cambiar { outline: 3px solid var(--color-acento); outline-offset: 3px; }
+.avatar-jugador small { color: var(--color-texto-secundario); font-size: .78rem; max-width: 24ch; }
+@media (hover: hover) and (prefers-reduced-motion: no-preference) { .avatar-retrato:hover { transform: scale(1.03); } }

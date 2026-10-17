@@ -4,12 +4,12 @@ Fecha: 16 de octubre de 2026. Evidencia: ejecución real, no estimaciones.
 
 ## Resultado Jasmine/Karma
 
-- npm test: 122 pruebas aprobadas, distribuidas en 18 archivos spec.
-- npm run test:cov: 122 pruebas aprobadas; 48 archivos de aplicación instrumentados.
-- Sentencias: 84.55% (794/939).
-- Ramas: 82.85% (546/659).
-- Funciones: 80.72% (268/332).
-- Líneas: 90.68% (555/612).
+- npm test: 129 pruebas aprobadas, distribuidas en 19 archivos spec.
+- npm run test:cov: 129 pruebas aprobadas; 49 archivos de aplicación instrumentados.
+- Sentencias: 84.81% (810/955).
+- Ramas: 83.35% (566/679).
+- Funciones: 81.06% (274/338).
+- Líneas: 90.88% (568/625).
 
 No se incluyen specs, helpers de prueba, node_modules, CSS, imágenes ni main.jsx en estos porcentajes. App.spec.js importa la aplicación, por lo que se instrumentan también las vistas y formularios, no solamente las funciones puras. La cobertura de Playwright NO está agregada a estos números.
 
@@ -21,7 +21,7 @@ karma.conf.cjs conserva frameworks jasmine, patrón src/**/*.spec.js*, JSX autom
 
 La instrumentación Istanbul se activa con --coverage. El plugin previo de Karma y .nycrc.json excluyen explícitamente `**/*.spec.js`, `**/*.spec.jsx`, `src/pruebas/**`, `src/main.jsx` y `node_modules/**`; el instrumentador solo recibe archivos dentro de src/. Reportes: HTML, text-summary, JSON completo y JSON resumen.
 
-test:cov elimina coverage/ con Node antes de ejecutar Karma. Se verificaron los 48 archivos del resumen JSON y los enlaces de coverage/html/index.html: no contienen specs ni helpers y existe un único árbol de fuentes bajo coverage/html/src/, sin las carpetas antiguas duplicadas. La tabla siguiente se cotejó con la ejecución de 122 pruebas; los porcentajes no cambiaron, porque MensajeError ya tenía cobertura indirecta en Boton.spec.js.
+test:cov elimina coverage/ con Node antes de ejecutar Karma. Se verificaron los 49 archivos del resumen JSON y los enlaces de coverage/html/index.html: no contienen specs ni helpers y existe un único árbol de fuentes bajo coverage/html/src/, sin las carpetas antiguas duplicadas. La tabla siguiente corresponde a la ejecución de 129 pruebas posterior a la restauración estética de EP1.
 
 La ejecución aislada utilizó CHROME_BIN hacia Chrome Headless Shell y CHROME_NO_SANDBOX=1. Esta última opción no es necesaria ni aconsejada para navegación habitual. No se cambió la seguridad del navegador del usuario. Karma sirve las imágenes y el favicon locales para evitar avisos 404, sin silenciar advertencias.
 
@@ -60,6 +60,9 @@ La ejecución aislada utilizó CHROME_BIN hacia Chrome Headless Shell y CHROME_N
 | T24 | Integración React | Login con retorno, perfil, búsqueda admin y CRUD juego | Aprobado |
 | T25 | MensajeError.spec.js: sin error | Cadena vacía, null, undefined (tres pruebas) | Cero nodos DOM; aprobado |
 | T26 | MensajeError.spec.js: con error | Texto e id correo-error | Texto exacto, role="alert" e id recibido; aprobado |
+| T27 | BarraCupos | Cambio de ocupación, capacidad cero, ocupación negativa o excesiva | Porcentaje entre 0 y 100 y texto accesible actualizado; aprobado |
+| T28 | Rondas sincronizadas | Clic, selector móvil, flechas, Home, End y Tab | Partidas, selección y foco coherentes; aprobado |
+| T29 | Rondas vacías | Torneo sin partidas | Mensaje de ausencia y sin pestañas vacías; aprobado |
 
 ## Espías, aislamiento y async
 
@@ -67,7 +70,9 @@ FormularioInscripcion usa jasmine.createSpy para onEnviar; Boton para onClick. E
 
 Cada prueba crea fixtures frescos; las pruebas DOM desmontan la raíz dentro de act y eliminan el contenedor. Se comprueba inmutabilidad con copias y toEqual. El reloj de las reglas puras se inyecta como hoy. No se llama una API de negocio real.
 
-MensajeError.spec.js reutiliza prepararDOM/renderizar de src/pruebas/dom.jsx y su configuración IS_REACT_ACT_ENVIRONMENT; no modifica el componente ni los helpers. Los 17 specs preexistentes se conservaron intactos. La búsqueda en todo src/ no encontró fit, xit, fdescribe ni xdescribe.
+MensajeError.spec.js reutiliza prepararDOM/renderizar de src/pruebas/dom.jsx y su configuración IS_REACT_ACT_ENVIRONMENT. Durante esta restauración se conservaron intactos los 18 specs existentes, incluido MensajeError.spec.js, y se añadió InteraccionesTorneo.spec.js con siete casos. La búsqueda en todo src/ no encontró fit, xit, fdescribe ni xdescribe.
+
+Playwright verifica doce recorridos: los siete existentes y cinco nuevos para avatar accesible y persistente, menú a 575/576 px, rondas sincronizadas, imágenes/filtros/cupos y movimiento reducido. Sus resultados no se mezclan con la cobertura unitaria.
 
 ## Porcentajes reales por archivo
 
@@ -103,13 +108,14 @@ Fuente: coverage/coverage-summary.json del último npm run test:cov. Todos los v
 | src/components/layout/Layout.jsx | 100 | 50 | 100 | 100 |
 | src/components/layout/Navegacion.jsx | 75 | 75 | 50 | 85.71 |
 | src/components/layout/PieDePagina.jsx | 100 | 100 | 100 | 100 |
-| src/components/perfil/AvatarJugador.jsx | 100 | 66.66 | 100 | 100 |
+| src/components/perfil/AvatarJugador.jsx | 100 | 60 | 100 | 100 |
 | src/components/perfil/Estadisticas.jsx | 100 | 100 | 100 | 100 |
 | src/components/perfil/PerfilJugador.jsx | 55 | 43.75 | 72.72 | 65.38 |
+| src/components/torneos/BarraCupos.jsx | 100 | 100 | 100 | 100 |
 | src/components/torneos/CatalogoTorneos.jsx | 100 | 100 | 100 | 100 |
-| src/components/torneos/DetalleTorneo.jsx | 100 | 66.66 | 100 | 100 |
+| src/components/torneos/DetalleTorneo.jsx | 100 | 84.37 | 100 | 100 |
 | src/components/torneos/FiltrosTorneos.jsx | 75 | 100 | 75 | 100 |
-| src/components/torneos/ListaPartidas.jsx | 100 | 50 | 100 | 100 |
+| src/components/torneos/ListaPartidas.jsx | 100 | 100 | 100 | 100 |
 | src/components/torneos/LlaveTorneo.jsx | 100 | 75 | 100 | 100 |
 | src/components/torneos/TablaRanking.jsx | 100 | 100 | 100 | 100 |
 | src/components/torneos/TarjetaTorneo.jsx | 100 | 75 | 100 | 100 |
