@@ -1,12 +1,60 @@
-.perfil-identidad { display: flex; flex-direction: column; align-items: center; text-align: center; padding-top: 2.5rem; }
-.perfil-identidad .perfil-apodo { margin: 1.4rem 0 .3rem; font-size: 1.75rem; font-weight: 700; color: var(--color-texto); }
-.perfil-correo { color: var(--color-texto-secundario); font-size: .95rem; margin: 0; max-width: 100%; }
-.perfil-edicion { width: 100%; margin-top: 1.6rem; padding-top: 1.6rem; border-top: 1px solid var(--color-borde); text-align: left; }
-.perfil-edicion h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 1.1rem; }
-.perfil-edicion .boton { width: 100%; font-weight: 700; }
-.perfil-identidad > [role="status"] { width: 100%; margin-bottom: 0; text-align: left; }
-.perfil-jugador section.panel > h2 { font-size: 1.3rem; }
-.perfil-jugador .perfil-identidad > h2 { font-size: 1.75rem; }
-.perfil-jugador .panel > ul:not(.lista-limpia) { list-style: none; padding: 0; margin-bottom: 0; }
-.perfil-jugador .panel > ul:not(.lista-limpia) > li { padding: .85rem 1rem; background: var(--color-fondo); border: 1px solid var(--color-borde); border-radius: 10px; }
-.perfil-jugador .panel > ul > li + li { margin-top: .6rem; }
+.perfil-identidad {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
+	padding-top: 2.5rem;
+}
+.perfil-identidad .perfil-apodo {
+	margin: 1.4rem 0 0.3rem;
+	font-size: 1.75rem;
+	font-weight: 700;
+	color: var(--color-texto);
+}
+.perfil-correo {
+	color: var(--color-texto-secundario);
+	font-size: 0.95rem;
+	margin: 0;
+	max-width: 100%;
+}
+.perfil-edicion {
+	width: 100%;
+	margin-top: 1.6rem;
+	padding-top: 1.6rem;
+	border-top: 1px solid var(--color-borde);
+	text-align: left;
+}
+.perfil-edicion h3 {
+	font-size: 1.05rem;
+	font-weight: 700;
+	margin-bottom: 1.1rem;
+}
+.perfil-edicion .boton {
+	width: 100%;
+	font-weight: 700;
+}
+.perfil-identidad > [role='status'] {
+	width: 100%;
+	margin-bottom: 0;
+	text-align: left;
+}
+.perfil-jugador section.panel > h2 {
+	font-size: 1.3rem;
+}
+.perfil-jugador .perfil-identidad > h2 {
+	font-size: 1.75rem;
+}
+.perfil-jugador .panel > ul:not(.lista-limpia) {
+	list-style: none;
+	padding: 0;
+	margin-bottom: 0;
+}
+.perfil-jugador .panel > ul:not(.lista-limpia) > li {
+	padding: 0.85rem 1rem;
+	background: var(--color-fondo);
+	border: 1px solid var(--color-borde);
+	border-radius: 10px;
+}
+.perfil-jugador .panel > ul > li + li {
+	margin-top: 0.6rem;
+}

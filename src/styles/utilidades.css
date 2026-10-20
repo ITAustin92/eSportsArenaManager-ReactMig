@@ -1,12 +1,62 @@
-.panel { background: var(--color-superficie); border: 1px solid var(--color-borde); border-radius: var(--radio); padding: clamp(1rem, 3vw, 1.75rem); box-shadow: var(--sombra-panel); transition: border-color var(--duracion-interaccion) ease, box-shadow var(--duracion-interaccion) ease; }
-.panel:hover, .panel:focus-within { border-color: var(--color-primario); }
-.sobretitulo { color: var(--color-acento); text-transform: uppercase; font-size: .8rem; font-weight: 750; letter-spacing: .14em; margin-bottom: .5rem; }
-.acciones { display: flex; flex-wrap: wrap; gap: .65rem; align-items: center; }
-.lista-limpia { list-style: none; padding: 0; }
-.lista-etiquetas { display: flex; flex-wrap: wrap; gap: .6rem; list-style: none; padding: 0; }
-.lista-etiquetas li { border: 1px solid var(--color-borde); padding: .3rem .7rem; border-radius: 999px; background: var(--color-primario-suave); }
-.confirmacion, .separador { border-top: 1px solid var(--color-borde); padding-top: 1rem; margin-top: 1rem; }
-.texto-secundario { color: var(--color-texto-secundario); }
+.panel {
+	background: var(--color-superficie);
+	border: 1px solid var(--color-borde);
+	border-radius: var(--radio);
+	padding: clamp(1rem, 3vw, 1.75rem);
+	box-shadow: var(--sombra-panel);
+	transition:
+		border-color var(--duracion-interaccion) ease,
+		box-shadow var(--duracion-interaccion) ease;
+}
+.panel:hover,
+.panel:focus-within {
+	border-color: var(--color-primario);
+}
+.sobretitulo {
+	color: var(--color-acento);
+	text-transform: uppercase;
+	font-size: 0.8rem;
+	font-weight: 750;
+	letter-spacing: 0.14em;
+	margin-bottom: 0.5rem;
+}
+.acciones {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.65rem;
+	align-items: center;
+}
+.lista-limpia {
+	list-style: none;
+	padding: 0;
+}
+.lista-etiquetas {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.6rem;
+	list-style: none;
+	padding: 0;
+}
+.lista-etiquetas li {
+	border: 1px solid var(--color-borde);
+	padding: 0.3rem 0.7rem;
+	border-radius: 999px;
+	background: var(--color-primario-suave);
+}
+.confirmacion,
+.separador {
+	border-top: 1px solid var(--color-borde);
+	padding-top: 1rem;
+	margin-top: 1rem;
+}
+.texto-secundario {
+	color: var(--color-texto-secundario);
+}
 
-.texto-acento { color: var(--color-acento); }
-.separador-fila { border-top: 1px solid var(--color-borde); padding: 1rem 0; }
+.texto-acento {
+	color: var(--color-acento);
+}
+.separador-fila {
+	border-top: 1px solid var(--color-borde);
+	padding: 1rem 0;
+}
