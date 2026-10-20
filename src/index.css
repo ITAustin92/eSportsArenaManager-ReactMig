@@ -18,6 +18,11 @@
   --color-error-suave: #FF5C7A14;
   --color-transparente: transparent;
   --color-punto-estado: currentColor;
+  --color-hero-cristal: #0E0B164D;
+  --color-hero-menu: #0E0B16E6;
+  --color-hero-linea: #C7BBDC40;
+  --degradado-hero: linear-gradient(180deg, #0E0B1633 0%, #0E0B1659 35%, #0E0B1673 65%, #0E0B16 100%), linear-gradient(100deg, #7030CC66 0%, #0E0B164D 48%, #00F5D433 100%);
+  --sombra-texto-hero: 0 4px 35px #0E0B16CC;
   --degradado-marca: linear-gradient(135deg, var(--color-primario), var(--color-acento));
   --degradado-accion: linear-gradient(135deg, var(--color-accion), var(--color-accion-hover));
   --degradado-titulo: linear-gradient(135deg, var(--color-texto) 30%, var(--color-acento));

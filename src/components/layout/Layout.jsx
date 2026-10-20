@@ -15,6 +15,6 @@ function Layout({ children }) {
     window.scrollTo(0, 0)
     return () => { document.title = anterior }
   }, [pathname])
-  return <div className="app"><a className="salto-contenido" href="#contenido">Saltar al contenido</a><Cabecera /><Navegacion /><main id="contenido" className="container app-contenido"><MensajeError>{errorSesion}</MensajeError>{children}</main><PieDePagina /></div>
+  return <div className="app"><a className="salto-contenido" href="#contenido">Saltar al contenido</a>{pathname !== '/' && <><Cabecera /><Navegacion /></>}<main id="contenido" className={'container app-contenido' + (pathname === '/' ? ' app-contenido--inicio' : '')}><MensajeError>{errorSesion}</MensajeError>{children}</main><PieDePagina /></div>
 }
 export default Layout

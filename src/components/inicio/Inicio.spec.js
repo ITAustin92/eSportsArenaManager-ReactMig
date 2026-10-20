@@ -2,6 +2,7 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { act } from 'react'
 import Inicio from './Inicio'
 import TorneosDestacados from './TorneosDestacados'
+import AuthProvider from '../auth/AuthProvider'
 import { fixture } from '../../pruebas/fixtures'
 import { prepararDOM, clicEn } from '../../pruebas/dom'
 
@@ -10,7 +11,11 @@ describe('inicio y torneos destacados', () => {
   beforeEach(() => { dom = prepararDOM(); datos = fixture().datos; reloj = false })
   afterEach(() => { dom.limpiar(); if (reloj) jasmine.clock().uninstall() })
 
-  const montar = () => dom.renderizar(<MemoryRouter><Inicio datos={datos} /></MemoryRouter>)
+  // El hero incluye la navegación, que consume la sesión igual que en la aplicación.
+  const renderizar = (contenido) => dom.renderizar(
+    <MemoryRouter><AuthProvider>{contenido}</AuthProvider></MemoryRouter>
+  )
+  const montar = () => renderizar(<Inicio datos={datos} />)
 
   it('destaca abiertos y en curso, excluyendo los finalizados', () => {
     montar()
@@ -27,10 +32,10 @@ describe('inicio y torneos destacados', () => {
       { ...base, id: 'pronto', nombre: 'Cierre próximo', cierreISO: '2030-06-10T12:00:00Z' },
     ]
     const original = structuredClone(datos.torneos)
-    dom.renderizar(<MemoryRouter><Routes>
+    renderizar(<Routes>
       <Route path="/" element={<Inicio datos={datos} />} />
       <Route path="/inscripcion" element={<p>Formulario de inscripción</p>} />
-    </Routes></MemoryRouter>)
+    </Routes>)
     const enlace = dom.contenedor.querySelector('.inicio-banner a')
     expect(enlace.getAttribute('href')).toBe('/inscripcion?torneo=pronto')
     expect(dom.contenedor.querySelector('.inicio-banner h2').textContent).toBe('Cierre próximo')
@@ -40,11 +45,11 @@ describe('inicio y torneos destacados', () => {
   })
 
   it('permite explorar el catálogo desde la portada', () => {
-    dom.renderizar(<MemoryRouter><Routes>
+    renderizar(<Routes>
       <Route path="/" element={<Inicio datos={datos} />} />
       <Route path="/torneos" element={<p>Catálogo público</p>} />
-    </Routes></MemoryRouter>)
-    clicEn(dom.contenedor.querySelector('.hero a'))
+    </Routes>)
+    clicEn(dom.contenedor.querySelector('.hero-acciones a[href="/torneos"]'))
     expect(dom.contenedor.textContent).toBe('Catálogo público')
   })
 
