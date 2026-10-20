@@ -1,4 +1,21 @@
-.app { min-height: 100vh; display: flex; flex-direction: column; }
-.app-contenido { flex: 1; padding-top: 2rem; padding-bottom: 3rem; }
-.salto-contenido { position: absolute; left: 1rem; top: -5rem; z-index: 10; padding: .75rem; background: var(--color-superficie); }
-.salto-contenido:focus { top: .5rem; }
+.app {
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+}
+.app-contenido {
+	flex: 1;
+	padding-top: 2rem;
+	padding-bottom: 3rem;
+}
+.salto-contenido {
+	position: absolute;
+	left: 1rem;
+	top: -5rem;
+	z-index: 10;
+	padding: 0.75rem;
+	background: var(--color-superficie);
+}
+.salto-contenido:focus {
+	top: 0.5rem;
+}
