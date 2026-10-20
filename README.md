@@ -22,6 +22,20 @@ npm run preview
 
 En hosting estático, configurar fallback a index.html para que /torneos/:id y las rutas privadas funcionen al recargar. No se usan rutas con #.
 
+## Formato del código
+
+El código usa tabulaciones (equivalentes a dos espacios de ancho), bloques con llaves
+y un ancho objetivo de 100 caracteres por línea. Prettier organiza el formato y
+`.editorconfig` permite que los editores respeten la misma indentación.
+
+```sh
+npm run format
+npm run format:check
+```
+
+El primer comando aplica el formato al código y la configuración; el segundo solo
+comprueba el estilo, sin modificar archivos.
+
 ## Usuarios de prueba
 
 | Rol | Correo | Clave ficticia |

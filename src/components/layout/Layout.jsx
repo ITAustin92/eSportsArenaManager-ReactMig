@@ -7,14 +7,38 @@ import MensajeError from '../compartidos/MensajeError'
 import useAuth from '../auth/useAuth'
 
 function Layout({ children }) {
-  const { pathname } = useLocation()
-  const { errorSesion } = useAuth()
-  useEffect(() => {
-    const anterior = document.title
-    document.title = 'eSports Arena Manager · ' + (pathname === '/' ? 'Inicio' : pathname.split('/').filter(Boolean).join(' / '))
-    window.scrollTo(0, 0)
-    return () => { document.title = anterior }
-  }, [pathname])
-  return <div className="app"><a className="salto-contenido" href="#contenido">Saltar al contenido</a>{pathname !== '/' && <><Cabecera /><Navegacion /></>}<main id="contenido" className={'container app-contenido' + (pathname === '/' ? ' app-contenido--inicio' : '')}><MensajeError>{errorSesion}</MensajeError>{children}</main><PieDePagina /></div>
+	const { pathname } = useLocation()
+	const { errorSesion } = useAuth()
+	useEffect(() => {
+		const anterior = document.title
+		document.title =
+			'eSports Arena Manager · ' +
+			(pathname === '/' ? 'Inicio' : pathname.split('/').filter(Boolean).join(' / '))
+		window.scrollTo(0, 0)
+		return () => {
+			document.title = anterior
+		}
+	}, [pathname])
+	return (
+		<div className="app">
+			<a className="salto-contenido" href="#contenido">
+				Saltar al contenido
+			</a>
+			{pathname !== '/' && (
+				<>
+					<Cabecera />
+					<Navegacion />
+				</>
+			)}
+			<main
+				id="contenido"
+				className={'container app-contenido' + (pathname === '/' ? ' app-contenido--inicio' : '')}
+			>
+				<MensajeError>{errorSesion}</MensajeError>
+				{children}
+			</main>
+			<PieDePagina />
+		</div>
+	)
 }
 export default Layout

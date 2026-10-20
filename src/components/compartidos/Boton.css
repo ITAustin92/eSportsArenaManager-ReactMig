@@ -1,9 +1,59 @@
-.boton { display: inline-flex; align-items: center; justify-content: center; gap: .4rem; padding: .65rem 1.25rem; border: 1px solid var(--color-borde-control); border-radius: 999px; font-size: 1rem; font-weight: 600; text-decoration: none; min-height: 44px; text-align: center; cursor: pointer; transition: transform var(--duracion-interaccion) ease, box-shadow var(--duracion-interaccion) ease, background-color var(--duracion-interaccion) ease; }
-.boton-primario { background: var(--degradado-accion); color: var(--color-texto); border-color: var(--color-primario); }
-.boton-primario:hover, .boton-primario:focus-visible { color: var(--color-texto); box-shadow: var(--sombra-accion); }
-.boton-secundario { background: var(--color-superficie-alta); color: var(--color-texto); }
-.boton-secundario:hover { background: var(--color-primario-suave); color: var(--color-texto); border-color: var(--color-primario); }
-.boton-peligro { background: var(--color-superficie); color: var(--color-error); border-color: var(--color-error); }
-.boton-peligro:hover { background: var(--color-error-suave); }
-.boton:disabled { opacity: .65; cursor: not-allowed; box-shadow: none; }
-@media (hover: hover) and (prefers-reduced-motion: no-preference) { .boton:not(:disabled):hover { transform: translateY(-1px); } .boton:not(:disabled):active { transform: translateY(0); } }
+.boton {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.4rem;
+	padding: 0.65rem 1.25rem;
+	border: 1px solid var(--color-borde-control);
+	border-radius: 999px;
+	font-size: 1rem;
+	font-weight: 600;
+	text-decoration: none;
+	min-height: 44px;
+	text-align: center;
+	cursor: pointer;
+	transition:
+		transform var(--duracion-interaccion) ease,
+		box-shadow var(--duracion-interaccion) ease,
+		background-color var(--duracion-interaccion) ease;
+}
+.boton-primario {
+	background: var(--degradado-accion);
+	color: var(--color-texto);
+	border-color: var(--color-primario);
+}
+.boton-primario:hover,
+.boton-primario:focus-visible {
+	color: var(--color-texto);
+	box-shadow: var(--sombra-accion);
+}
+.boton-secundario {
+	background: var(--color-superficie-alta);
+	color: var(--color-texto);
+}
+.boton-secundario:hover {
+	background: var(--color-primario-suave);
+	color: var(--color-texto);
+	border-color: var(--color-primario);
+}
+.boton-peligro {
+	background: var(--color-superficie);
+	color: var(--color-error);
+	border-color: var(--color-error);
+}
+.boton-peligro:hover {
+	background: var(--color-error-suave);
+}
+.boton:disabled {
+	opacity: 0.65;
+	cursor: not-allowed;
+	box-shadow: none;
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+	.boton:not(:disabled):hover {
+		transform: translateY(-1px);
+	}
+	.boton:not(:disabled):active {
+		transform: translateY(0);
+	}
+}
