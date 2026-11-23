@@ -1,161 +1,135 @@
-# eSports Arena Manager — React EP2
+# eSports Arena Manager EP3
 
-Frontend de la Evaluación Parcial 2, DSY1104 Desarrollo FullStack II, Duoc UC.
-Integrantes: Ángel Quintero, Luis Ahumada y Cristian Villavicencio.
+Integración de React con los microservicios Spring Boot, basada en la entrega EP2 y en
+los ZIP de avance del equipo. Todo el tráfico del navegador pasa por el API Gateway.
 
-## Instalar y ejecutar
+## Organización
 
-Requisitos: Node compatible con Vite (20.19+ de la rama 20, o 22.12+; se verificó con 24.22.0), npm y Chrome para las pruebas Karma. En Windows, karma.conf.cjs puede usar Edge como alternativa Chromium. Las cuentas son ficticias; no utilizar contraseñas reales.
+- `src/`: frontend React, cliente HTTP, autenticación, catálogo y vistas por rol.
+- Backend independiente: [eSportsArenaManager](https://github.com/ITAustin92/eSportsArenaManager).
+  Su copia local está en la carpeta hermana `../eSportsArenaManager`.
+- `docs/ep2/`: documentos y evidencias históricas; no acreditan la cobertura de EP3.
+
+## Ejecutar el frontend
+
+Requiere Node 20.19+ (rama 20) o 22.12+ y el gateway disponible.
 
 ```sh
 npm ci
+```
+
+Copiar `.env.example` a `.env` y configurar `VITE_API_URL=http://localhost:8080`.
+
+```sh
 npm run dev
 ```
 
-Abrir la dirección que indique Vite. Para comprobar la compilación:
+En Vercel, `VITE_API_URL` debe ser la URL HTTPS del gateway, sin `/api` al final.
+Las funciones de servicio agregan `/api/v1/...`. Cambiar la variable requiere un
+nuevo build. `vercel.json` conserva las rutas de React al recargar.
 
-```sh
-npm run lint
-npm run build
-npm run preview
-```
+## Ejecutar el backend
 
-En hosting estático, configurar fallback a index.html para que /torneos/:id y las rutas privadas funcionen al recargar. No se usan rutas con #.
+Consultar el README del repositorio backend. El modo local trae datos ficticios; los perfiles
+`mysql` y `prod` conservan las tablas y desactivan la carga de `data.sql`.
 
-## Formato del código
+## Roles
 
-El código usa tabulaciones (equivalentes a dos espacios de ancho), bloques con llaves
-y un ancho objetivo de 100 caracteres por línea. Prettier organiza el formato y
-`.editorconfig` permite que los editores respeten la misma indentación.
+| Rol | Funciones |
+| --- | --- |
+| Visitante | Inicio, catálogo y detalles; login y registro |
+| JUGADOR | Perfil, equipos propios e inscripciones de equipo o individuales 1v1 |
+| ORGANIZADOR | Consulta de torneos e inscripciones |
+| ADMIN | Administración de juegos, torneos, equipos y cuentas; gestión de inscripciones |
+
+La sesión conserva solo el JWT en `localStorage`; nunca guarda la contraseña. El
+navegador lee sus claims para la interfaz. La firma y los permisos se comprueban en
+el servidor. El almacenamiento local es accesible a JavaScript: debe mantenerse el
+escape de React y evitar insertar HTML de usuarios.
+
+## Funciones conservadas de EP2
+
+Hero y carrusel, imágenes de juegos, filtros por fecha, video destacado, cupos y
+cierre, rondas y llaves, avatar, estadísticas y consulta de sanciones. El perfil y
+las pantallas operativas consumen la API; no se usa la antigua base simulada de EP2.
+La inscripción comprueba en el servidor modalidad, juego, integrantes activos,
+sanciones del torneo, plazo, cupos, duplicidad y propiedad del participante.
+
+## Formato y compilación
 
 ```sh
 npm run format
 npm run format:check
+npm run lint
+npm run build
 ```
 
-El primer comando aplica el formato al código y la configuración; el segundo solo
-comprueba el estilo, sin modificar archivos.
+Prettier utiliza tabulaciones y un ancho objetivo de 100 caracteres. El backend
+mantiene su propia configuración de formato para Java y YAML en su repositorio.
 
-## Usuarios de prueba
-
-| Rol | Correo | Clave ficticia |
-|---|---|---|
-| Administrador | admin@arena.example | Admin123! |
-| Jugador Felipe | felipe@arena.example | Jugador123! |
-| Jugadora Sofía | sofia@arena.example | Jugador123! |
-
-Sofía tiene una sanción activa de ejemplo. Felipe puede administrar Arena Demo y los equipos de prueba incompleto, inactivo y sancionado. Para inscribirse en Valorant, elegir “Equipo completo” y “Arena Demo”.
-
-## Rutas
-
-| Ruta | Acceso |
-|---|---|
-| / | Público: inicio |
-| /torneos | Público: catálogo y filtros |
-| /torneos/:id | Público: detalle, ranking, llaves y premios |
-| /login | Visitante; una sesión existente redirige |
-| /inscripcion?torneo=copa-latam-valorant | Jugador |
-| /equipos | Jugador: CRUD de sus equipos |
-| /perfil | Jugador: avatar, apodo e inscripciones |
-| /admin | Admin: CRUD de juegos y torneos |
-| /admin/equipos | Admin: integrantes, sanciones y resultados |
-
-Visitantes que abren una ruta privada van a login y conservan el destino. Un usuario con rol incompatible recibe 403. Cerrar sesión elimina sessionStorage y abre /login.
-
-## Funcionalidades y límites
-
-Se conservan las seis vistas de EP1, sus imágenes y la estructura de la base React. Se agregan roles, Bootstrap, estado compartido, validaciones puras y datos simulados con CRUD.
-
-Los cambios se guardan en localStorage y actualizan las pantallas inmediatamente. La sesión se guarda en sessionStorage sin contraseña. No hay backend, cuentas reales, envío de correos, pago ni sincronización multiusuario. Las claves de equipo se validan, pero no se almacenan. El frontend no ofrece seguridad real frente a manipulación del navegador.
-
-Al cargar se valida la estructura de los datos guardados. Si no es compatible o está incompleta, se conserva el texto original en `arena-ep2-datos-v1-respaldo-invalido` antes de regenerar la demostración. Si falla el respaldo, la carga usa la semilla en memoria y no sobrescribe el original. Los datos válidos se conservan al recargar.
-
-Los torneos abiertos reciben fechas futuras al inicializar la demostración; quedan fijadas al guardar. El ranking histórico y los marcadores detallados son datos ficticios de ejemplo. Consultar docs/DECISIONES.md para alcance y restricciones.
-
-Para reiniciar únicamente esta demostración, abrir la consola en el sitio y ejecutar:
-
-```js
-localStorage.removeItem('arena-ep2-datos-v1')
-sessionStorage.removeItem('arena-ep2-sesion-v1')
-location.reload()
-```
-
-Esto descarta los cambios simulados y la sesión; no se debe hacer si se desea conservarlos.
-
-## Pruebas Jasmine y Karma
+## Pruebas y evidencia
 
 ```sh
 npm test
-npm run test:watch
 npm run test:cov
-```
-
-Los specs están junto a la lógica/componentes y usan Jasmine 4.6 + Karma 6.4.4 + esbuild. La cobertura HTML queda en coverage/html/index.html, con resumen JSON y porcentajes por archivo. Los specs y helpers no se contabilizan como aplicación.
-
-Si Chrome no se detecta, indicar su ubicación en PowerShell:
-
-```powershell
-$env:CHROME_BIN = 'C:\Program Files\Google\Chrome\Application\chrome.exe'
-npm test
-```
-
-Alternativa para obtener un navegador de pruebas: npx playwright install chromium. La ruta se consulta con:
-
-```sh
-node -e "console.log(require('playwright').chromium.executablePath())"
-```
-
-Asignar esa ruta a CHROME_BIN para Karma. No establecer CHROME_NO_SANDBOX en un equipo habitual: esa opción solo se usó en el contenedor aislado de verificación.
-
-## Recorridos y capturas
-
-```sh
-npx playwright install chromium
 npm run test:e2e
 ```
 
-Playwright inicia Vite en el puerto 4173 y verifica permisos, sesión, CRUD, inscripciones, perfil y nueve vistas a 360/768/1280 px. Permite usar un Chrome existente con CHROME_BIN. Las capturas están en docs/capturas y el reporte regenerable en playwright-report.
+Estos comandos ejecutan los specs actuales de EP3 y los componentes reutilizados.
+La suite antigua de 242 pruebas corresponde al contrato de datos de EP2 y se conserva
+en el historial Git. Las antiguas pruebas de navegación se archivaron en
+`docs/ep2/pruebas-e2e/`, porque usan cuentas, rutas y selectores de aquella versión.
 
-Si ya se mantiene un servidor local en 4173, PowerShell permite usar $env:ARENA_EXTERNAL_SERVER = '1' antes de ejecutar los recorridos. Esta opción evita que Playwright administre ese servidor. El video externo se excluye de la prueba automatizada; su reproducción requiere Internet.
+Verificación del 23 de noviembre de 2026:
 
-## Organización
+| Comprobación | Resultado |
+| --- | --- |
+| Karma/Jasmine en Edge | 84 pruebas aprobadas |
+| Maven/JUnit del backend separado | 153 pruebas aprobadas |
+| Playwright con los 14 servicios locales reales | 14 recorridos aprobados |
+| Compilación, lint y formato del frontend | Correctos |
 
-```text
-src/
-  components/       inicio, torneos, inscripcion, equipos, perfil,
-                    auth, admin, layout, compartidos
-  datos/            semilla + CRUD + hook de suscripción
-  logica/           validadores y reglas puras con specs adyacentes
-  pruebas/          fixtures y helpers DOM
-  styles/           utilidades compartidas
-  App.jsx           rutas y datos compartidos
-  main.jsx          Bootstrap, router y proveedor de sesión
-tests/e2e/          recorridos Playwright
-docs/               ERS, decisiones, defensa, pruebas y capturas
-```
+Karma cubre sesión persistente, renovación y vencimiento, respuestas tardías, errores
+HTTP, formularios, permisos, datos parciales y estadísticas. El informe de cobertura
+se genera en `coverage/html/index.html`: mide los módulos importados por los specs,
+no equivale a cobertura de todo el proyecto ni incluye los recorridos Playwright.
 
-## Documentación y publicación
+Los recorridos de integración no simulan respuestas de la API. Comprueban registro,
+login, recarga y logout; CRUD de juegos, torneos y equipos; creación y eliminación
+de cuentas; inscripción individual y por equipos; cancelación; acceso por rol,
+propiedad de equipos, rechazo de JWT manipulado y tres solicitudes simultáneas para
+dos cupos. También verifican partidas y resultados individuales, corrección del
+ganador, reenvíos simultáneos sin puntos duplicados, actualización del perfil y
+anulación de los puntos. El informe se genera en `playwright-report/index.html`.
 
-- docs/ERS_v2.md: requisitos, arquitectura, paleta y trazabilidad.
-- docs/COBERTURA_TESTING.md: casos y cobertura real por archivo.
-- docs/salida-pruebas.txt: salida de Karma.
-- docs/salida-e2e.txt: salida de los recorridos finales.
-- docs/GUIA_DEFENSA.md: demostración y explicación técnica.
-- docs/DECISIONES.md: decisiones y límites.
-- docs/capturas/LEEME.md: inventario de evidencia.
+Para repetir Playwright, iniciar primero el backend local con los datos ficticios y
+las cuentas de demostración de su README. El gateway debe responder en
+`http://localhost:8080` y auth en `http://localhost:8099` (también se comprueba la
+validación del JWT accediendo directamente a ese servicio). Esperar a que el catálogo
+del gateway responda correctamente: la salud de cada proceso no garantiza que Eureka
+ya haya descubierto todos los servicios. Playwright inicia Vite en el puerto 4173,
+configura su conexión al gateway local y usa Edge en Windows. En otros sistemas se
+puede instalar Chromium con `npx playwright install chromium`, o definir `CHROME_BIN`.
 
-La base de EP2 está integrada en `develop`: el [PR #2](https://github.com/ITAustin92/eSportsArenaManager-ReactMig/pull/2) incorporó los cambios de `feature/ep2-react-completo`. El commit `f6ef8f3` retiró los reportes generados del índice. Para revisar el estado y las diferencias con `main`:
+Estas pruebas crean datos ficticios; usar una instancia dedicada de demostración.
+La ejecución documentada utilizó Java 21, H2 y Edge; no valida un despliegue cloud
+ni el perfil PostgreSQL/MySQL. Maven usa bases H2 en memoria independientes de las
+bases de desarrollo. `npm run test:evidencia` renueva expresamente las capturas
+versionadas de la documentación; las pruebas habituales guardan imágenes solo en
+`test-results/`.
 
-```sh
-git status --short --branch
-git log --oneline -5
-git diff main...develop --stat
-```
+## Documentación de EP3
 
-La integración de `develop` en `main` se revisa mediante un PR. Al entregar, indicar la rama y el commit que contienen el proyecto completo. Para generar un ZIP de la versión confirmada, primero guardar los cambios de la entrega en un commit y ejecutar:
+Consultar [el índice de entrega](docs/ep3/README.md): ERS actualizada, manual con
+capturas reales, documento de integración, planilla de APIs, contratos OpenAPI y
+guía para la presentación y defensa. Los informes y capturas antiguos de EP2 se
+conservan en `docs/ep2/` como evidencia histórica.
 
-```sh
-git archive --format=zip --prefix=eSportsArenaManager-ReactMig/ --output=../eSportsArenaManager-EP2.zip HEAD
-```
+## Pendientes para la entrega
 
-`git archive` incluye únicamente lo confirmado en `HEAD`; no incluye cambios pendientes. El paquete contiene código, lockfile, pruebas, documentos y capturas. `node_modules/`, `.git/`, `.idea/`, `dist/`, `coverage/`, `playwright-report/` y `test-results/` quedan fuera. Los documentos de cobertura y logs de evidencia se conservan en `docs/`.
+Completar el despliegue del backend con una base persistente, configurar la conexión
+del frontend publicado y repetir las comprobaciones en producción. La documentación
+identifica expresamente este pendiente. Los premios conservan su contrato por
+equipos; el ciclo individual implementado cubre inscripción, partida, resultado,
+clasificación y perfil. No se debe declarar una cobertura o una nota a partir de
+los conteos de pruebas.

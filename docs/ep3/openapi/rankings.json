@@ -1,0 +1,480 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "API Rankings",
+    "description": "API Rankings - eSports Arena Manager",
+    "version": "1.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8007",
+      "description": "Generated server url"
+    }
+  ],
+  "security": [
+    {
+      "bearer": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Ranking V1",
+      "description": "Metodos CRUD para la gestión del ranking"
+    },
+    {
+      "name": "Rankings V1",
+      "description": "Tabla de posiciones por torneo"
+    },
+    {
+      "name": "Rankings V2",
+      "description": "Tabla de posiciones con respuestas HATEOAS"
+    }
+  ],
+  "paths": {
+    "/api/v2/rankings/update": {
+      "post": {
+        "tags": [
+          "Rankings V2"
+        ],
+        "summary": "Actualizar ranking tras un resultado",
+        "description": "Suma puntos al ganador y registra la derrota del perdedor",
+        "operationId": "updateRanking",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MatchResultUpdateDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/v1/rankings/update": {
+      "post": {
+        "tags": [
+          "Rankings V1",
+          "Ranking V1"
+        ],
+        "summary": "Actualizacion del ranking",
+        "description": "Se actualiza el ranking",
+        "operationId": "updateRanking_1",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MatchResultUpdateDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Suma puntos al ganador y registra la derrota del perdedor"
+          }
+        }
+      }
+    },
+    "/api/v2/rankings/tournament/{tournamentId}": {
+      "get": {
+        "tags": [
+          "Rankings V2"
+        ],
+        "summary": "Tabla de posiciones de un torneo",
+        "operationId": "getTournamentLeaderboard",
+        "parameters": [
+          {
+            "name": "tournamentId",
+            "in": "path",
+            "description": "ID del torneo",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollectionModelEntityModelRanking"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/rankings/tournament/{tournamentId}/team/{teamId}": {
+      "get": {
+        "tags": [
+          "Rankings V2"
+        ],
+        "summary": "Posición de un equipo en un torneo",
+        "operationId": "getTeamPosition",
+        "parameters": [
+          {
+            "name": "tournamentId",
+            "in": "path",
+            "description": "ID del torneo",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          },
+          {
+            "name": "teamId",
+            "in": "path",
+            "description": "ID del equipo",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Encontrado",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntityModelRanking"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No encontrado",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntityModelRanking"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/rankings/tournament/{tournamentId}": {
+      "get": {
+        "tags": [
+          "Rankings V1",
+          "Ranking V1"
+        ],
+        "summary": "Tabla de posiciones de un torneo",
+        "operationId": "getTournamentLeaderboard_1",
+        "parameters": [
+          {
+            "name": "tournamentId",
+            "in": "path",
+            "description": "ID del torneo",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Ranking"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/rankings/tournament/{tournamentId}/team/{teamId}": {
+      "get": {
+        "tags": [
+          "Rankings V1",
+          "Ranking V1"
+        ],
+        "summary": "Posición de un equipo en un torneo",
+        "operationId": "getTeamPosition_1",
+        "parameters": [
+          {
+            "name": "tournamentId",
+            "in": "path",
+            "description": "ID del torneo",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          },
+          {
+            "name": "teamId",
+            "in": "path",
+            "description": "ID del torneo",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Encontrado",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Ranking"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No encontrado",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Ranking"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "MatchResultUpdateDTO": {
+        "type": "object",
+        "properties": {
+          "matchId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "tournamentId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "winnerTeamId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "loserTeamId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "winnerUserId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "loserUserId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "active": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "matchId",
+          "tournamentId"
+        ]
+      },
+      "Audit": {
+        "type": "object",
+        "properties": {
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "CollectionModelEntityModelRanking": {
+        "type": "object",
+        "properties": {
+          "_embedded": {
+            "type": "object",
+            "properties": {
+              "rankingList": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/EntityModelRanking"
+                }
+              }
+            }
+          },
+          "_links": {
+            "$ref": "#/components/schemas/Links"
+          }
+        }
+      },
+      "EntityModelRanking": {
+        "type": "object",
+        "properties": {
+          "rankingId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "tournamentId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "teamId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "points": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 0
+          },
+          "matchesPlayed": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 0
+          },
+          "wins": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 0
+          },
+          "losses": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 0
+          },
+          "audit": {
+            "$ref": "#/components/schemas/Audit"
+          },
+          "_links": {
+            "$ref": "#/components/schemas/Links"
+          }
+        },
+        "required": [
+          "tournamentId"
+        ]
+      },
+      "Ranking": {
+        "type": "object",
+        "properties": {
+          "rankingId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "tournamentId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "teamId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "points": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 0
+          },
+          "matchesPlayed": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 0
+          },
+          "wins": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 0
+          },
+          "losses": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 0
+          },
+          "audit": {
+            "$ref": "#/components/schemas/Audit"
+          }
+        },
+        "required": [
+          "tournamentId"
+        ]
+      },
+      "Link": {
+        "type": "object",
+        "properties": {
+          "href": {
+            "type": "string"
+          },
+          "hreflang": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "deprecation": {
+            "type": "string"
+          },
+          "profile": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "templated": {
+            "type": "boolean"
+          }
+        }
+      },
+      "Links": {
+        "type": "object",
+        "additionalProperties": {
+          "$ref": "#/components/schemas/Link"
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

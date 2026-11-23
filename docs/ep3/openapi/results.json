@@ -1,0 +1,646 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "API Results",
+    "description": "API Results - eSports Arena Manager",
+    "version": "1.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8006",
+      "description": "Generated server url"
+    }
+  ],
+  "security": [
+    {
+      "bearer": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Result V2",
+      "description": "CRUD de results con respuestas HATEOAS"
+    },
+    {
+      "name": "Results V1",
+      "description": "Resultados de partidas"
+    },
+    {
+      "name": "Resultado V1",
+      "description": "Metodos CRUD para la gestión de resultados"
+    }
+  ],
+  "paths": {
+    "/api/v2/results/{id}": {
+      "get": {
+        "tags": [
+          "Result V2"
+        ],
+        "summary": "Buscar Result por ID",
+        "operationId": "findById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Encontrado",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntityModelResult"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No encontrado",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntityModelResult"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Result V2"
+        ],
+        "summary": "Actualizar Result",
+        "operationId": "update",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Result"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Actualizado",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntityModelResult"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No encontrado",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntityModelResult"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Result V2"
+        ],
+        "summary": "Eliminar Result",
+        "operationId": "delete",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Eliminado"
+          }
+        }
+      }
+    },
+    "/api/v1/results/{id}": {
+      "get": {
+        "tags": [
+          "Results V1",
+          "Resultado V1"
+        ],
+        "summary": "Busqueda de un resultado por id",
+        "description": "Se devuelve un resultado, en caso contrario se devuelve una excepcion",
+        "operationId": "findById_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID del Resultado a buscar",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resultado encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resultado no se encuentra en la BD",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Results V1",
+          "Resultado V1"
+        ],
+        "summary": "Actualizacion de resultado",
+        "description": "Se actualizan los datos de un resultado existente",
+        "operationId": "update_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID del resultado a actualizar",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Result"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Resultado actualizado",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resultado no se encuentra en la BD",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Results V1",
+          "Resultado V1"
+        ],
+        "summary": "Eliminación de un resultado",
+        "description": "Se elimina resultado de la base de datos",
+        "operationId": "delete_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID del resultado a eliminar",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Resultado eliminado"
+          }
+        }
+      }
+    },
+    "/api/v2/results": {
+      "get": {
+        "tags": [
+          "Result V2"
+        ],
+        "summary": "Listar results",
+        "operationId": "findAll",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollectionModelEntityModelResult"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Result V2"
+        ],
+        "summary": "Crear Result",
+        "operationId": "save",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Result"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntityModelResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/results": {
+      "get": {
+        "tags": [
+          "Results V1",
+          "Resultado V1"
+        ],
+        "summary": "Listado completo de resultados",
+        "description": "Devuelve una lista con todos los resultados registrados en la base de datos",
+        "operationId": "findAll_1",
+        "responses": {
+          "200": {
+            "description": "Lista de resultados devuelta exitosamente",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Result"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Results V1",
+          "Resultado V1"
+        ],
+        "summary": "Guardado del resultado",
+        "description": "Método que guarda el resultado en la DB",
+        "operationId": "save_1",
+        "requestBody": {
+          "description": "Resultado a guardar",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Result"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Resultado guardado",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/results/winner/{teamId}": {
+      "get": {
+        "tags": [
+          "Results V1",
+          "Resultado V1"
+        ],
+        "summary": "Busqueda de resultados por equipos ganadores",
+        "description": "Se devuelve una lista de resultados segun equipos ganadores, en caso contrario se devuelve una excepcion",
+        "operationId": "findByWinnerTeamId",
+        "parameters": [
+          {
+            "name": "teamId",
+            "in": "path",
+            "description": "ID del equipo ganador",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Equipo encontrada",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Result"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Equipo no se encuentra en la BD",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Result"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/results/match/{matchId}": {
+      "get": {
+        "tags": [
+          "Results V1",
+          "Resultado V1"
+        ],
+        "summary": "Busqueda de resultado por partida",
+        "description": "Se devuelve el resultado de la partida, en caso contrario se devuelve una excepcion",
+        "operationId": "findByMatchId",
+        "parameters": [
+          {
+            "name": "matchId",
+            "in": "path",
+            "description": "ID de partida a buscar",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Partida encontrada",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Partida no se encuentra en la BD",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Audit": {
+        "type": "object",
+        "properties": {
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Result": {
+        "type": "object",
+        "properties": {
+          "resultId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "matchId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "winnerTeamId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "winnerUserId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "homeScore": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "awayScore": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "status": {
+            "type": "string"
+          },
+          "audit": {
+            "$ref": "#/components/schemas/Audit"
+          }
+        },
+        "required": [
+          "matchId"
+        ]
+      },
+      "EntityModelResult": {
+        "type": "object",
+        "properties": {
+          "resultId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "matchId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "winnerTeamId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "winnerUserId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "homeScore": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "awayScore": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "status": {
+            "type": "string"
+          },
+          "audit": {
+            "$ref": "#/components/schemas/Audit"
+          },
+          "_links": {
+            "$ref": "#/components/schemas/Links"
+          }
+        },
+        "required": [
+          "matchId"
+        ]
+      },
+      "CollectionModelEntityModelResult": {
+        "type": "object",
+        "properties": {
+          "_embedded": {
+            "type": "object",
+            "properties": {
+              "resultList": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/EntityModelResult"
+                }
+              }
+            }
+          },
+          "_links": {
+            "$ref": "#/components/schemas/Links"
+          }
+        }
+      },
+      "Link": {
+        "type": "object",
+        "properties": {
+          "href": {
+            "type": "string"
+          },
+          "hreflang": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "deprecation": {
+            "type": "string"
+          },
+          "profile": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "templated": {
+            "type": "boolean"
+          }
+        }
+      },
+      "Links": {
+        "type": "object",
+        "additionalProperties": {
+          "$ref": "#/components/schemas/Link"
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

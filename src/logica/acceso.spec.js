@@ -1,28 +1,33 @@
-import { puedeAcceder, menuPorRol } from './acceso'
-describe('puedeAcceder por rol', () => {
-	;['visitante', 'jugador', 'admin'].forEach((rol) => {
-		it(rol + ' accede a todas las rutas públicas', () => {
-			;['/', '/torneos', '/torneos/copa-latam-valorant'].forEach((ruta) =>
-				expect(puedeAcceder(rol, ruta)).toBeTrue(),
-			)
-		})
-		it(rol + ' respeta las rutas privadas', () => {
-			;['/perfil', '/equipos', '/inscripcion?torneo=uno'].forEach((ruta) =>
-				expect(puedeAcceder(rol, ruta)).toBe(rol === 'jugador'),
-			)
-			;['/admin', '/admin/equipos'].forEach((ruta) =>
-				expect(puedeAcceder(rol, ruta)).toBe(rol === 'admin'),
-			)
-			expect(puedeAcceder(rol, '/login')).toBe(rol === 'visitante')
-			expect(puedeAcceder(rol, '/ruta-inventada')).toBeFalse()
-		})
-		it('menú ' + rol + ' solo contiene rutas permitidas', () => {
-			expect(menuPorRol(rol).every((item) => puedeAcceder(rol, item.ruta))).toBeTrue()
-		})
+import { menuPorRol, puedeAcceder, rutaDespuesDeIngresar } from './acceso'
+
+describe('restricciones de acceso por rol', () => {
+	it('el visitante solo ve el catálogo, login y registro', () => {
+		expect(puedeAcceder('visitante', '/torneos/3')).toBeTrue()
+		expect(puedeAcceder('visitante', '/equipos')).toBeFalse()
+		expect(puedeAcceder('visitante', '/admin')).toBeFalse()
 	})
-	it('evita confundir prefijos y acepta barra final', () => {
-		expect(puedeAcceder('admin', '/admin/')).toBeTrue()
-		expect(puedeAcceder('admin', '/admin/otra')).toBeFalse()
-		expect(puedeAcceder()).toBeTrue()
+	it('el jugador (cliente) accede a la tienda y a su actividad, no a la gestión', () => {
+		expect(puedeAcceder('JUGADOR', '/inscripcion?torneo=2')).toBeTrue()
+		expect(puedeAcceder('JUGADOR', '/gestion/inscripciones')).toBeFalse()
+		expect(puedeAcceder('JUGADOR', '/admin')).toBeFalse()
+	})
+	it('el organizador (vendedor) solo ve torneos e inscripciones', () => {
+		expect(puedeAcceder('ORGANIZADOR', '/gestion/torneos/1')).toBeTrue()
+		expect(puedeAcceder('ORGANIZADOR', '/gestion/inscripciones/4')).toBeTrue()
+		expect(puedeAcceder('ORGANIZADOR', '/admin')).toBeFalse()
+		expect(puedeAcceder('ORGANIZADOR', '/equipos')).toBeFalse()
+		expect(menuPorRol('ORGANIZADOR').map((m) => m.ruta)).toEqual([
+			'/gestion/torneos',
+			'/gestion/inscripciones',
+		])
+	})
+	it('el admin tiene acceso total a la gestión', () => {
+		expect(puedeAcceder('ADMIN', '/admin')).toBeTrue()
+		expect(puedeAcceder('ADMIN', '/gestion/inscripciones/9')).toBeTrue()
+	})
+	it('después del login vuelve a la ruta pedida solo si el rol puede abrirla', () => {
+		expect(rutaDespuesDeIngresar('JUGADOR', '/equipos')).toBe('/equipos')
+		expect(rutaDespuesDeIngresar('ORGANIZADOR', '/admin')).toBe('/gestion/torneos')
+		expect(rutaDespuesDeIngresar('ADMIN', '/login')).toBe('/admin')
 	})
 })

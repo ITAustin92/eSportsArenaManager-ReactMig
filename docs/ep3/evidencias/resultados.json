@@ -1,0 +1,27 @@
+{
+  "fecha": "2026-11-23",
+  "entorno": "Local Windows, Java 21, H2, Node y Edge",
+  "frontend": {
+    "pruebas": 84,
+    "fallos": 0,
+    "comando": "npm test"
+  },
+  "backend": {
+    "tests": 153,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "integracion": {
+    "recorridos": 14,
+    "fallos": 0,
+    "comando": "npm run test:evidencia",
+    "servicios_reales": 14
+  },
+  "swagger": {
+    "servicios": 12,
+    "operaciones": 138
+  },
+  "produccion": "Pendiente de infraestructura, configuración y validación",
+  "limites": "Conteos de pruebas; no equivalen a cobertura global. PostgreSQL, MySQL y Docker no verificados en esta ejecución."
+}

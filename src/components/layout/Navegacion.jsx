@@ -4,9 +4,10 @@ import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { menuPorRol } from '../../logica/acceso.js'
 import useAuth from '../auth/useAuth'
 import Boton from '../compartidos/Boton'
+import { NOMBRE_ROL } from '../../logica/estados.js'
 
 function Navegacion({ integrada = false }) {
-	const { rol, sesion, cerrarSesion } = useAuth()
+	const { rol, usuario, cerrarSesion } = useAuth()
 	const [expandida, setExpandida] = useState(false)
 	const navigate = useNavigate()
 	const salir = () => {
@@ -49,11 +50,11 @@ function Navegacion({ integrada = false }) {
 				>
 					<ul className={'navbar-nav' + (integrada ? '' : ' me-auto')}>
 						{menuPorRol(rol)
-							.filter((item) => item.ruta !== '/login')
+							.filter((item) => !['/login', '/registro'].includes(item.ruta))
 							.map((item) => (
 								<li key={item.ruta} className="nav-item">
 									<NavLink
-										end={item.ruta !== '/torneos'}
+										end={item.ruta === '/'}
 										to={item.ruta}
 										className="nav-link"
 										onClick={() => setExpandida(false)}
@@ -64,19 +65,24 @@ function Navegacion({ integrada = false }) {
 							))}
 					</ul>
 					<div className="navegacion-sesion">
-						{sesion ? (
+						{usuario ? (
 							<>
 								<span>
-									{sesion.nombre} · {rol}
+									{usuario.nombre} · {NOMBRE_ROL[rol] ?? rol}
 								</span>
 								<Boton variante="secundario" onClick={salir}>
 									Cerrar sesión
 								</Boton>
 							</>
 						) : (
-							<Boton variante="secundario" onClick={entrar}>
-								Iniciar sesión
-							</Boton>
+							<>
+								<NavLink to="/registro" className="nav-link" onClick={() => setExpandida(false)}>
+									Crear cuenta
+								</NavLink>
+								<Boton variante="secundario" onClick={entrar}>
+									Iniciar sesión
+								</Boton>
+							</>
 						)}
 					</div>
 				</div>

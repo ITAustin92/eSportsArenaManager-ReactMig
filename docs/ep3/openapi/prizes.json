@@ -1,0 +1,604 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "API Prizes",
+    "description": "API Prizes - eSports Arena Manager",
+    "version": "1.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8009",
+      "description": "Generated server url"
+    }
+  ],
+  "security": [
+    {
+      "bearer": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Prizes V2",
+      "description": "Premios de torneos con respuestas HATEOAS"
+    },
+    {
+      "name": "Prizes V1",
+      "description": "Premios de torneos"
+    },
+    {
+      "name": "Equipo V1",
+      "description": "Metodos CRUD para la gestión de equipos"
+    }
+  ],
+  "paths": {
+    "/api/v2/prizes": {
+      "get": {
+        "tags": [
+          "Prizes V2"
+        ],
+        "summary": "Listar premios",
+        "operationId": "findAll",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollectionModelEntityModelPrize"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Prizes V2"
+        ],
+        "summary": "Crear premio",
+        "operationId": "save",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Prize"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntityModelPrize"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/prizes/tournament/{tournamentId}/distribute": {
+      "post": {
+        "tags": [
+          "Prizes V2"
+        ],
+        "summary": "Distribuir premios",
+        "description": "Asigna premios según el ranking final del torneo",
+        "operationId": "distributePrizes",
+        "parameters": [
+          {
+            "name": "tournamentId",
+            "in": "path",
+            "description": "ID del torneo",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/prizes": {
+      "get": {
+        "tags": [
+          "Prizes V1",
+          "Equipo V1"
+        ],
+        "summary": "Listado de todos los premios",
+        "description": "Se devuelve una lista con todos los premios en la tabla premio de la DB",
+        "operationId": "findAll_1",
+        "responses": {
+          "200": {
+            "description": "Operacion Exitosa",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Prize"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Prizes V1",
+          "Equipo V1"
+        ],
+        "summary": "Guardado del premio",
+        "description": "Método que guarda el premio en la DB",
+        "operationId": "save_1",
+        "requestBody": {
+          "description": "Premio a crear",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Prize"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Premio creado",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Prize"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/prizes/tournament/{tournamentId}/distribute": {
+      "post": {
+        "tags": [
+          "Prizes V1",
+          "Equipo V1"
+        ],
+        "summary": "Distribuir premios",
+        "description": "Asigna premios según el ranking final del torneo",
+        "operationId": "distributePrizes_1",
+        "parameters": [
+          {
+            "name": "tournamentId",
+            "in": "path",
+            "description": "ID del torneo",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Exitoso",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Torneo no se encuentra en la BD",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/prizes/{id}": {
+      "get": {
+        "tags": [
+          "Prizes V2"
+        ],
+        "summary": "Buscar premio por ID",
+        "operationId": "findById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Encontrado",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntityModelPrize"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No encontrado",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntityModelPrize"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/prizes/tournament/{tournamentId}": {
+      "get": {
+        "tags": [
+          "Prizes V2"
+        ],
+        "summary": "Premios de un torneo",
+        "operationId": "findByTournament",
+        "parameters": [
+          {
+            "name": "tournamentId",
+            "in": "path",
+            "description": "ID del torneo",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollectionModelEntityModelPrize"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/prizes/{id}": {
+      "get": {
+        "tags": [
+          "Prizes V1",
+          "Equipo V1"
+        ],
+        "summary": "Busqueda de un premio por id",
+        "description": "Se devuelve un premio, en caso contrario se devuelve una excepcion",
+        "operationId": "findById_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID del premio",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Premio encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Prize"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Premio no se encuentra en la BD",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Prize"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/prizes/tournament/{tournamentId}": {
+      "get": {
+        "tags": [
+          "Prizes V1",
+          "Equipo V1"
+        ],
+        "summary": "Premios de un torneo",
+        "operationId": "findByTournamentId",
+        "parameters": [
+          {
+            "name": "tournamentId",
+            "in": "path",
+            "description": "ID del torneo",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Prize"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/prizes/team/{teamId}": {
+      "get": {
+        "tags": [
+          "Prizes V1",
+          "Equipo V1"
+        ],
+        "summary": "Premios de un equipo",
+        "operationId": "findByTeamId",
+        "parameters": [
+          {
+            "name": "teamId",
+            "in": "path",
+            "description": "ID del equipo",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Encontrado",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Prize"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Equipo no se encuentra en la BD",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Prize"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Audit": {
+        "type": "object",
+        "properties": {
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Prize": {
+        "type": "object",
+        "properties": {
+          "prizeId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "tournamentId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "teamId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1
+          },
+          "type": {
+            "type": "string",
+            "minLength": 1
+          },
+          "amount": {
+            "type": "number",
+            "format": "double",
+            "minimum": 0
+          },
+          "status": {
+            "type": "string",
+            "minLength": 1
+          },
+          "audit": {
+            "$ref": "#/components/schemas/Audit"
+          }
+        },
+        "required": [
+          "description",
+          "status",
+          "tournamentId",
+          "type"
+        ]
+      },
+      "EntityModelPrize": {
+        "type": "object",
+        "properties": {
+          "prizeId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "tournamentId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "teamId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1
+          },
+          "type": {
+            "type": "string",
+            "minLength": 1
+          },
+          "amount": {
+            "type": "number",
+            "format": "double",
+            "minimum": 0
+          },
+          "status": {
+            "type": "string",
+            "minLength": 1
+          },
+          "audit": {
+            "$ref": "#/components/schemas/Audit"
+          },
+          "_links": {
+            "$ref": "#/components/schemas/Links"
+          }
+        },
+        "required": [
+          "description",
+          "status",
+          "tournamentId",
+          "type"
+        ]
+      },
+      "CollectionModelEntityModelPrize": {
+        "type": "object",
+        "properties": {
+          "_embedded": {
+            "type": "object",
+            "properties": {
+              "prizeList": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/EntityModelPrize"
+                }
+              }
+            }
+          },
+          "_links": {
+            "$ref": "#/components/schemas/Links"
+          }
+        }
+      },
+      "Link": {
+        "type": "object",
+        "properties": {
+          "href": {
+            "type": "string"
+          },
+          "hreflang": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "deprecation": {
+            "type": "string"
+          },
+          "profile": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "templated": {
+            "type": "boolean"
+          }
+        }
+      },
+      "Links": {
+        "type": "object",
+        "additionalProperties": {
+          "$ref": "#/components/schemas/Link"
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

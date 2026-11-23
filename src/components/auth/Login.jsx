@@ -1,81 +1,74 @@
 import './Login.css'
 import { useState } from 'react'
-import { Navigate, useLocation } from 'react-router-dom'
+import { Link, Navigate, useLocation } from 'react-router-dom'
 import Campo from '../compartidos/Campo'
 import Boton from '../compartidos/Boton'
 import MensajeError from '../compartidos/MensajeError'
 import useAuth from './useAuth'
-import { validarLogin } from '../../logica/sesion.js'
-import { puedeAcceder } from '../../logica/acceso.js'
+import { validarLogin, hayErrores } from '../../logica/validaciones.js'
+import { rutaDespuesDeIngresar } from '../../logica/acceso.js'
 
 function Login() {
-	const { sesion, iniciarSesion } = useAuth()
+	const { sesion, rol, iniciarSesion } = useAuth()
 	const ubicacion = useLocation()
-	const [datos, setDatos] = useState({ correo: '', clave: '' })
+	const [datos, setDatos] = useState({ username: '', password: '' })
 	const [errores, setErrores] = useState({})
 	const [error, setError] = useState('')
-	const destino = ubicacion.state?.desde
+	const [enviando, setEnviando] = useState(false)
 	if (sesion) {
-		return (
-			<Navigate
-				to={
-					destino && puedeAcceder(sesion.rol, destino)
-						? destino
-						: sesion.rol === 'admin'
-							? '/admin'
-							: '/perfil'
-				}
-				replace
-			/>
-		)
+		return <Navigate to={rutaDespuesDeIngresar(rol, ubicacion.state?.desde)} replace />
 	}
 	const cambiar = (evento) =>
 		setDatos((actual) => ({ ...actual, [evento.target.name]: evento.target.value }))
-	const enviar = (evento) => {
+	const enviar = async (evento) => {
 		evento.preventDefault()
 		const encontrados = validarLogin(datos)
 		setErrores(encontrados)
 		setError('')
-		if (Object.keys(encontrados).length > 0) {
+		if (hayErrores(encontrados)) {
 			return
 		}
+		setEnviando(true)
 		try {
-			iniciarSesion(datos)
+			// POST /api/v1/auth/login -> { token, roles, ... }. Al guardar la sesión el componente
+			// se vuelve a renderizar y <Navigate> lleva al inicio del rol.
+			await iniciarSesion(datos)
 		} catch (fallo) {
 			setError(fallo.message)
+			setEnviando(false)
 		}
 	}
 	return (
 		<section className="login panel">
 			<p className="sobretitulo">Tu espacio en la arena</p>
 			<h1>Iniciar sesión</h1>
-			<p>Accede con una cuenta de prueba de tu equipo.</p>
 			<form noValidate onSubmit={enviar}>
 				<Campo
-					id="login-correo"
-					nombre="correo"
-					etiqueta="Correo"
-					tipo="email"
-					valor={datos.correo}
+					id="login-usuario"
+					nombre="username"
+					etiqueta="Usuario"
+					valor={datos.username}
 					onCambiar={cambiar}
-					error={errores.correo}
+					error={errores.username}
 					autoComplete="username"
 				/>
 				<Campo
 					id="login-clave"
-					nombre="clave"
-					etiqueta="Clave"
+					nombre="password"
+					etiqueta="Contraseña"
 					tipo="password"
-					valor={datos.clave}
+					valor={datos.password}
 					onCambiar={cambiar}
-					error={errores.clave}
+					error={errores.password}
 					autoComplete="current-password"
 				/>
 				<MensajeError>{error}</MensajeError>
-				<Boton type="submit">Entrar</Boton>
+				<Boton type="submit" disabled={enviando}>
+					{enviando ? 'Validando…' : 'Entrar'}
+				</Boton>
 			</form>
 			<p className="texto-secundario mt-3">
-				Demostración académica. Las cuentas ficticias están en el README.
+				¿No tienes cuenta? <Link to="/registro">Regístrate como jugador</Link>.
 			</p>
 		</section>
 	)

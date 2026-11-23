@@ -1,0 +1,74 @@
+[
+  {
+    "servicio": "auth",
+    "estado": 200,
+    "openapi": "3.1.0",
+    "operaciones": 7
+  },
+  {
+    "servicio": "users",
+    "estado": 200,
+    "openapi": "3.1.0",
+    "operaciones": 15
+  },
+  {
+    "servicio": "games",
+    "estado": 200,
+    "openapi": "3.1.0",
+    "operaciones": 11
+  },
+  {
+    "servicio": "teams",
+    "estado": 200,
+    "openapi": "3.1.0",
+    "operaciones": 13
+  },
+  {
+    "servicio": "tournaments",
+    "estado": 200,
+    "openapi": "3.1.0",
+    "operaciones": 13
+  },
+  {
+    "servicio": "registrations",
+    "estado": 200,
+    "openapi": "3.1.0",
+    "operaciones": 15
+  },
+  {
+    "servicio": "matches",
+    "estado": 200,
+    "openapi": "3.1.0",
+    "operaciones": 12
+  },
+  {
+    "servicio": "results",
+    "estado": 200,
+    "openapi": "3.1.0",
+    "operaciones": 12
+  },
+  {
+    "servicio": "rankings",
+    "estado": 200,
+    "openapi": "3.1.0",
+    "operaciones": 6
+  },
+  {
+    "servicio": "sanctions",
+    "estado": 200,
+    "openapi": "3.1.0",
+    "operaciones": 13
+  },
+  {
+    "servicio": "prizes",
+    "estado": 200,
+    "openapi": "3.1.0",
+    "operaciones": 11
+  },
+  {
+    "servicio": "notifications",
+    "estado": 200,
+    "openapi": "3.1.0",
+    "operaciones": 10
+  }
+]

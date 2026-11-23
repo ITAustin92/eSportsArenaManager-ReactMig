@@ -1,0 +1,766 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "API Registrations",
+    "description": "API Registrations - eSports Arena Manager",
+    "version": "1.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8004",
+      "description": "Generated server url"
+    }
+  ],
+  "security": [
+    {
+      "bearer": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Registrations V1",
+      "description": "Inscripciones a torneos"
+    },
+    {
+      "name": "Registro V1",
+      "description": "Metodos CRUD para la gestión de registros"
+    },
+    {
+      "name": "Registrations V2",
+      "description": "Inscripciones a torneos con respuestas HATEOAS"
+    }
+  ],
+  "paths": {
+    "/api/v2/registrations": {
+      "get": {
+        "tags": [
+          "Registrations V2"
+        ],
+        "summary": "Listar inscripciones",
+        "operationId": "findAll",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollectionModelEntityModelRegistration"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Registrations V2"
+        ],
+        "summary": "Crear inscripción",
+        "description": "Valida que el equipo esté ACTIVO y el torneo admita inscripciones",
+        "operationId": "save",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Registration"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntityModelRegistration"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/registrations": {
+      "get": {
+        "tags": [
+          "Registrations V1",
+          "Registro V1"
+        ],
+        "summary": "Listado de todos los registros",
+        "description": "Se devuelve una lista con todos los registros en la tabla registro de la DB",
+        "operationId": "findAll_1",
+        "responses": {
+          "200": {
+            "description": "Operacion Exitosa",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Registration"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Registrations V1",
+          "Registro V1"
+        ],
+        "summary": "Guardado del registro",
+        "description": "Método que guarda el registro en la DB",
+        "operationId": "save_1",
+        "requestBody": {
+          "description": "Registro a guardar",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Registration"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Registration"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/registrations/{id}/status": {
+      "patch": {
+        "tags": [
+          "Registrations V2"
+        ],
+        "summary": "Actualizar estado de la inscripción",
+        "description": "Ej: PENDING, ACCEPTED, REJECTED, CANCELLED",
+        "operationId": "updateStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Nuevo estado",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "ACCEPTED"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Actualizada",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntityModelRegistration"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No encontrada",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntityModelRegistration"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/registrations/{id}/status": {
+      "patch": {
+        "tags": [
+          "Registrations V1",
+          "Registro V1"
+        ],
+        "summary": "Actualizacion de registro",
+        "description": "Se actualizan los datos de un registro existente",
+        "operationId": "updateStatus_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID del Usuario a actualizar",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Registro actualizado",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Registration"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Registro no se encuentra en la BD",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Registration"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/registrations/{id}": {
+      "get": {
+        "tags": [
+          "Registrations V2"
+        ],
+        "summary": "Buscar inscripción por ID",
+        "operationId": "findById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Encontrada",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntityModelRegistration"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No encontrada",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntityModelRegistration"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Registrations V2"
+        ],
+        "summary": "Cancelar inscripción",
+        "operationId": "cancel",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Cancelada"
+          }
+        }
+      }
+    },
+    "/api/v1/registrations/{id}": {
+      "get": {
+        "tags": [
+          "Registrations V1",
+          "Registro V1"
+        ],
+        "summary": "Busqueda de un registro por id",
+        "description": "Se devuelve un registro, en caso contrario se devuelve una excepcion",
+        "operationId": "findById_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID del Usuario buscado",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Registro encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Registration"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Registro no se encuentra en la BD",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Registration"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Registrations V1",
+          "Registro V1"
+        ],
+        "summary": "Cancela un registro existente",
+        "description": "Se elimina un registro de la base de datos",
+        "operationId": "cancel_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID del registro a cancelar",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Registro cancelado"
+          }
+        }
+      }
+    },
+    "/api/v1/registrations/tournament/{tournamentId}": {
+      "get": {
+        "tags": [
+          "Registrations V1",
+          "Registro V1"
+        ],
+        "summary": "Busqueda de un torneo por ID",
+        "description": "Se devuelve un torneo, en caso contrario se devuelve una excepcion",
+        "operationId": "findByTournamentId",
+        "parameters": [
+          {
+            "name": "tournamentId",
+            "in": "path",
+            "description": "ID del Torneo buscado",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Torneo encontrado",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Registration"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Torneo no se encuentra en la BD",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Registration"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/registrations/team/{teamId}": {
+      "get": {
+        "tags": [
+          "Registrations V1",
+          "Registro V1"
+        ],
+        "summary": "Busqueda de un equipo por ID",
+        "description": "Se devuelve un equipo, en caso contrario se devuelve una excepcion",
+        "operationId": "findByTeamId",
+        "parameters": [
+          {
+            "name": "teamId",
+            "in": "path",
+            "description": "ID del Team buscado",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Equipo encontrado",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Registration"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Equipo no se encuentra en la BD",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Registration"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/registrations/mine": {
+      "get": {
+        "tags": [
+          "Registrations V1",
+          "Registro V1"
+        ],
+        "summary": "Inscripciones individuales de la sesión actual",
+        "operationId": "individuales",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Registration"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/registrations/exists": {
+      "get": {
+        "tags": [
+          "Registrations V1",
+          "Registro V1"
+        ],
+        "summary": "Revisa si existe una inscripcion por torneo y un equipo",
+        "operationId": "existsByTeamAndTournament",
+        "parameters": [
+          {
+            "name": "teamId",
+            "in": "query",
+            "description": "ID del equipo",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          },
+          {
+            "name": "tournamentId",
+            "in": "query",
+            "description": "ID del torneo",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/registrations/exists-player": {
+      "get": {
+        "tags": [
+          "Registrations V1",
+          "Registro V1"
+        ],
+        "operationId": "jugadorInscrito",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "tournamentId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Audit": {
+        "type": "object",
+        "properties": {
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Registration": {
+        "type": "object",
+        "properties": {
+          "registrationId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "teamId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "tournamentId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "registrationDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "status": {
+            "type": "string",
+            "minLength": 1
+          },
+          "audit": {
+            "$ref": "#/components/schemas/Audit"
+          }
+        },
+        "required": [
+          "registrationDate",
+          "status",
+          "tournamentId"
+        ]
+      },
+      "EntityModelRegistration": {
+        "type": "object",
+        "properties": {
+          "registrationId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "teamId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "tournamentId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "registrationDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "status": {
+            "type": "string",
+            "minLength": 1
+          },
+          "audit": {
+            "$ref": "#/components/schemas/Audit"
+          },
+          "_links": {
+            "$ref": "#/components/schemas/Links"
+          }
+        },
+        "required": [
+          "registrationDate",
+          "status",
+          "tournamentId"
+        ]
+      },
+      "CollectionModelEntityModelRegistration": {
+        "type": "object",
+        "properties": {
+          "_embedded": {
+            "type": "object",
+            "properties": {
+              "registrationList": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/EntityModelRegistration"
+                }
+              }
+            }
+          },
+          "_links": {
+            "$ref": "#/components/schemas/Links"
+          }
+        }
+      },
+      "Link": {
+        "type": "object",
+        "properties": {
+          "href": {
+            "type": "string"
+          },
+          "hreflang": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "deprecation": {
+            "type": "string"
+          },
+          "profile": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "templated": {
+            "type": "boolean"
+          }
+        }
+      },
+      "Links": {
+        "type": "object",
+        "additionalProperties": {
+          "$ref": "#/components/schemas/Link"
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

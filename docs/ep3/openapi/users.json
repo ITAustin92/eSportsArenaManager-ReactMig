@@ -1,0 +1,777 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "API Users",
+    "description": "API Users - eSports Arena Manager",
+    "version": "1.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8000",
+      "description": "Generated server url"
+    }
+  ],
+  "security": [
+    {
+      "bearer": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Users V2",
+      "description": "CRUD de usuarios con respuestas HATEOAS"
+    },
+    {
+      "name": "Usuarios V1",
+      "description": "Metodos CRUD para la gestión de usuario"
+    }
+  ],
+  "paths": {
+    "/api/v2/users/{id}": {
+      "get": {
+        "tags": [
+          "Users V2"
+        ],
+        "summary": "Buscar usuario por ID",
+        "operationId": "findById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID del usuario",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usuario encontrado",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntityModelUser"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Usuario no encontrado",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntityModelUser"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Users V2"
+        ],
+        "summary": "Actualizar usuario",
+        "operationId": "update",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID del usuario",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Usuario actualizado",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntityModelUser"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Usuario no encontrado",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntityModelUser"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Users V2"
+        ],
+        "summary": "Eliminar usuario",
+        "operationId": "delete",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID del usuario",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Usuario eliminado"
+          }
+        }
+      }
+    },
+    "/api/v1/users/{id}": {
+      "get": {
+        "tags": [
+          "Usuarios V1"
+        ],
+        "summary": "Busqueda de un usuario por id",
+        "description": "Se devuelve un usuario, en caso contrario se devuelve una excepcion",
+        "operationId": "findById_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID del Usuario a buscar",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usuario encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Usuario no se encuentra en la BD",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Usuarios V1"
+        ],
+        "summary": "Actualizacion de usuario",
+        "description": "Se actualizan los datos de un usuario existente",
+        "operationId": "update_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID del Usuario a actualizar",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Usuario actualizado",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Usuario no se encuentra en la BD",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Usuarios V1"
+        ],
+        "summary": "Borrado del usuario",
+        "description": "Se elimina usuario de la base de datos",
+        "operationId": "delete_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID del Usuario a eliminar",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Usuario eliminado"
+          }
+        }
+      }
+    },
+    "/api/v2/users": {
+      "get": {
+        "tags": [
+          "Users V2"
+        ],
+        "summary": "Listar todos los usuarios",
+        "operationId": "findAll",
+        "responses": {
+          "200": {
+            "description": "Operación exitosa",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollectionModelEntityModelUser"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Users V2"
+        ],
+        "summary": "Crear usuario",
+        "operationId": "save",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntityModelUser"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/users": {
+      "get": {
+        "tags": [
+          "Usuarios V1"
+        ],
+        "summary": "Listado de todos los usuarios",
+        "description": "Se devuelve una lista con todos los usuarios en la tabla usuarios de la DB",
+        "operationId": "findAll_1",
+        "responses": {
+          "200": {
+            "description": "Operacion Exitosa",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Usuarios V1"
+        ],
+        "summary": "Guardado del usuario",
+        "description": "Método que guarda al usuario en la DB",
+        "operationId": "save_1",
+        "requestBody": {
+          "description": "Usuario a crear",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Usuario creado",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/users/rol/{rol}": {
+      "get": {
+        "tags": [
+          "Usuarios V1"
+        ],
+        "summary": "Busqueda de un usuario por rol",
+        "description": "Se devuelve un usuario, en caso contrario se devuelve una excepcion",
+        "operationId": "findByRol",
+        "parameters": [
+          {
+            "name": "rol",
+            "in": "path",
+            "description": "Rol del Usuario a buscar",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "jugador"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usuario encontrado",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Usuario no se encuentra en la BD",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/users/public": {
+      "get": {
+        "tags": [
+          "Usuarios V1"
+        ],
+        "summary": "Nombres públicos de los participantes",
+        "operationId": "nombresPublicos",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NombrePublico"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/users/nickname/{nickname}": {
+      "get": {
+        "tags": [
+          "Usuarios V1"
+        ],
+        "summary": "Busqueda de un usuario por nickname",
+        "description": "Se devuelve un usuario, en caso contrario se devuelve una excepcion",
+        "operationId": "findByNickname",
+        "parameters": [
+          {
+            "name": "nickname",
+            "in": "path",
+            "description": "Nickname del usuario a buscar",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "usuario"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usuario encontrado",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Usuario no se encuentra en la BD",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/users/estado/{estado}": {
+      "get": {
+        "tags": [
+          "Usuarios V1"
+        ],
+        "summary": "Busqueda de un usuario por estado",
+        "description": "Se devuelve un usuario, en caso contrario se devuelve una excepcion",
+        "operationId": "findByEstado",
+        "parameters": [
+          {
+            "name": "estado",
+            "in": "path",
+            "description": "estado del Usuario a buscar",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "ACTIVO"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usuario encontrado",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Usuario no se encuentra en la BD",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/users/correo/{correo}": {
+      "get": {
+        "tags": [
+          "Usuarios V1"
+        ],
+        "summary": "Busqueda de un usuario por correo",
+        "description": "Se devuelve un usuario, en caso contrario se devuelve una excepcion",
+        "operationId": "findByCorreo",
+        "parameters": [
+          {
+            "name": "correo",
+            "in": "path",
+            "description": "correo del Usuario a buscar",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "usuario@correo.cl"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usuario encontrado",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Usuario no se encuentra en la BD",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Audit": {
+        "type": "object",
+        "properties": {
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "usuarioId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "nombre": {
+            "type": "string",
+            "minLength": 1
+          },
+          "nickname": {
+            "type": "string",
+            "minLength": 1
+          },
+          "correo": {
+            "type": "string",
+            "format": "email",
+            "minLength": 1
+          },
+          "rol": {
+            "type": "string",
+            "minLength": 1
+          },
+          "estado": {
+            "type": "string",
+            "minLength": 1
+          },
+          "avatar": {
+            "type": "string",
+            "maxLength": 2800000,
+            "minLength": 0
+          },
+          "audit": {
+            "$ref": "#/components/schemas/Audit"
+          }
+        },
+        "required": [
+          "correo",
+          "estado",
+          "nickname",
+          "nombre",
+          "rol"
+        ]
+      },
+      "EntityModelUser": {
+        "type": "object",
+        "properties": {
+          "usuarioId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "nombre": {
+            "type": "string",
+            "minLength": 1
+          },
+          "nickname": {
+            "type": "string",
+            "minLength": 1
+          },
+          "correo": {
+            "type": "string",
+            "format": "email",
+            "minLength": 1
+          },
+          "rol": {
+            "type": "string",
+            "minLength": 1
+          },
+          "estado": {
+            "type": "string",
+            "minLength": 1
+          },
+          "avatar": {
+            "type": "string",
+            "maxLength": 2800000,
+            "minLength": 0
+          },
+          "audit": {
+            "$ref": "#/components/schemas/Audit"
+          },
+          "_links": {
+            "$ref": "#/components/schemas/Links"
+          }
+        },
+        "required": [
+          "correo",
+          "estado",
+          "nickname",
+          "nombre",
+          "rol"
+        ]
+      },
+      "CollectionModelEntityModelUser": {
+        "type": "object",
+        "properties": {
+          "_embedded": {
+            "type": "object",
+            "properties": {
+              "userList": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/EntityModelUser"
+                }
+              }
+            }
+          },
+          "_links": {
+            "$ref": "#/components/schemas/Links"
+          }
+        }
+      },
+      "NombrePublico": {
+        "type": "object",
+        "properties": {
+          "usuarioId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "nickname": {
+            "type": "string"
+          }
+        }
+      },
+      "Link": {
+        "type": "object",
+        "properties": {
+          "href": {
+            "type": "string"
+          },
+          "hreflang": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "deprecation": {
+            "type": "string"
+          },
+          "profile": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "templated": {
+            "type": "boolean"
+          }
+        }
+      },
+      "Links": {
+        "type": "object",
+        "additionalProperties": {
+          "$ref": "#/components/schemas/Link"
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}
