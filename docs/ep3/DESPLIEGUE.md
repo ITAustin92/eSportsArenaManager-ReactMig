@@ -1,74 +1,67 @@
-# Preparación del despliegue EP3
+# Despliegue EP3 con Render y Supabase
 
-La configuración de producción está preparada en el backend, pero todavía no se
-ha ejecutado ni validado en una plataforma cloud. Para cerrar este paso se necesita
-identificar la plataforma, la base de datos y las URLs de los servicios. Este
-documento describe la configuración existente del proyecto, no promete costos ni
-disponibilidad de un proveedor.
+La arquitectura acordada usa Vercel para React, Render para Spring Boot y
+Supabase para PostgreSQL. El Blueprint del repositorio backend define un gateway
+público y doce servicios privados en la misma región. Cada servicio con datos
+utiliza su propio esquema `arena_<servicio>` y el perfil `prod`.
 
-## Backend y base persistente
+## Supabase
 
-El perfil `prod` usa PostgreSQL. Cada uno de los doce servicios con persistencia
-utiliza un esquema propio `arena_<servicio>` y un máximo de dos conexiones por
-instancia. La base y el usuario deben permitir crear los esquemas y tablas
-necesarios. Revisar el límite total de conexiones antes de iniciar todas las
-instancias. El perfil `mysql` es otra configuración del proyecto y requiere su
-propia validación; no se mezcla con las variables del perfil PostgreSQL.
+En el proyecto de Supabase, abrir **Connect → Session pooler**. Usar el host y el
+usuario que muestra el panel. Para un proyecto nuevo, elegir una región cercana
+a Render. Si el proyecto ya existe, revisar su región antes de aplicar el Blueprint.
 
-1. Preparar una base PostgreSQL y el acceso de sus servicios. Configurar el canal
-   seguro de conexión que requiera la plataforma.
-2. Compilar con Java 21: `./mvnw.cmd package` desde el backend.
-3. Publicar los doce servicios de identidad y dominio y el gateway. Eureka se
-   utiliza en la demostración local; el perfil `prod` lo desactiva y usa las URLs
-   configuradas.
-4. Establecer `SPRING_PROFILES_ACTIVE=prod`, `DB_URL`, `DB_USUARIO`, `DB_CLAVE` y
-   el mismo `JWT_SECRETO` en los servicios que correspondan. El secreto debe tener
-   al menos 32 bytes para HS256. Usar variables privadas de la plataforma.
-5. Completar las variables `*_SERVICE_URL` de `.env.example` del backend con las
-   direcciones base, sin `/api/v1` añadido. Las conexiones internas tienen que ser
-   accesibles entre los servicios.
-6. Configurar `CORS_ORIGENES` del gateway con el origen exacto del frontend
-   publicado, sin rutas ni barra final.
-7. Crear el administrador inicial con las variables `ADMIN_USERNAME`,
-   `ADMIN_PASSWORD`, `ADMIN_NOMBRE` y `ADMIN_CORREO` de auth. La contraseña de
-   bootstrap requiere al menos 12 caracteres. Iniciar users antes de completar
-   este alta y retirar la contraseña de bootstrap después de crear la cuenta.
+| Variable | Valor en Render |
+| --- | --- |
+| `DB_URL` | `jdbc:postgresql://HOST_DEL_POOLER:5432/postgres?sslmode=require` |
+| `DB_USUARIO` | Usuario completo del Session pooler, con el identificador de proyecto |
+| `DB_CLAVE` | Contraseña de PostgreSQL |
 
-El perfil `prod` desactiva las cuentas de demostración y `data.sql`; no se debe
-esperar que aparezcan los datos ficticios del entorno local. Preparar los juegos,
-cuentas y torneos del entorno de entrega desde las funciones autorizadas.
+Las tres variables se ingresan durante la creación del Blueprint para
+`arena-ep3-user`. Render comparte sus valores con los otros servicios de datos.
+El usuario de PostgreSQL necesita permiso para crear los esquemas y tablas.
+El modo sesión permite conexiones IPv4 y usa el puerto 5432.
+[Documentación de Supabase](https://supabase.com/docs/guides/database/connecting-to-postgres)
 
-Si se reutiliza una base anterior, revisar las nuevas columnas de participantes
-individuales y la tabla de contribuciones del ranking antes de migrar. Los campos
-de equipos deben aceptar nulos cuando el participante es un jugador. La migración
-con datos existentes y el perfil PostgreSQL todavía necesitan pruebas específicas.
+## Render
 
-## Frontend de Vercel
+1. Abrir **New → Blueprint** en Render y seleccionar el repositorio
+   [eSportsArenaManager](https://github.com/ITAustin92/eSportsArenaManager).
+   Seleccionar `main` y el archivo `render.yaml`.
+2. Confirmar la región y revisar el costo estimado. El Blueprint separa las trece
+   aplicaciones Spring Boot en instancias de pago. La sesión del profesor usa una
+   sola aplicación Spring Boot como ejemplo.
+3. Ingresar las variables de Supabase en el formulario seguro y aplicar el
+   Blueprint una vez aprobado el costo. Render genera un secreto JWT compartido.
+4. Tras activar `arena-ep3-user`, agregar a `arena-ep3-auth` las variables
+   `ADMIN_USERNAME`, `ADMIN_PASSWORD`, `ADMIN_NOMBRE` y `ADMIN_CORREO`.
+   La contraseña inicial requiere al menos 12 caracteres. Verificar el acceso
+   del administrador y retirar `ADMIN_PASSWORD` después de crearlo.
+5. Copiar la URL HTTPS pública de `arena-ep3-gateway`. Probar
+   `/actuator/health`, `/api/v1/games` y `/docs/swagger-ui.html`. Probar el
+   catálogo además de la salud comprueba que el gateway enruta al servicio.
 
-Configurar `VITE_API_URL` con la URL HTTPS del gateway, sin `/api` al final, y
-generar un nuevo build. Las variables de Vite se incorporan al compilar. `vercel.json`
-conserva las rutas de BrowserRouter cuando se abre un enlace directo o se recarga.
+El perfil `prod` usa una base persistente, omite los datos de prueba y desactiva
+Eureka. En una base nueva se crean esquemas y tablas. Preparar los juegos y
+torneos de muestra mediante el panel de administración. Si se reutiliza una base
+anterior, revisar primero la migración de datos y restricciones.
+[Blueprints de Render](https://render.com/docs/blueprint-spec)
 
-El trabajo del frontend se publica en `develop`. La instrucción de conservar las
-otras ramas sigue vigente: no se modifica `main` para activar el despliegue de
-producción. Con la configuración habitual del proyecto, será necesario seleccionar
-una vista previa de `develop` o que el equipo decida después cómo publicar esa
-revisión en producción.
+## Vercel
 
-Referencias oficiales para esta configuración:
-[ramas de producción y vista previa](https://vercel.com/docs/git),
-[variables por entorno](https://vercel.com/docs/environment-variables) y
-[Vite en Vercel](https://vercel.com/docs/frameworks/frontend/vite).
+El gateway ya incluye `https://esports-arena-managerv2.vercel.app` en
+`CORS_ORIGENES`. Si se prueba primero una vista previa, agregar también su origen
+exacto, separado por coma. En el proyecto Vercel, configurar `VITE_API_URL` con la
+URL HTTPS del gateway, sin el sufijo `/api`, porque el código ya agrega
+`/api/v1`. Crear un nuevo despliegue de la revisión EP3 en `develop`. Si se
+publica desde esa rama en el dominio principal, usar la configuración del
+entorno de producción de Vercel.
+[Variables de Vercel](https://vercel.com/docs/environment-variables)
 
-## Comprobación final en el entorno público
+## Verificación de entrega
 
-- Verificar salud, Swagger y catálogo a través del gateway; no basta que los
-  procesos respondan de forma individual.
-- Crear una cuenta, iniciar sesión y recargar el perfil. Comprobar errores 401/403
-  y que cada rol muestre solo sus opciones.
-- Crear y editar datos, reiniciar el servicio y verificar que siguen guardados.
-- Repetir inscripción, duplicados, cupos y el ciclo de partida, resultado,
-  clasificación, corrección y anulación.
-- Sustituir las referencias locales de los documentos por las URLs definitivas y
-  obtener evidencia del despliegue. Las cuentas ficticias de las pruebas locales
-  no deben usarse como prueba de que funciona la configuración de producción.
+- Consultar el catálogo desde Vercel y confirmar que la petición llega a Render.
+- Iniciar sesión, recargar el perfil y verificar los permisos por rol.
+- Crear un registro de prueba, reiniciar su servicio y comprobar que Supabase lo conserva.
+- Probar la inscripción, registrar un resultado individual y consultar su clasificación.
+- Guardar capturas de Network, login y persistencia con las URLs definitivas.
