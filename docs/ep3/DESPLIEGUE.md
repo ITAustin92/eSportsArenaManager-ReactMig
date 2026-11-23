@@ -1,67 +1,86 @@
-# Despliegue EP3 con Render y Supabase
+# Despliegue EP3 con Render Free y Supabase
 
-La arquitectura acordada usa Vercel para React, Render para Spring Boot y
-Supabase para PostgreSQL. El Blueprint del repositorio backend define un gateway
-público y doce servicios privados en la misma región. Cada servicio con datos
-utiliza su propio esquema `arena_<servicio>` y el perfil `prod`.
+React se publica en Vercel. Render ejecuta `arena-web`, una aplicación Spring
+Boot que reúne los módulos del backend bajo la misma API. PostgreSQL vive en
+Supabase. El orden de despliegue sigue la sesión 3 del curso.
 
-## Supabase
+## 1. Obtener la conexión en Supabase
 
-En el proyecto de Supabase, abrir **Connect → Session pooler**. Usar el host y el
-usuario que muestra el panel. Para un proyecto nuevo, elegir una región cercana
-a Render. Si el proyecto ya existe, revisar su región antes de aplicar el Blueprint.
+En el proyecto de Supabase, abrir **Connect → Session pooler** y copiar el host y
+el usuario completos. Elegir regiones cercanas para Supabase y Render cuando sea
+posible.
 
-| Variable | Valor en Render |
+| Variable en Render | Valor |
 | --- | --- |
 | `DB_URL` | `jdbc:postgresql://HOST_DEL_POOLER:5432/postgres?sslmode=require` |
-| `DB_USUARIO` | Usuario completo del Session pooler, con el identificador de proyecto |
-| `DB_CLAVE` | Contraseña de PostgreSQL |
+| `DB_USUARIO` | Usuario del pooler, normalmente `postgres.REFERENCIA_DEL_PROYECTO` |
+| `DB_CLAVE` | Contraseña de PostgreSQL del proyecto |
 
-Las tres variables se ingresan durante la creación del Blueprint para
-`arena-ep3-user`. Render comparte sus valores con los otros servicios de datos.
-El usuario de PostgreSQL necesita permiso para crear los esquemas y tablas.
-El modo sesión permite conexiones IPv4 y usa el puerto 5432.
-[Documentación de Supabase](https://supabase.com/docs/guides/database/connecting-to-postgres)
+El perfil de producción crea el esquema `arena_ep3` y sus tablas. Si se
+reutiliza una base de un despliegue anterior con esquemas por módulo, migrar esos
+datos antes de usarla para la entrega.
 
-## Render
+[Conexión a PostgreSQL en Supabase](https://supabase.com/docs/guides/database/connecting-to-postgres)
 
-1. Abrir **New → Blueprint** en Render y seleccionar el repositorio
+## 2. Publicar el backend en Render
+
+1. Ir a **New → Web Service** y conectar el repositorio
    [eSportsArenaManager](https://github.com/ITAustin92/eSportsArenaManager).
-   Seleccionar `main` y el archivo `render.yaml`.
-2. Confirmar la región y revisar el costo estimado. El Blueprint separa las trece
-   aplicaciones Spring Boot en instancias de pago. La sesión del profesor usa una
-   sola aplicación Spring Boot como ejemplo.
-3. Ingresar las variables de Supabase en el formulario seguro y aplicar el
-   Blueprint una vez aprobado el costo. Render genera un secreto JWT compartido.
-4. Tras activar `arena-ep3-user`, agregar a `arena-ep3-auth` las variables
-   `ADMIN_USERNAME`, `ADMIN_PASSWORD`, `ADMIN_NOMBRE` y `ADMIN_CORREO`.
-   La contraseña inicial requiere al menos 12 caracteres. Verificar el acceso
-   del administrador y retirar `ADMIN_PASSWORD` después de crearlo.
-5. Copiar la URL HTTPS pública de `arena-ep3-gateway`. Probar
-   `/actuator/health`, `/api/v1/games` y `/docs/swagger-ui.html`. Probar el
-   catálogo además de la salud comprueba que el gateway enruta al servicio.
+   Elegir la rama `main`, el runtime **Docker**, el plan **Free** y dejar
+   **Root Directory** vacío. Render toma el `Dockerfile` desde la raíz.
+2. En **Environment Variables**, agregar las tres variables de Supabase y las
+   de la tabla siguiente. En **Health Check Path**, configurar `/actuator/health`.
+3. Pulsar **Deploy Web Service**. Una vez en estado **Live**, abrir
+   `https://TU-SERVICIO.onrender.com/actuator/health` y confirmar que devuelve
+   `UP`. Abrir también `/docs/swagger-ui.html` para probar la API y
+   `/api/v1/games` para verificar el catálogo.
 
-El perfil `prod` usa una base persistente, omite los datos de prueba y desactiva
-Eureka. En una base nueva se crean esquemas y tablas. Preparar los juegos y
-torneos de muestra mediante el panel de administración. Si se reutiliza una base
-anterior, revisar primero la migración de datos y restricciones.
-[Blueprints de Render](https://render.com/docs/blueprint-spec)
+| Variable | Valor |
+| --- | --- |
+| `SPRING_PROFILES_ACTIVE` | `prod` |
+| `JWT_SECRETO` | Secreto aleatorio propio de al menos 32 caracteres |
+| `CORS_ORIGENES` | `https://esports-arena-managerv2.vercel.app` |
+| `ADMIN_USERNAME` | Nombre de usuario del administrador inicial |
+| `ADMIN_PASSWORD` | Contraseña inicial de al menos 12 caracteres |
+| `ADMIN_CORREO` | Correo del administrador inicial |
+| `ADMIN_NOMBRE` | Nombre que se mostrará. Es opcional |
 
-## Vercel
+Como alternativa, **New → Blueprint** lee `render.yaml` y prepara el mismo
+servicio con plan Free. El Blueprint genera el secreto JWT y solicita los
+valores privados. Usar uno de los dos caminos.
 
-El gateway ya incluye `https://esports-arena-managerv2.vercel.app` en
-`CORS_ORIGENES`. Si se prueba primero una vista previa, agregar también su origen
-exacto, separado por coma. En el proyecto Vercel, configurar `VITE_API_URL` con la
-URL HTTPS del gateway, sin el sufijo `/api`, porque el código ya agrega
-`/api/v1`. Crear un nuevo despliegue de la revisión EP3 en `develop`. Si se
-publica desde esa rama en el dominio principal, usar la configuración del
-entorno de producción de Vercel.
+En una base nueva, iniciar sesión como administrador y crear un juego, una
+cuenta organizadora y un torneo para la demostración. Después de comprobar
+el acceso, quitar las variables de creación inicial `ADMIN_USERNAME`,
+`ADMIN_PASSWORD`, `ADMIN_CORREO` y `ADMIN_NOMBRE` de Render.
+
+[Plan Free de Render](https://render.com/docs/free)
+
+## 3. Conectar el frontend en Vercel
+
+1. Abrir el proyecto existente. Para publicar EP3 en el dominio principal,
+   entrar en **Settings → Environments → Production → Branch Tracking** y
+   seleccionar `develop`.
+2. En **Settings → Environment Variables**, agregar
+   `VITE_API_URL=https://TU-SERVICIO.onrender.com` al entorno **Production**.
+   El código añade `/api/v1`.
+3. Ir a **Deployments → Create Deployment** y seleccionar `develop` como
+   referencia Git. Confirmar que esa rama aparece como origen del despliegue.
+   Abrir el dominio principal y probar
+   catálogo, registro, sesión tras recargar y permisos por rol.
+4. Si se usa una vista previa, configurar la variable para **Preview** y
+   agregar el origen exacto de esa vista a `CORS_ORIGENES` en Render,
+   separado por coma del dominio principal.
+
+[Configuración de la rama de producción](https://vercel.com/docs/git#customizing-the-production-branch) ·
 [Variables de Vercel](https://vercel.com/docs/environment-variables)
 
-## Verificación de entrega
+## Verificación para la entrega
 
-- Consultar el catálogo desde Vercel y confirmar que la petición llega a Render.
-- Iniciar sesión, recargar el perfil y verificar los permisos por rol.
-- Crear un registro de prueba, reiniciar su servicio y comprobar que Supabase lo conserva.
-- Probar la inscripción, registrar un resultado individual y consultar su clasificación.
-- Guardar capturas de Network, login y persistencia con las URLs definitivas.
+- Crear un dato de prueba, reiniciar el backend en Render y comprobar que se
+  conserva en Supabase.
+- Probar una inscripción y la actualización de la clasificación al registrar
+  un resultado. Guardar evidencias con las URL públicas.
+- Abrir el endpoint de salud antes de la defensa. Render Free suspende el
+  servicio después de 15 minutos sin tráfico y el primer acceso puede tardar
+  alrededor de un minuto.

@@ -12,7 +12,7 @@ los ZIP de avance del equipo. Todo el tráfico del navegador pasa por el API Gat
 
 ## Ejecutar el frontend
 
-Requiere Node 20.19+ (rama 20) o 22.12+ y el gateway disponible.
+Requiere Node 20.19+ (rama 20) o 22.12+ y el backend disponible.
 
 ```sh
 npm ci
@@ -24,13 +24,13 @@ Copiar `.env.example` a `.env` y configurar `VITE_API_URL=http://localhost:8080`
 npm run dev
 ```
 
-En Vercel, `VITE_API_URL` debe ser la URL HTTPS del gateway, sin `/api` al final.
+En Vercel, `VITE_API_URL` debe ser la URL HTTPS del servicio en Render, sin `/api` al final.
 Las funciones de servicio agregan `/api/v1/...`. Cambiar la variable requiere un
 nuevo build. `vercel.json` conserva las rutas de React al recargar.
 
 ## Ejecutar el backend
 
-Consultar el README del repositorio backend. El modo local trae datos ficticios; los perfiles
+Consultar el README del repositorio backend o la [guía de despliegue](docs/ep3/DESPLIEGUE.md). El modo local trae datos ficticios; los perfiles
 `mysql` y `prod` conservan las tablas y desactivan la carga de `data.sql`.
 
 ## Roles
@@ -103,13 +103,14 @@ ganador, reenvíos simultáneos sin puntos duplicados, actualización del perfil
 anulación de los puntos. El informe se genera en `playwright-report/index.html`.
 
 Para repetir Playwright, iniciar primero el backend local con los datos ficticios y
-las cuentas de demostración de su README. El gateway debe responder en
-`http://localhost:8080` y auth en `http://localhost:8099` (también se comprueba la
-validación del JWT accediendo directamente a ese servicio). Esperar a que el catálogo
-del gateway responda correctamente: la salud de cada proceso no garantiza que Eureka
-ya haya descubierto todos los servicios. Playwright inicia Vite en el puerto 4173,
-configura su conexión al gateway local y usa Edge en Windows. En otros sistemas se
-puede instalar Chromium con `npx playwright install chromium`, o definir `CHROME_BIN`.
+las cuentas de demostración de su README. Agregar `http://localhost:4173` a
+`CORS_ORIGENES` del backend. Con los módulos separados, el gateway debe responder
+en `http://localhost:8080` y auth en `http://localhost:8099`.
+
+Con `arena-web`, usar la misma URL base en `ARENA_TEST_API_URL` y
+`ARENA_TEST_AUTH_URL`. Playwright inicia Vite en el puerto 4173 y usa Edge en
+Windows. En otros sistemas se puede instalar Chromium con
+`npx playwright install chromium`, o definir `CHROME_BIN`.
 
 Estas pruebas crean datos ficticios; usar una instancia dedicada de demostración.
 La ejecución documentada utilizó Java 21, H2 y Edge; no valida un despliegue cloud

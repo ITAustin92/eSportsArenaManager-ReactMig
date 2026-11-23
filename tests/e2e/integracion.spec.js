@@ -5,6 +5,7 @@ import { basename } from 'node:path'
 // Estas pruebas usan el gateway y las bases locales reales, sin interceptar fetch.
 // Ejecutar solo contra datos de prueba: crean cuentas, equipos y torneos.
 const API = process.env.ARENA_TEST_API_URL ?? 'http://localhost:8080'
+const API_AUTH_DIRECTA = process.env.ARENA_TEST_AUTH_URL ?? 'http://localhost:8099'
 const clave = 'Prueba123!'
 
 async function capturar(page, opciones) {
@@ -438,9 +439,7 @@ test('administrador crea una cuenta organizadora y la elimina desde React', asyn
 	).toBe(401)
 })
 
-test('un JWT manipulado no gana permisos ni accede al microservicio directamente', async ({
-	request,
-}) => {
+test('un JWT manipulado no obtiene permisos de administrador', async ({ request }) => {
 	const cuenta = await registrar(request)
 	const partes = cuenta.token.split('.')
 	const payload = JSON.parse(Buffer.from(partes[1], 'base64url').toString())
@@ -448,10 +447,12 @@ test('un JWT manipulado no gana permisos ni accede al microservicio directamente
 	partes[1] = Buffer.from(JSON.stringify(payload)).toString('base64url')
 	const headers = { Authorization: 'Bearer ' + partes.join('.') }
 	expect((await request.get(API + '/api/v1/auth/users', { headers })).status()).toBe(401)
-	// El puerto interno también valida la firma; no basta con saltarse el gateway.
-	expect((await request.get('http://localhost:8099/api/v1/auth/users', { headers })).status()).toBe(
-		401,
-	)
+	if (API_AUTH_DIRECTA !== API) {
+		// Con los módulos separados, comprobar también el puerto directo de autenticación.
+		expect((await request.get(API_AUTH_DIRECTA + '/api/v1/auth/users', { headers })).status()).toBe(
+			401,
+		)
+	}
 })
 
 test('ciclo individual completo: partida, resultado, corrección, perfil y anulación', async ({
