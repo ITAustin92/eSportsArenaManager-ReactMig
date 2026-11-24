@@ -1,0 +1,623 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "API Games",
+    "description": "API Games - eSports Arena Manager",
+    "version": "1.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8001",
+      "description": "Generated server url"
+    }
+  ],
+  "security": [
+    {
+      "bearer": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Games V2",
+      "description": "CRUD de videojuegos con respuestas HATEOAS"
+    }
+  ],
+  "paths": {
+    "/api/v2/games/{id}": {
+      "get": {
+        "tags": [
+          "Games V2"
+        ],
+        "summary": "Buscar juego por ID",
+        "operationId": "findById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID del juego",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Juego encontrado",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/GameDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Juego no encontrado",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntityModelGame"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Games V2"
+        ],
+        "summary": "Actualizar juego",
+        "operationId": "update",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID del juego",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Game"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Juego actualizado",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntityModelGame"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Juego no encontrado",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntityModelGame"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Games V2"
+        ],
+        "summary": "Desactivar juego",
+        "operationId": "delete",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID del juego",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Juego desactivado"
+          }
+        }
+      }
+    },
+    "/api/v1/games/{id}": {
+      "get": {
+        "tags": [
+          "game-controller"
+        ],
+        "summary": "Buscar juego por ID",
+        "operationId": "findById_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID del juego",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Juego encontrado",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/GameDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Juego no encontrado",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Game"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "game-controller"
+        ],
+        "summary": "Actualizacion de juego",
+        "description": "Se actualizan los datos de un juego existente",
+        "operationId": "update_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID del juego",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Game"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Juego actualizado",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Game"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Juego no se encuentra en la BD",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Game"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "game-controller"
+        ],
+        "summary": "Borrado del juego",
+        "description": "Se elimina juego de la base de datos",
+        "operationId": "delete_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID del juego",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Juego eliminado"
+          }
+        }
+      }
+    },
+    "/api/v2/games": {
+      "get": {
+        "tags": [
+          "Games V2"
+        ],
+        "summary": "Listar todos los juegos",
+        "description": "Devuelve la lista de juegos con enlaces HATEOAS",
+        "operationId": "findAll",
+        "responses": {
+          "200": {
+            "description": "Operación exitosa",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollectionModelEntityModelGame"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Games V2"
+        ],
+        "summary": "Crear juego",
+        "operationId": "save",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Game"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntityModelGame"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/games": {
+      "get": {
+        "tags": [
+          "game-controller"
+        ],
+        "summary": "Buscar juegos en estado ACTIVO",
+        "operationId": "findActivos",
+        "responses": {
+          "200": {
+            "description": "Juegos en ACTIVO encontrados",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/GameDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Juegos en ACTIVO no encontrados",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Game"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "game-controller"
+        ],
+        "summary": "Guardado del juego",
+        "description": "Método que guarda el juego en la DB",
+        "operationId": "save_1",
+        "requestBody": {
+          "description": "Juego a crear",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Game"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Juego creado",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Game"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/games/estado/{estado}": {
+      "get": {
+        "tags": [
+          "game-controller"
+        ],
+        "summary": "Buscar juego por estado",
+        "operationId": "findByEstado",
+        "parameters": [
+          {
+            "name": "estado",
+            "in": "path",
+            "description": "Estado del juego",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "ACTIVO"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Juegos encontrados",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/GameDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Juegos no encontrados",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Game"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Audit": {
+        "type": "object",
+        "properties": {
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Game": {
+        "type": "object",
+        "properties": {
+          "juegoId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "nombre": {
+            "type": "string",
+            "minLength": 1
+          },
+          "genero": {
+            "type": "string",
+            "minLength": 1
+          },
+          "modalidad": {
+            "type": "string",
+            "minLength": 1
+          },
+          "jugadoresPorEquipo": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "estado": {
+            "type": "string",
+            "minLength": 1
+          },
+          "imagen": {
+            "type": "string"
+          },
+          "audit": {
+            "$ref": "#/components/schemas/Audit"
+          }
+        },
+        "required": [
+          "estado",
+          "genero",
+          "jugadoresPorEquipo",
+          "modalidad",
+          "nombre"
+        ]
+      },
+      "EntityModelGame": {
+        "type": "object",
+        "properties": {
+          "juegoId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "nombre": {
+            "type": "string",
+            "minLength": 1
+          },
+          "genero": {
+            "type": "string",
+            "minLength": 1
+          },
+          "modalidad": {
+            "type": "string",
+            "minLength": 1
+          },
+          "jugadoresPorEquipo": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "estado": {
+            "type": "string",
+            "minLength": 1
+          },
+          "imagen": {
+            "type": "string"
+          },
+          "audit": {
+            "$ref": "#/components/schemas/Audit"
+          },
+          "_links": {
+            "$ref": "#/components/schemas/Links"
+          }
+        },
+        "required": [
+          "estado",
+          "genero",
+          "jugadoresPorEquipo",
+          "modalidad",
+          "nombre"
+        ]
+      },
+      "CollectionModelEntityModelGame": {
+        "type": "object",
+        "properties": {
+          "_embedded": {
+            "type": "object",
+            "properties": {
+              "gameList": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/EntityModelGame"
+                }
+              }
+            }
+          },
+          "_links": {
+            "$ref": "#/components/schemas/Links"
+          }
+        }
+      },
+      "GameDTO": {
+        "type": "object",
+        "properties": {
+          "juegoId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "nombre": {
+            "type": "string"
+          },
+          "genero": {
+            "type": "string"
+          },
+          "modalidad": {
+            "type": "string"
+          },
+          "jugadoresPorEquipo": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "estado": {
+            "type": "string"
+          }
+        }
+      },
+      "Link": {
+        "type": "object",
+        "properties": {
+          "href": {
+            "type": "string"
+          },
+          "hreflang": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "deprecation": {
+            "type": "string"
+          },
+          "profile": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "templated": {
+            "type": "boolean"
+          }
+        }
+      },
+      "Links": {
+        "type": "object",
+        "additionalProperties": {
+          "$ref": "#/components/schemas/Link"
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

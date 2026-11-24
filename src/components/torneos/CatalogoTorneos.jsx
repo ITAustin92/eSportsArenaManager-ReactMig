@@ -1,30 +1,34 @@
 import { useState } from 'react'
 import FiltrosTorneos from './FiltrosTorneos'
 import TarjetaTorneo from './TarjetaTorneo'
-import { filtrarTorneos, validarFiltros } from '../../logica/torneos.js'
+import EstadoCarga from '../compartidos/EstadoCarga'
+import useCarga from '../../hooks/useCarga'
+import { cargarCatalogo } from '../../servicios/catalogo.js'
+import { filtrarTorneos } from '../../logica/torneos.js'
 
-function CatalogoTorneos({ datos }) {
-	const [filtros, setFiltros] = useState({
-		busqueda: '',
-		juego: '',
-		estado: '',
-		fechaInicio: '',
-		fechaFin: '',
-	})
-	const errores = validarFiltros(filtros)
-	const resultados = filtrarTorneos(datos.torneos, filtros)
+// Catálogo público ("la tienda"): GET /api/v1/tournaments y GET /api/v1/games en paralelo.
+// Los filtros se aplican en el navegador sobre la lista ya descargada (sin más peticiones).
+function CatalogoTorneos() {
+	const { datos, error, cargando, recargar } = useCarga(cargarCatalogo)
+	const [filtros, setFiltros] = useState({ busqueda: '', juego: '', estado: '' })
 	const cambiar = (evento) =>
 		setFiltros((actual) => ({ ...actual, [evento.target.name]: evento.target.value }))
 	return (
 		<>
 			<p className="sobretitulo">Encuentra tu próximo desafío</p>
 			<h1>Explorar torneos</h1>
-			<FiltrosTorneos
-				filtros={filtros}
-				juegos={datos.juegos}
-				errores={errores}
-				onCambiar={cambiar}
-			/>
+			<EstadoCarga cargando={cargando} error={error} onReintentar={recargar}>
+				{datos && <ListaFiltrada datos={datos} filtros={filtros} onCambiar={cambiar} />}
+			</EstadoCarga>
+		</>
+	)
+}
+
+function ListaFiltrada({ datos, filtros, onCambiar }) {
+	const resultados = filtrarTorneos(datos.torneos, filtros)
+	return (
+		<>
+			<FiltrosTorneos filtros={filtros} juegos={datos.juegos} onCambiar={onCambiar} />
 			<p className="texto-secundario mt-4" role="status">
 				{resultados.length} de {datos.torneos.length} torneos
 			</p>
@@ -36,10 +40,10 @@ function CatalogoTorneos({ datos }) {
 			) : (
 				<div className="row g-4">
 					{resultados.map((torneo) => (
-						<div key={torneo.id} className="col-12 col-md-6 col-lg-4">
+						<div key={torneo.tournamentId} className="col-12 col-md-6 col-lg-4">
 							<TarjetaTorneo
 								torneo={torneo}
-								juego={datos.juegos.find((juego) => juego.id === torneo.juegoId)}
+								juego={datos.juegos.find((juego) => juego.juegoId === torneo.gameId)}
 							/>
 						</div>
 					))}

@@ -52,6 +52,13 @@ module.exports = function (config) {
 		],
 		preprocessors: { 'src/**/*.spec.js*': ['esbuild'] },
 		esbuild: {
+			define: {
+				'import.meta.env': JSON.stringify({
+					DEV: true,
+					PROD: false,
+					VITE_API_URL: 'http://localhost:8080',
+				}),
+			},
 			singleBundle: false,
 			target: 'es2022',
 			jsx: 'automatic',

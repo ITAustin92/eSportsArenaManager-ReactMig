@@ -29,3 +29,11 @@ coverage/
 .nyc_cache/
 playwright-report/
 test-results/
+
+# Configuración privada y trabajo temporal
+.env
+.env.*
+!.env.example
+tmp/
+output/
+repomix-output.xml

@@ -34,3 +34,15 @@
 .badge-estado.estado-vigente {
 	color: var(--color-error);
 }
+.badge-estado.estado-confirmada,
+.badge-estado.estado-activo,
+.badge-estado.estado-entregado {
+	background: var(--color-acento);
+	color: var(--color-fondo);
+}
+.badge-estado.estado-cancelado,
+.badge-estado.estado-cancelada,
+.badge-estado.estado-rechazada,
+.badge-estado.estado-inactivo {
+	color: var(--color-error);
+}

@@ -6,9 +6,10 @@ export default defineConfig({
 	timeout: 60000,
 	reporter: [['list'], ['html', { open: 'never' }]],
 	use: {
-		baseURL: 'http://127.0.0.1:4173',
+		baseURL: 'http://localhost:4173',
 		headless: true,
 		launchOptions: process.env.CHROME_BIN ? { executablePath: process.env.CHROME_BIN } : {},
+		channel: !process.env.CHROME_BIN && process.platform === 'win32' ? 'msedge' : undefined,
 		trace: 'retain-on-failure',
 		screenshot: 'only-on-failure',
 	},
@@ -17,6 +18,7 @@ export default defineConfig({
 			? undefined
 			: {
 					command: 'npm run dev -- --host 127.0.0.1 --port 4173 --strictPort',
+					env: { VITE_API_URL: process.env.ARENA_TEST_API_URL ?? 'http://localhost:8080' },
 					url: 'http://127.0.0.1:4173',
 					reuseExistingServer: !process.env.CI,
 				},

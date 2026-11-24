@@ -1,107 +1,113 @@
-export const estadosTorneo = ['Abierto', 'En Curso', 'Finalizado']
-export const estadosPartida = ['Programada', 'En juego', 'Finalizada']
+import { ESTADOS_TORNEO } from './estados.js'
 
-const formatoDia = new Intl.DateTimeFormat('en-CA', {
-	timeZone: 'America/Santiago',
-	year: 'numeric',
-	month: '2-digit',
-	day: '2-digit',
-})
+const zona = 'America/Santiago'
 
-export function fechaSantiago(fecha) {
-	const partes = formatoDia.formatToParts(new Date(fecha))
-	const valor = (tipo) => partes.find((parte) => parte.type === tipo).value
-	return valor('year') + '-' + valor('month') + '-' + valor('day')
-}
-
-export function inscripcionAbierta(torneo, hoy = Date.now()) {
-	const cierre = Date.parse(torneo.cierreISO)
-	return torneo.estado === 'Abierto' && Number.isFinite(cierre) && new Date(hoy).getTime() <= cierre
-}
-
-export function claseEstado(estado = '') {
-	return 'estado-' + estado.toLowerCase().replaceAll(' ', '-')
-}
-
-export function cuposDisponibles(torneo) {
-	return Math.max(0, Number(torneo.cupoMax) - torneo.inscritos.length)
-}
-
-export function fechasValidas({ fechaInicio, fechaFin }) {
-	return !fechaInicio || !fechaFin || fechaInicio <= fechaFin
-}
-
-export function validarFiltros(filtros) {
-	return fechasValidas(filtros)
-		? {}
-		: { fechaInicio: 'La fecha inicial no puede ser posterior a la final.' }
-}
-
-export function filtrarTorneos(torneos, filtros = {}) {
-	if (!fechasValidas(filtros)) {
-		return []
+// '2027-02-01' -> '1 feb 2027'. Las fechas LocalDate del backend no tienen hora: se leen
+// como mediodía para que la zona horaria no las corra un día.
+export function formatearFecha(fecha) {
+	if (!fecha) {
+		return '—'
 	}
-	const texto = (filtros.busqueda ?? '').trim().toLocaleLowerCase('es')
-	return torneos.filter(
-		(torneo) =>
-			torneo.nombre.toLocaleLowerCase('es').includes(texto) &&
-			(!filtros.juego || torneo.juegoId === filtros.juego) &&
-			(!filtros.estado || torneo.estado === filtros.estado) &&
-			(!filtros.fechaInicio || fechaSantiago(torneo.cierreISO) >= filtros.fechaInicio) &&
-			(!filtros.fechaFin || fechaSantiago(torneo.cierreISO) <= filtros.fechaFin),
+	const valor = /^\d{4}-\d{2}-\d{2}$/.test(fecha) ? fecha + 'T12:00:00' : fecha
+	const fechaJs = new Date(valor)
+	if (Number.isNaN(fechaJs.getTime())) {
+		return String(fecha)
+	}
+	return fechaJs.toLocaleDateString('es-CL', { dateStyle: 'medium', timeZone: zona })
+}
+
+export function formatearFechaHora(fecha) {
+	if (!fecha) {
+		return '—'
+	}
+	const fechaJs = new Date(fecha)
+	if (Number.isNaN(fechaJs.getTime())) {
+		return String(fecha)
+	}
+	return fechaJs.toLocaleString('es-CL', {
+		dateStyle: 'medium',
+		timeStyle: 'short',
+		timeZone: zona,
+	})
+}
+
+export function hoyISO(ahora = new Date()) {
+	const partes = new Intl.DateTimeFormat('en-CA', {
+		timeZone: zona,
+		year: 'numeric',
+		month: '2-digit',
+		day: '2-digit',
+	}).format(ahora)
+	return partes
+}
+
+// Un torneo admite inscripciones solo en estado UPCOMING (regla del registration-service).
+export function cierreInscripcion(torneo) {
+	return (
+		torneo?.registrationDeadline ??
+		(torneo?.startDate ? torneo.startDate + 'T00:00:00-03:00' : null)
 	)
 }
 
-export function validarTorneo(datos, anterior = null, hoy = new Date()) {
-	const errores = {}
-	if (!datos.nombre?.trim()) {
-		errores.nombre = 'El nombre es obligatorio.'
+export const admiteInscripciones = (torneo) =>
+	torneo?.state === 'UPCOMING' && Date.parse(cierreInscripcion(torneo)) > Date.now()
+
+export const inscripcionVigente = (inscripcion) =>
+	!['CANCELLED', 'REJECTED'].includes(inscripcion.status)
+
+export function imagenJuego(juego) {
+	if (juego?.imagen?.startsWith('/img/')) {
+		return juego.imagen
 	}
-	if (!datos.juegoId) {
-		errores.juegoId = 'Selecciona un juego.'
+	const nombre = juego?.nombre?.toLowerCase() ?? ''
+	if (nombre.includes('valorant')) {
+		return '/img/valorant.jpg'
 	}
-	if (!Number.isInteger(Number(datos.cupoMax)) || Number(datos.cupoMax) <= 0) {
-		errores.cupoMax = 'El cupo debe ser un entero positivo.'
+	if (nombre.includes('league')) {
+		return '/img/lol.png'
 	}
-	if (Number(datos.cupoMax) < (anterior?.inscritos.length ?? 0)) {
-		errores.cupoMax = 'No puedes reducir el cupo bajo las inscripciones existentes.'
+	if (nombre.includes('rocket')) {
+		return '/img/rocket.png'
 	}
-	const cierre = Date.parse(datos.cierreISO)
-	const inicio = Date.parse(datos.fechaInicio)
-	if (!Number.isFinite(cierre)) {
-		errores.cierreISO = 'Ingresa un cierre válido.'
-	} else if (
-		(!anterior || datos.cierreISO !== anterior.cierreISO) &&
-		cierre < new Date(hoy).getTime()
-	) {
-		errores.cierreISO = 'El cierre debe estar en el futuro.'
+	if (nombre.includes('street')) {
+		return '/img/sf6.jpg'
 	}
-	if (!Number.isFinite(inicio) || inicio <= cierre) {
-		errores.fechaInicio = 'El inicio debe ser posterior al cierre.'
-	}
-	if (!estadosTorneo.includes(datos.estado)) {
-		errores.estado = 'Selecciona un estado válido.'
-	}
-	if (anterior && anterior.estado !== 'Abierto') {
-		for (const campo of ['juegoId', 'cupoMax', 'cierreISO', 'fechaInicio']) {
-			if (String(datos[campo]) !== String(anterior[campo])) {
-				errores[campo] = 'Esta regla queda bloqueada al comenzar el torneo.'
-			}
-		}
-		if (
-			datos.estado === 'Abierto' ||
-			(anterior.estado === 'Finalizado' && datos.estado !== 'Finalizado')
-		) {
-			errores.estado = 'No se puede retroceder el estado del torneo.'
-		}
-	}
-	return errores
+	return '/img/hero/equipo-en-competencia.webp'
 }
 
-export function formatearFecha(fecha) {
-	return new Date(fecha).toLocaleString('es-CL', {
-		dateStyle: 'medium',
-		timeStyle: 'short',
-		timeZone: 'America/Santiago',
-	})
+export function filtrarTorneos(torneos, filtros = {}) {
+	const texto = (filtros.busqueda ?? '').trim().toLocaleLowerCase('es')
+	return torneos
+		.filter(
+			(t) =>
+				t.name.toLocaleLowerCase('es').includes(texto) &&
+				(!filtros.juego || String(t.gameId) === String(filtros.juego)) &&
+				(!filtros.estado || t.state === filtros.estado) &&
+				(!filtros.fechaInicio || cierreInscripcion(t)?.slice(0, 10) >= filtros.fechaInicio) &&
+				(!filtros.fechaFin || cierreInscripcion(t)?.slice(0, 10) <= filtros.fechaFin),
+		)
+		.sort((a, b) => ordenEstado(a) - ordenEstado(b) || a.startDate.localeCompare(b.startDate))
+}
+
+const ORDEN = { UPCOMING: 0, IN_PROGRESS: 1, FINISHED: 2, CANCELLED: 3 }
+const ordenEstado = (t) => ORDEN[t.state] ?? 9
+
+export const opcionesEstadoTorneo = Object.entries(ESTADOS_TORNEO).map(([valor, texto]) => ({
+	valor,
+	etiqueta: texto,
+}))
+
+// Ranking: puntos, luego victorias, luego menos derrotas.
+export function ordenarRanking(filas = []) {
+	return [...filas].sort(
+		(a, b) =>
+			b.points - a.points ||
+			b.wins - a.wins ||
+			a.losses - b.losses ||
+			(a.userId ?? a.teamId) - (b.userId ?? b.teamId),
+	)
+}
+
+export function nombreEquipo(equipos, id) {
+	return equipos.find((e) => e.equipoId === id)?.nombre ?? 'Equipo #' + id
 }

@@ -1,0 +1,711 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "API Tournaments",
+    "description": "API Tournaments - eSports Arena Manager",
+    "version": "1.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8003",
+      "description": "Generated server url"
+    }
+  ],
+  "security": [
+    {
+      "bearer": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Torneos V1",
+      "description": "Metodos CRUD para la gestión de torneos"
+    },
+    {
+      "name": "Tournaments V2",
+      "description": "CRUD de torneos con respuestas HATEOAS"
+    }
+  ],
+  "paths": {
+    "/api/v2/tournaments/{id}": {
+      "get": {
+        "tags": [
+          "Tournaments V2"
+        ],
+        "summary": "Buscar torneo por ID",
+        "operationId": "findById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Encontrado",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntityModelTournament"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No encontrado",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntityModelTournament"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Tournaments V2"
+        ],
+        "summary": "Actualizar torneo",
+        "operationId": "update",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Tournament"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntityModelTournament"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Tournaments V2"
+        ],
+        "summary": "Eliminar torneo",
+        "operationId": "delete",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Eliminado"
+          }
+        }
+      }
+    },
+    "/api/v1/tournaments/{id}": {
+      "get": {
+        "tags": [
+          "Torneos V1"
+        ],
+        "summary": "Busqueda de un torneo por id",
+        "description": "Se devuelve un torneo, en caso contrario se devuelve una excepcion",
+        "operationId": "findById_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID del Torneo a buscar",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Torneo encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Tournament"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Torneo no se encuentra en la BD",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Tournament"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Torneos V1"
+        ],
+        "summary": "Actualizacion de torneo",
+        "description": "Se actualizan los datos de un torneo existente",
+        "operationId": "update_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID del Torneo a actualizar",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Tournament"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Torneo actualizado",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Tournament"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Torneo no se encuentra en la BD",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Tournament"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Torneos V1"
+        ],
+        "summary": "Borrado del torneo",
+        "description": "Se elimina un torneo de la base de datos",
+        "operationId": "delete_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID del Torneo a eliminar",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Torneo eliminado"
+          }
+        }
+      }
+    },
+    "/api/v2/tournaments": {
+      "get": {
+        "tags": [
+          "Tournaments V2"
+        ],
+        "summary": "Listar torneos",
+        "operationId": "findAll",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollectionModelEntityModelTournament"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Tournaments V2"
+        ],
+        "summary": "Crear torneo",
+        "operationId": "save",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Tournament"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntityModelTournament"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/tournaments": {
+      "get": {
+        "tags": [
+          "Torneos V1"
+        ],
+        "summary": "Listado de todos los torneos",
+        "description": "Se devuelve una lista con todos los torneos en la tabla torneos de la DB",
+        "operationId": "findAll_1",
+        "responses": {
+          "200": {
+            "description": "Operacion Exitosa",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Tournament"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Torneos V1"
+        ],
+        "summary": "Guardado del torneo",
+        "description": "Método que guarda al torneo en la DB",
+        "operationId": "save_1",
+        "requestBody": {
+          "description": "Torneo a crear",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Tournament"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Tournament"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/tournaments/state/{state}": {
+      "get": {
+        "tags": [
+          "Torneos V1"
+        ],
+        "summary": "Busqueda de torneos por estado",
+        "description": "Se devuelve una lista de torneos, en caso contrario se devuelve una excepcion",
+        "operationId": "findByState",
+        "parameters": [
+          {
+            "name": "state",
+            "in": "path",
+            "description": "Estado de los torneos a buscar",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "Iniciado"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Torneos por estado encontrados",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Tournament"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Estado no se encuentra en la BD",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Tournament"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/tournaments/organizer/{organizerId}": {
+      "get": {
+        "tags": [
+          "Torneos V1"
+        ],
+        "summary": "Busqueda de torneos por organizador",
+        "description": "Se devuelve una lista de torneos por organizador, en caso contrario se devuelve una excepcion",
+        "operationId": "findByOrganizerId",
+        "parameters": [
+          {
+            "name": "organizerId",
+            "in": "path",
+            "description": "ID del organizador a buscar",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Organizador encontrado",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Tournament"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Organizador no se encuentra en la BD",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Tournament"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/tournaments/game/{gameId}": {
+      "get": {
+        "tags": [
+          "Torneos V1"
+        ],
+        "summary": "Busqueda de torneos por juego",
+        "description": "Se devuelve una lista de torneos por juego, en caso contrario se devuelve una excepcion",
+        "operationId": "findByGameId",
+        "parameters": [
+          {
+            "name": "gameId",
+            "in": "path",
+            "description": "ID del juego a buscar",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Juego encontrado",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Tournament"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Juego no se encuentra en la BD",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Tournament"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Audit": {
+        "type": "object",
+        "properties": {
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Tournament": {
+        "type": "object",
+        "properties": {
+          "tournamentId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "gameId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "organizerId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "state": {
+            "type": "string",
+            "minLength": 1
+          },
+          "maxParticipants": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 2
+          },
+          "registrationDeadline": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "audit": {
+            "$ref": "#/components/schemas/Audit"
+          }
+        },
+        "required": [
+          "endDate",
+          "gameId",
+          "name",
+          "organizerId",
+          "startDate",
+          "state"
+        ]
+      },
+      "EntityModelTournament": {
+        "type": "object",
+        "properties": {
+          "tournamentId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "gameId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "organizerId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "state": {
+            "type": "string",
+            "minLength": 1
+          },
+          "maxParticipants": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 2
+          },
+          "registrationDeadline": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "audit": {
+            "$ref": "#/components/schemas/Audit"
+          },
+          "_links": {
+            "$ref": "#/components/schemas/Links"
+          }
+        },
+        "required": [
+          "endDate",
+          "gameId",
+          "name",
+          "organizerId",
+          "startDate",
+          "state"
+        ]
+      },
+      "CollectionModelEntityModelTournament": {
+        "type": "object",
+        "properties": {
+          "_embedded": {
+            "type": "object",
+            "properties": {
+              "tournamentList": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/EntityModelTournament"
+                }
+              }
+            }
+          },
+          "_links": {
+            "$ref": "#/components/schemas/Links"
+          }
+        }
+      },
+      "Link": {
+        "type": "object",
+        "properties": {
+          "href": {
+            "type": "string"
+          },
+          "hreflang": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "deprecation": {
+            "type": "string"
+          },
+          "profile": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "templated": {
+            "type": "boolean"
+          }
+        }
+      },
+      "Links": {
+        "type": "object",
+        "additionalProperties": {
+          "$ref": "#/components/schemas/Link"
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}
