@@ -1,160 +1,268 @@
 import './DetalleTorneo.css'
-import { useRef, useState } from 'react'
-import { Link, Navigate, useParams } from 'react-router-dom'
-import TablaRanking from './TablaRanking'
-import ListaPartidas from './ListaPartidas'
-import BadgeEstado from '../compartidos/BadgeEstado'
+import { Link, useParams } from 'react-router-dom'
+import { useState } from 'react'
 import BarraCupos from './BarraCupos'
+import LlaveTorneo from './LlaveTorneo'
 import Campo from '../compartidos/Campo'
-import { cuposDisponibles, formatearFecha, inscripcionAbierta } from '../../logica/torneos.js'
-import { ordenarRanking } from '../../logica/ranking.js'
-import { nombreParticipante } from '../../datos/datos.js'
 import useAhora from '../../logica/useAhora.js'
+import BadgeEstado from '../compartidos/BadgeEstado'
+import EstadoCarga from '../compartidos/EstadoCarga'
+import useCarga from '../../hooks/useCarga'
+import useAuth from '../auth/useAuth'
+import { cargarDetalleTorneo } from '../../servicios/catalogo.js'
+import {
+	ESTADOS_INSCRIPCION,
+	ESTADOS_PARTIDA,
+	ESTADOS_PREMIO,
+	ESTADOS_TORNEO,
+	TIPOS_PREMIO,
+	etiqueta,
+} from '../../logica/estados.js'
+import {
+	admiteInscripciones,
+	cierreInscripcion,
+	inscripcionVigente,
+	formatearFecha,
+	formatearFechaHora,
+	nombreEquipo,
+	ordenarRanking,
+} from '../../logica/torneos.js'
 
-function DetalleTorneo({ datos }) {
+// Detalle público de un torneo. Reúne datos de 7 microservicios a través del gateway.
+function DetalleTorneo() {
 	const { id } = useParams()
-	const ahora = useAhora()
+	const { datos, error, cargando, recargar } = useCarga(() => cargarDetalleTorneo(id), [id])
+	return (
+		<EstadoCarga cargando={cargando} error={error} onReintentar={recargar}>
+			{datos && <ContenidoDetalle detalle={datos} />}
+		</EstadoCarga>
+	)
+}
+
+export function ContenidoDetalle({ detalle, mostrarAcciones = true }) {
+	const { rol } = useAuth()
+	const {
+		torneo,
+		juego,
+		inscripciones,
+		ranking,
+		partidas,
+		premios,
+		equipos,
+		jugadores = [],
+	} = detalle
+	useAhora()
 	const [rondaElegida, setRondaElegida] = useState('')
-	const pestanas = useRef([])
-	const torneo = datos.torneos.find((item) => item.id === id)
-	if (!torneo) {
-		return <Navigate to="/torneos" replace />
-	}
-	const juego = datos.juegos.find((item) => item.id === torneo.juegoId)
-	const rondas = [...new Set(torneo.partidas.map((partida) => partida.ronda))]
-	const ronda = rondas.includes(rondaElegida) ? rondaElegida : (rondas[0] ?? '')
-	const navegarRondas = (evento, indice) => {
-		if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(evento.key)) {
-			return
-		}
-		evento.preventDefault()
-		const siguiente =
-			evento.key === 'Home'
-				? 0
-				: evento.key === 'End'
-					? rondas.length - 1
-					: (indice + (evento.key === 'ArrowRight' ? 1 : -1) + rondas.length) % rondas.length
-		setRondaElegida(rondas[siguiente])
-		pestanas.current[siguiente].focus()
-	}
+	const rondas = [...new Set(partidas.map((p) => p.round || 'General'))]
+	const ronda = rondas.includes(rondaElegida) ? rondaElegida : rondas[0]
+	const nombreParticipante = (i) =>
+		i.userId
+			? (jugadores.find((j) => j.usuarioId === i.userId)?.nickname ?? 'Jugador #' + i.userId)
+			: nombreEquipo(equipos, i.teamId)
+	const nombreLocal = (partida) =>
+		nombreParticipante({ userId: partida.homeUserId, teamId: partida.homeTeamId })
+	const nombreVisita = (partida) =>
+		nombreParticipante({ userId: partida.awayUserId, teamId: partida.awayTeamId })
+	const vigentes = inscripciones.filter(inscripcionVigente)
+	const maximo = torneo.maxParticipants ?? 16
+	const fallos = detalle.fallos ?? []
+	const cuposDisponibles = !fallos.includes('inscripciones')
 	return (
 		<>
-			<Link to="/torneos">← Volver a torneos</Link>
-			<section className="panel detalle-cabecera my-4">
-				<BadgeEstado estado={torneo.estado} />
-				<h1 className="mt-3">{torneo.nombre}</h1>
-				<p>
-					{juego.nombre} ·{' '}
-					{juego.modalidad === '1v1'
-						? '1v1'
-						: juego.jugadoresPorEquipo + 'v' + juego.jugadoresPorEquipo}
-				</p>
-				<p>
-					Cierre: {formatearFecha(torneo.cierreISO)} · Inicio: {formatearFecha(torneo.fechaInicio)}
-				</p>
-				<p>
-					{cuposDisponibles(torneo)} cupos disponibles · {torneo.inscritos.length}/{torneo.cupoMax}{' '}
-					ocupados
-				</p>
-				<BarraCupos inscritos={torneo.inscritos.length} maximo={torneo.cupoMax} />
-				{inscripcionAbierta(torneo, ahora) && cuposDisponibles(torneo) > 0 && (
-					<Link className="boton boton-primario" to={'/inscripcion?torneo=' + torneo.id}>
-						{juego.modalidad === '1v1' ? 'Inscribirse' : 'Inscribir equipo'}
-					</Link>
-				)}
-				{torneo.estado === 'Abierto' && !inscripcionAbierta(torneo, ahora) && (
-					<p role="status">El plazo de inscripción terminó.</p>
-				)}
-				{inscripcionAbierta(torneo, ahora) && cuposDisponibles(torneo) === 0 && (
+			<section className="panel detalle-cabecera mb-4">
+				<p className="sobretitulo">{juego?.nombre ?? 'Torneo'}</p>
+				<h1>{torneo.name}</h1>
+				<BadgeEstado estado={etiqueta(ESTADOS_TORNEO, torneo.state)} />
+				<dl className="datos-definicion mt-3">
+					<dt>Modalidad</dt>
+					<dd>
+						{juego ? juego.modalidad + ' · ' + juego.jugadoresPorEquipo + ' por equipo' : '—'}
+					</dd>
+					<dt>Inicio</dt>
+					<dd>{formatearFecha(torneo.startDate)}</dd>
+					<dt>Término</dt>
+					<dd>{formatearFecha(torneo.endDate)}</dd>
+					<dt>Participantes inscritos</dt>
+					<dd>
+						{cuposDisponibles ? `${vigentes.length} / ${maximo}` : 'Información no disponible'}
+					</dd>
+					<dt>Cierre de inscripción</dt>
+					<dd>{formatearFechaHora(cierreInscripcion(torneo))}</dd>
+				</dl>
+				{cuposDisponibles && <BarraCupos inscritos={vigentes.length} maximo={maximo} />}
+				{cuposDisponibles && vigentes.length >= maximo && (
 					<p role="status">No quedan cupos disponibles.</p>
 				)}
+				{mostrarAcciones &&
+					cuposDisponibles &&
+					admiteInscripciones(torneo) &&
+					vigentes.length < maximo && (
+						<div className="acciones mt-3">
+							{rol === 'JUGADOR' ? (
+								<Link
+									className="boton boton-primario"
+									to={'/inscripcion?torneo=' + torneo.tournamentId}
+								>
+									{juego?.jugadoresPorEquipo === 1 ? 'Inscribirme' : 'Inscribir a mi equipo'}
+								</Link>
+							) : rol === 'visitante' ? (
+								<Link className="boton boton-primario" to="/login">
+									Inicia sesión para inscribirte
+								</Link>
+							) : null}
+						</div>
+					)}
+				{detalle.incompleto && (
+					<p className="texto-secundario mt-3 mb-0">
+						Algunos servicios no respondieron; se muestra la información disponible.
+					</p>
+				)}
 			</section>
+
 			<div className="row g-4">
-				<div className="col-12 col-lg-8">
-					<section className="panel">
-						<h2>Tabla de posiciones</h2>
-						<TablaRanking ranking={ordenarRanking(torneo.ranking)} />
-					</section>
-					<section className="panel mt-4">
+				<section className="col-12 col-lg-6">
+					<div className="panel h-100">
 						<h2>Participantes inscritos</h2>
-						{torneo.inscritos.length === 0 ? (
-							<p>Aún no hay participantes.</p>
-						) : (
-							<ul className="lista-etiquetas">
-								{torneo.inscritos.map((participanteId) => (
-									<li key={participanteId}>{nombreParticipante(datos, participanteId)}</li>
-								))}
-							</ul>
-						)}
-					</section>
-					<section className="panel mt-4">
-						<h2>Premios por posición</h2>
-						<p>
-							{torneo.estado === 'Finalizado'
-								? 'Premios asignados según la clasificación final.'
-								: 'Premios anunciados; se asignarán al finalizar.'}
-						</p>
-						{torneo.premios.length === 0 ? (
-							<p>Premios por anunciar.</p>
+						{!cuposDisponibles ? (
+							<p>No pudimos consultar las inscripciones. Intenta de nuevo más tarde.</p>
+						) : vigentes.length === 0 ? (
+							<p>Aún no hay participantes inscritos.</p>
 						) : (
 							<ul className="lista-limpia">
-								{torneo.premios.map((premio) => (
-									<li key={premio.id}>
-										{premio.posicion}º lugar · {premio.recompensa}
+								{vigentes.map((i) => (
+									<li
+										key={i.registrationId}
+										className="separador-fila d-flex justify-content-between gap-2"
+									>
+										<span>{nombreParticipante(i)}</span>
+										<BadgeEstado estado={etiqueta(ESTADOS_INSCRIPCION, i.status)} />
 									</li>
 								))}
 							</ul>
 						)}
-					</section>
-				</div>
-				<section className="col-12 col-lg-4 detalle-rondas">
-					<h2>Partidas y llaves</h2>
-					<div className="ronda-selector">
-						<Campo
-							id="ronda"
-							nombre="ronda"
-							etiqueta="Ronda visible"
-							valor={ronda}
-							onCambiar={(evento) => setRondaElegida(evento.target.value)}
-							opciones={rondas.map((nombre) => ({ valor: nombre, etiqueta: nombre }))}
-						/>
 					</div>
-					{rondas.length > 0 && (
-						<div className="rondas-pestanas" role="tablist" aria-label="Rondas del torneo">
-							{rondas.map((nombre, indice) => (
+				</section>
+				<section className="col-12 col-lg-6">
+					<div className="panel h-100">
+						<h2>Premios</h2>
+						{fallos.includes('premios') ? (
+							<p>No pudimos consultar los premios.</p>
+						) : premios.length === 0 ? (
+							<p>Este torneo no tiene premios registrados.</p>
+						) : (
+							<ul className="lista-limpia">
+								{premios.map((p) => (
+									<li key={p.prizeId} className="separador-fila">
+										<strong>{p.description}</strong>
+										<br />
+										<span className="texto-secundario">
+											{etiqueta(TIPOS_PREMIO, p.type)}
+											{p.amount > 0 ? ' · $' + p.amount.toLocaleString('es-CL') : ''} ·{' '}
+											{etiqueta(ESTADOS_PREMIO, p.status)}
+											{p.teamId ? ' · ' + nombreEquipo(equipos, p.teamId) : ''}
+										</span>
+									</li>
+								))}
+							</ul>
+						)}
+					</div>
+				</section>
+				<section className="col-12">
+					<div className="panel">
+						<h2>Clasificación</h2>
+						<div className="table-responsive" role="region" aria-label="Clasificación" tabIndex="0">
+							<table className="table">
+								<thead>
+									<tr>
+										<th scope="col">Pos.</th>
+										<th scope="col">Participante</th>
+										<th scope="col">PJ</th>
+										<th scope="col">Victorias</th>
+										<th scope="col">Derrotas</th>
+										<th scope="col">Puntos</th>
+									</tr>
+								</thead>
+								<tbody>
+									{ordenarRanking(ranking).map((fila, posicion) => (
+										<tr key={fila.rankingId ?? fila.teamId}>
+											<td>{posicion + 1}</td>
+											<th scope="row">{nombreParticipante(fila)}</th>
+											<td>{fila.matchesPlayed}</td>
+											<td>{fila.wins}</td>
+											<td>{fila.losses}</td>
+											<td>{fila.points}</td>
+										</tr>
+									))}
+								</tbody>
+							</table>
+							{ranking.length === 0 && (
+								<p className="mt-2">
+									{fallos.includes('ranking')
+										? 'No pudimos consultar la clasificación.'
+										: 'Aún no hay posiciones registradas.'}
+								</p>
+							)}
+						</div>
+					</div>
+				</section>
+				<section className="col-12">
+					<div className="panel">
+						<h2>Partidas y llaves</h2>
+						{rondas.length > 0 && (
+							<Campo
+								id="ronda"
+								nombre="ronda"
+								etiqueta="Ronda visible"
+								valor={ronda}
+								onCambiar={(e) => setRondaElegida(e.target.value)}
+								opciones={rondas.map((r) => ({ valor: r, etiqueta: r }))}
+							/>
+						)}
+						<div role="tablist" aria-label="Rondas del torneo" className="acciones my-3">
+							{rondas.map((r) => (
 								<button
-									key={nombre}
-									ref={(elemento) => {
-										pestanas.current[indice] = elemento
-									}}
-									id={'ronda-tab-' + indice}
-									className="ronda-pestana"
 									type="button"
+									key={r}
 									role="tab"
-									aria-selected={ronda === nombre}
+									aria-selected={r === ronda}
 									aria-controls="partidas-ronda"
-									tabIndex={ronda === nombre ? 0 : -1}
-									onClick={() => setRondaElegida(nombre)}
-									onKeyDown={(evento) => navegarRondas(evento, indice)}
+									id={'ronda-' + rondas.indexOf(r)}
+									className="boton boton-secundario"
+									onClick={() => setRondaElegida(r)}
 								>
-									{nombre}
+									{r}
 								</button>
 							))}
 						</div>
-					)}
-					<div
-						id="partidas-ronda"
-						role="tabpanel"
-						aria-label={'Partidas: ' + (ronda || 'sin ronda')}
-						tabIndex={0}
-					>
-						<ListaPartidas
-							partidas={torneo.partidas.filter((partida) => partida.ronda === ronda)}
-							datos={datos}
-						/>
+						{fallos.includes('partidas') ? (
+							<p>No pudimos consultar las partidas.</p>
+						) : partidas.length === 0 ? (
+							<p>No hay partidas programadas.</p>
+						) : (
+							<ul className="lista-limpia" id="partidas-ronda" role="tabpanel" aria-label={ronda}>
+								{partidas
+									.filter((p) => (p.round || 'General') === ronda)
+									.sort((a, b) => String(a.matchDate).localeCompare(String(b.matchDate)))
+									.map((m) => (
+										<li key={m.matchId} className="separador-fila">
+											<LlaveTorneo local={nombreLocal(m)} visitante={nombreVisita(m)} />
+											<BadgeEstado estado={etiqueta(ESTADOS_PARTIDA, m.status)} />{' '}
+											<strong>{nombreLocal(m)}</strong> {m.homeScore ?? '-'} : {m.awayScore ?? '-'}{' '}
+											<strong>{nombreVisita(m)}</strong>
+											<br />
+											<span className="texto-secundario">{formatearFechaHora(m.matchDate)}</span>
+										</li>
+									))}
+							</ul>
+						)}
 					</div>
 				</section>
 			</div>
+			{mostrarAcciones && (
+				<p className="mt-4">
+					<Link to="/torneos">← Volver al catálogo</Link>
+				</p>
+			)}
 		</>
 	)
 }

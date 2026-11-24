@@ -1,0 +1,22 @@
+Verificación EP3 del 23/11/2026
+Frontend: 84 pruebas aprobadas.
+Backend: 153 pruebas aprobadas, 0 fallos, 0 errores, 0 omisiones.
+Integración real: 14 recorridos aprobados contra 14 servicios.
+Swagger: 12 servicios, 138 operaciones.
+Compilación, lint y formato comprobados.
+
+Recorridos ejecutados:
+ok  1 tests\e2e\integracion.spec.js:104:1 › catálogo público, detalle y redirección de una ruta privada
+ok  2 tests\e2e\integracion.spec.js:117:1 › registro desde la interfaz, sesión persistente y cierre
+ok  3 tests\e2e\integracion.spec.js:136:1 › jugador crea, edita y desactiva su equipo; otro jugador no puede modificarlo
+ok  4 tests\e2e\integracion.spec.js:172:1 › inscripción individual desde React, duplicados y cancelación
+ok  5 tests\e2e\integracion.spec.js:198:1 › roles: administrador, organizador y barreras reales de la API
+ok  6 tests\e2e\integracion.spec.js:219:1 › JWT real: credenciales erróneas, renovación y perfil desactivado
+ok  7 tests\e2e\integracion.spec.js:252:1 › administrador crea, edita y desactiva juegos desde React
+ok  8 tests\e2e\integracion.spec.js:281:1 › cupos: tres solicitudes simultáneas no exceden dos plazas
+ok  9 tests\e2e\integracion.spec.js:301:1 › equipos: inscripción válida, confirmación y rechazo de un equipo incompleto
+ok 10 tests\e2e\integracion.spec.js:379:1 › administrador crea, edita y cancela torneos desde React
+ok 11 tests\e2e\integracion.spec.js:409:1 › administrador crea una cuenta organizadora y la elimina desde React
+ok 12 tests\e2e\integracion.spec.js:441:1 › un JWT manipulado no gana permisos ni accede al microservicio directamente
+ok 13 tests\e2e\integracion.spec.js:457:1 › ciclo individual completo: partida, resultado, corrección, perfil y anulación
+ok 14 tests\e2e\integracion.spec.js:546:1 › capturas actuales para el manual y la integración

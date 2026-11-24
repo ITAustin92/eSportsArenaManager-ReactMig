@@ -7,7 +7,6 @@ describe('MensajeError', () => {
 		dom = prepararDOM()
 	})
 	afterEach(() => dom.limpiar())
-
 	;[
 		{ nombre: 'una cadena vacía', mensaje: '' },
 		{ nombre: 'null', mensaje: null },

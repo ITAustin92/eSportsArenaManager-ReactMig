@@ -2,48 +2,87 @@ import './Inicio.css'
 import { useRef } from 'react'
 import { Link } from 'react-router-dom'
 import Hero from './Hero'
-import TorneosDestacados from './TorneosDestacados'
-import { cuposDisponibles, formatearFecha, inscripcionAbierta } from '../../logica/torneos.js'
-import useAhora from '../../logica/useAhora.js'
+import TarjetaTorneo from '../torneos/TarjetaTorneo'
+import EstadoCarga from '../compartidos/EstadoCarga'
 import useApariciones from './useApariciones'
+import useCarga from '../../hooks/useCarga'
+import useAuth from '../auth/useAuth'
+import { cargarCatalogo } from '../../servicios/catalogo.js'
+import {
+	admiteInscripciones,
+	cierreInscripcion,
+	filtrarTorneos,
+	formatearFecha,
+} from '../../logica/torneos.js'
 
-function Inicio({ datos }) {
+function Inicio() {
 	const secciones = useRef(null)
 	useApariciones(secciones)
-	const ahora = useAhora()
-	const proximos = datos.torneos
-		.filter((torneo) => inscripcionAbierta(torneo, ahora) && cuposDisponibles(torneo) > 0)
-		.sort((a, b) => Date.parse(a.cierreISO) - Date.parse(b.cierreISO))
+	const { rol } = useAuth()
+	const { datos, error, cargando, recargar } = useCarga(cargarCatalogo)
+	const vigentes = datos
+		? filtrarTorneos(datos.torneos).filter((t) => ['UPCOMING', 'IN_PROGRESS'].includes(t.state))
+		: []
+	const proximo = vigentes
+		.filter((t) => admiteInscripciones(t))
+		.sort((a, b) => Date.parse(cierreInscripcion(a)) - Date.parse(cierreInscripcion(b)))[0]
 	return (
 		<>
 			<Hero />
 			<div className="container inicio-secciones" ref={secciones} id="torneos-destacados">
-				{proximos.length > 0 && (
-					<section className="inicio-banner card" data-aparicion>
-						<div className="inicio-banner-texto">
-							<p className="sobretitulo">Próximo cierre</p>
-							<h2>{proximos[0].nombre}</h2>
-							<p>{formatearFecha(proximos[0].cierreISO)}</p>
-							<Link className="boton boton-primario" to={'/inscripcion?torneo=' + proximos[0].id}>
-								Inscribirse ahora
-							</Link>
+				<EstadoCarga cargando={cargando} error={error} onReintentar={recargar}>
+					{proximo && (
+						<section className="inicio-banner card" data-aparicion>
+							<div className="inicio-banner-texto">
+								<p className="sobretitulo">Inscripciones abiertas</p>
+								<h2>{proximo.name}</h2>
+								<p>Comienza el {formatearFecha(proximo.startDate)}</p>
+								<Link
+									className="boton boton-primario"
+									to={
+										rol === 'JUGADOR'
+											? '/inscripcion?torneo=' + proximo.tournamentId
+											: '/torneos/' + proximo.tournamentId
+									}
+								>
+									{rol === 'JUGADOR' ? 'Inscribir a mi equipo' : 'Ver torneo'}
+								</Link>
+							</div>
+						</section>
+					)}
+					<section>
+						<div className="encabezado-seccion">
+							<div>
+								<p className="sobretitulo">En el radar</p>
+								<h2>Torneos destacados</h2>
+							</div>
+							<span className="texto-secundario">{vigentes.length} competencias</span>
 						</div>
-						<img src="/img/valorant-cierre.jpg" alt="Escena competitiva de Valorant" />
+						{vigentes.length === 0 ? (
+							<p>No hay torneos abiertos ni en curso.</p>
+						) : (
+							<div className="row g-4">
+								{vigentes.slice(0, 4).map((torneo) => (
+									<div key={torneo.tournamentId} className="col-12 col-md-6 col-lg-4 col-xl-3">
+										<TarjetaTorneo
+											torneo={torneo}
+											juego={datos.juegos.find((j) => j.juegoId === torneo.gameId)}
+										/>
+									</div>
+								))}
+							</div>
+						)}
 					</section>
-				)}
-				<TorneosDestacados
-					torneos={datos.torneos.filter((torneo) => torneo.estado !== 'Finalizado')}
-					juegos={datos.juegos}
-				/>
+				</EstadoCarga>
 				<section className="panel mt-5" data-aparicion>
 					<p className="sobretitulo">La emoción de competir</p>
-					<h2>Gran Final · Smash Ultimate</h2>
+					<h2>Video destacado</h2>
 					<div className="ratio ratio-16x9 mt-3">
 						<iframe
 							src="https://www.youtube-nocookie.com/embed/m6CrWBOxecY"
 							title="EVO 2019: Gran Final de Smash Ultimate"
 							loading="lazy"
-							allow="fullscreen; picture-in-picture"
+							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
 							allowFullScreen
 						/>
 					</div>

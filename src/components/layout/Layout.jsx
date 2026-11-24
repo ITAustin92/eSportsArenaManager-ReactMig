@@ -1,14 +1,15 @@
 import { useEffect } from 'react'
-import { useLocation } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import Cabecera from './Cabecera'
 import Navegacion from './Navegacion'
 import PieDePagina from './PieDePagina'
 import MensajeError from '../compartidos/MensajeError'
+import Boton from '../compartidos/Boton'
 import useAuth from '../auth/useAuth'
 
 function Layout({ children }) {
 	const { pathname } = useLocation()
-	const { errorSesion } = useAuth()
+	const { errorSesion, expirada, cerrarAviso } = useAuth()
 	useEffect(() => {
 		const anterior = document.title
 		document.title =
@@ -34,6 +35,17 @@ function Layout({ children }) {
 				id="contenido"
 				className={'container app-contenido' + (pathname === '/' ? ' app-contenido--inicio' : '')}
 			>
+				{expirada && (
+					<div className="panel mb-4 aviso-sesion" role="alert">
+						<strong>Tu sesión expiró.</strong> Por seguridad cerramos la sesión.{' '}
+						<Link to="/login" onClick={cerrarAviso}>
+							Vuelve a iniciar sesión
+						</Link>
+						<Boton variante="secundario" onClick={cerrarAviso} aria-label="Cerrar aviso">
+							×
+						</Boton>
+					</div>
+				)}
 				<MensajeError>{errorSesion}</MensajeError>
 				{children}
 			</main>

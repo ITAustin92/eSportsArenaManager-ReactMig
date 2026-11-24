@@ -1,52 +1,36 @@
 import './TarjetaTorneo.css'
 import { Link } from 'react-router-dom'
 import BadgeEstado from '../compartidos/BadgeEstado'
-import BarraCupos from './BarraCupos'
-import { cuposDisponibles, formatearFecha } from '../../logica/torneos.js'
+import { ESTADOS_TORNEO, etiqueta } from '../../logica/estados.js'
+import { cierreInscripcion, formatearFecha, imagenJuego } from '../../logica/torneos.js'
 
-function TarjetaTorneo({ torneo, juego }) {
+function TarjetaTorneo({ torneo, juego, rutaDetalle = '/torneos/' }) {
 	return (
 		<article className="tarjeta-torneo card h-100">
-			{juego?.imagen ? (
-				<img
-					className="tarjeta-torneo-imagen card-img-top"
-					src={juego.imagen}
-					alt={'Portada de ' + juego.nombre}
-					loading="lazy"
-				/>
-			) : (
-				<div
-					className="tarjeta-torneo-portada"
-					role="img"
-					aria-label={'Torneo de ' + juego?.nombre}
-				>
-					{juego?.nombre}
-				</div>
-			)}
+			<img
+				className="tarjeta-torneo-portada"
+				src={imagenJuego(juego)}
+				alt={'Torneo de ' + (juego?.nombre ?? 'eSports')}
+				loading="lazy"
+			/>
 			<div className="card-body d-flex flex-column">
 				<div>
-					<BadgeEstado estado={torneo.estado} />
+					<BadgeEstado estado={etiqueta(ESTADOS_TORNEO, torneo.state)} />
 				</div>
-				<h3 className="tarjeta-torneo-titulo">{torneo.nombre}</h3>
+				<h3 className="tarjeta-torneo-titulo">{torneo.name}</h3>
 				<dl className="tarjeta-torneo-datos">
 					<dt>Juego</dt>
-					<dd>{juego?.nombre}</dd>
+					<dd>{juego?.nombre ?? '—'}</dd>
 					<dt>Modalidad</dt>
-					<dd>
-						{juego?.modalidad === '1v1'
-							? '1v1'
-							: juego?.jugadoresPorEquipo + 'v' + juego?.jugadoresPorEquipo}
-					</dd>
-					<dt>Cupos</dt>
-					<dd>
-						{torneo.inscritos.length} / {torneo.cupoMax}
-					</dd>
-					<dt>Cierre</dt>
-					<dd>{formatearFecha(torneo.cierreISO)}</dd>
+					<dd>{juego?.modalidad ?? '—'}</dd>
+					<dt>Inicio</dt>
+					<dd>{formatearFecha(torneo.startDate)}</dd>
+					<dt>Término</dt>
+					<dd>{formatearFecha(torneo.endDate)}</dd>
+					<dt>Cierre de inscripción</dt>
+					<dd>{formatearFecha(cierreInscripcion(torneo))}</dd>
 				</dl>
-				<p className="texto-acento">{cuposDisponibles(torneo)} cupos disponibles</p>
-				<BarraCupos inscritos={torneo.inscritos.length} maximo={torneo.cupoMax} />
-				<Link className="boton boton-primario mt-auto" to={'/torneos/' + torneo.id}>
+				<Link className="boton boton-primario mt-auto" to={rutaDetalle + torneo.tournamentId}>
 					Ver detalles
 				</Link>
 			</div>

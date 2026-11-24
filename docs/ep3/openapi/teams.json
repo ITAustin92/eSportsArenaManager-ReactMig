@@ -1,0 +1,728 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "API Teams",
+    "description": "API Teams - eSports Arena Manager",
+    "version": "1.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8002",
+      "description": "Generated server url"
+    }
+  ],
+  "security": [
+    {
+      "bearer": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Equipo V1",
+      "description": "Metodos CRUD para la gestión de equipos"
+    },
+    {
+      "name": "Teams V1",
+      "description": "CRUD de equipos y miembros"
+    },
+    {
+      "name": "Team V2",
+      "description": "CRUD de teams con respuestas HATEOAS"
+    }
+  ],
+  "paths": {
+    "/api/v2/teams/{id}": {
+      "get": {
+        "tags": [
+          "Team V2"
+        ],
+        "summary": "Buscar Team por ID",
+        "operationId": "findById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Encontrado",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntityModelTeam"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No encontrado",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntityModelTeam"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Team V2"
+        ],
+        "summary": "Actualizar Team",
+        "operationId": "update",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Team"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Actualizado",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntityModelTeam"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No encontrado",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntityModelTeam"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Team V2"
+        ],
+        "summary": "Eliminar Team",
+        "operationId": "delete",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Eliminado"
+          }
+        }
+      }
+    },
+    "/api/v1/teams/{id}": {
+      "get": {
+        "tags": [
+          "Equipo V1",
+          "Teams V1"
+        ],
+        "summary": "Busqueda de un equipo por id",
+        "description": "Se devuelve un equipo, en caso contrario se devuelve una excepcion",
+        "operationId": "findById_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID del Equipo a buscar",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Torneo encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Team"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Equipo no se encuentra en la BD",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Team"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Equipo V1",
+          "Teams V1"
+        ],
+        "summary": "Actualizacion de equipo",
+        "description": "Se actualizan los datos de un equipo existente",
+        "operationId": "update_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID del equipo a actualizar",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Team"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Equipo actualizado",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Team"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Equipo no se encuentra en la BD",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Team"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Equipo V1",
+          "Teams V1"
+        ],
+        "summary": "Eliminación de un equipo",
+        "description": "Se elimina un equipo de la base de datos",
+        "operationId": "delete_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID del equipo a eliminar",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Torneo eliminado"
+          }
+        }
+      }
+    },
+    "/api/v2/teams": {
+      "get": {
+        "tags": [
+          "Team V2"
+        ],
+        "summary": "Listar teams",
+        "operationId": "findAll",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollectionModelEntityModelTeam"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Team V2"
+        ],
+        "summary": "Crear Team",
+        "operationId": "save",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Team"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntityModelTeam"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/teams": {
+      "get": {
+        "tags": [
+          "Equipo V1",
+          "Teams V1"
+        ],
+        "summary": "Listado de todos los equipos",
+        "description": "Se devuelve una lista con todos los equipos en la tabla Team de la DB",
+        "operationId": "findAll_1",
+        "responses": {
+          "200": {
+            "description": "Operacion Exitosa",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Team"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Equipo V1",
+          "Teams V1"
+        ],
+        "summary": "Guardado del equipo",
+        "description": "Método que guarda al equipo en la DB",
+        "operationId": "save_1",
+        "requestBody": {
+          "description": "Equipo a crear",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Team"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Team"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/teams/juego/{juegoId}": {
+      "get": {
+        "tags": [
+          "Equipo V1",
+          "Teams V1"
+        ],
+        "summary": "Busqueda de equipos por juego",
+        "description": "Se devuelve una lista de equipos por juego, en caso contrario se devuelve una excepcion",
+        "operationId": "findByJuego",
+        "parameters": [
+          {
+            "name": "juegoId",
+            "in": "path",
+            "description": "ID del juego a buscar",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Juego encontrado",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Team"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Juego no se encuentra en la BD",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Team"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/teams/estado/{estado}": {
+      "get": {
+        "tags": [
+          "Equipo V1",
+          "Teams V1"
+        ],
+        "summary": "Busqueda de equipo por estado",
+        "description": "Se devuelve una lista de equipos por su estado, en caso contrario se devuelve una excepcion",
+        "operationId": "findByEstado",
+        "parameters": [
+          {
+            "name": "estado",
+            "in": "path",
+            "description": "Estado del equipo a buscar",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "ACTIVO"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Equipos encontrado",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Team"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Equipos con el estado ingresado, no se encuentran en la BD",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Team"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/teams/capitan/{capitanId}": {
+      "get": {
+        "tags": [
+          "Equipo V1",
+          "Teams V1"
+        ],
+        "summary": "Busqueda de equipo por capitán",
+        "description": "Se devuelve una lista de equipos por su capitán, en caso contrario se devuelve una excepcion",
+        "operationId": "findByCapitan",
+        "parameters": [
+          {
+            "name": "capitanId",
+            "in": "path",
+            "description": "ID del capitán a buscar",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Capitán encontrado",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Team"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Capitán no se encuentra en la BD",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Team"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Audit": {
+        "type": "object",
+        "properties": {
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "MemberTeam": {
+        "type": "object",
+        "properties": {
+          "miembroId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "usuarioId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "rolDentroEquipo": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "rolDentroEquipo",
+          "usuarioId"
+        ]
+      },
+      "Team": {
+        "type": "object",
+        "properties": {
+          "equipoId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "nombre": {
+            "type": "string",
+            "minLength": 1
+          },
+          "capitanId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "juegoPrincipalId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "estado": {
+            "type": "string",
+            "minLength": 1
+          },
+          "miembros": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MemberTeam"
+            }
+          },
+          "audit": {
+            "$ref": "#/components/schemas/Audit"
+          }
+        },
+        "required": [
+          "capitanId",
+          "estado",
+          "juegoPrincipalId",
+          "nombre"
+        ]
+      },
+      "EntityModelTeam": {
+        "type": "object",
+        "properties": {
+          "equipoId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "nombre": {
+            "type": "string",
+            "minLength": 1
+          },
+          "capitanId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "juegoPrincipalId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "estado": {
+            "type": "string",
+            "minLength": 1
+          },
+          "miembros": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MemberTeam"
+            }
+          },
+          "audit": {
+            "$ref": "#/components/schemas/Audit"
+          },
+          "_links": {
+            "$ref": "#/components/schemas/Links"
+          }
+        },
+        "required": [
+          "capitanId",
+          "estado",
+          "juegoPrincipalId",
+          "nombre"
+        ]
+      },
+      "CollectionModelEntityModelTeam": {
+        "type": "object",
+        "properties": {
+          "_embedded": {
+            "type": "object",
+            "properties": {
+              "teamList": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/EntityModelTeam"
+                }
+              }
+            }
+          },
+          "_links": {
+            "$ref": "#/components/schemas/Links"
+          }
+        }
+      },
+      "Link": {
+        "type": "object",
+        "properties": {
+          "href": {
+            "type": "string"
+          },
+          "hreflang": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "deprecation": {
+            "type": "string"
+          },
+          "profile": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "templated": {
+            "type": "boolean"
+          }
+        }
+      },
+      "Links": {
+        "type": "object",
+        "additionalProperties": {
+          "$ref": "#/components/schemas/Link"
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

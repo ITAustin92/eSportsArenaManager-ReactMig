@@ -1,0 +1,741 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "API Sanctions",
+    "description": "API Sanctions - eSports Arena Manager",
+    "version": "1.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8008",
+      "description": "Generated server url"
+    }
+  ],
+  "security": [
+    {
+      "bearer": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Sanciones V1",
+      "description": "Metodos CRUD para la gestión de sanciones"
+    },
+    {
+      "name": "Sanctions V2",
+      "description": "Sanciones a jugadores/equipos con respuestas HATEOAS"
+    },
+    {
+      "name": "Sanctions V1",
+      "description": "Sanciones a jugadores y equipos"
+    }
+  ],
+  "paths": {
+    "/api/v2/sanctions": {
+      "get": {
+        "tags": [
+          "Sanctions V2"
+        ],
+        "summary": "Listar sanciones",
+        "operationId": "findAll",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollectionModelEntityModelSanction"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Sanctions V2"
+        ],
+        "summary": "Crear sanción",
+        "operationId": "save",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Sanction"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntityModelSanction"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/sanctions": {
+      "get": {
+        "tags": [
+          "Sanctions V1",
+          "Sanciones V1"
+        ],
+        "summary": "Listado de todas las sanciones",
+        "description": "Se devuelve una lista con todos las sanciones en la tabla usuarios de la DB",
+        "operationId": "findAll_1",
+        "responses": {
+          "200": {
+            "description": "Operacion Exitosa",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Sanction"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Sanctions V1",
+          "Sanciones V1"
+        ],
+        "summary": "Guardado de la sanción",
+        "description": "Método que guarda la sanción en la DB",
+        "operationId": "save_1",
+        "requestBody": {
+          "description": "Sanción a crear",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Sanction"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Sanction"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/sanctions/{id}/status": {
+      "patch": {
+        "tags": [
+          "Sanctions V2"
+        ],
+        "summary": "Actualizar estado de la sanción",
+        "description": "Ej: ACTIVE, CLOSED",
+        "operationId": "updateStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Nuevo estado",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "CLOSED"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Actualizada",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntityModelSanction"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No encontrada",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntityModelSanction"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/sanctions/{id}/status": {
+      "patch": {
+        "tags": [
+          "Sanctions V1",
+          "Sanciones V1"
+        ],
+        "summary": "Actualizar estado de la sanción",
+        "description": "Ej: ACTIVE, CLOSED",
+        "operationId": "updateStatus_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Nuevo estado",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "CLOSED"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Actualizada",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Sanction"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No encontrada",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Sanction"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/sanctions/{id}": {
+      "get": {
+        "tags": [
+          "Sanctions V2"
+        ],
+        "summary": "Buscar sanción por ID",
+        "operationId": "findById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Encontrada",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntityModelSanction"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No encontrada",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntityModelSanction"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Sanctions V2"
+        ],
+        "summary": "Eliminar sanción",
+        "operationId": "delete",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Eliminada"
+          }
+        }
+      }
+    },
+    "/api/v1/sanctions/{id}": {
+      "get": {
+        "tags": [
+          "Sanctions V1",
+          "Sanciones V1"
+        ],
+        "summary": "Buscar sanción por ID",
+        "operationId": "findById_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Encontrada",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Sanction"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No encontrada",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Sanction"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Sanctions V1",
+          "Sanciones V1"
+        ],
+        "summary": "Eliminar sanción",
+        "operationId": "deleteById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Eliminada"
+          }
+        }
+      }
+    },
+    "/api/v1/sanctions/user/{userId}": {
+      "get": {
+        "tags": [
+          "Sanctions V1",
+          "Sanciones V1"
+        ],
+        "summary": "Encontrar usuario por ID",
+        "operationId": "findByUserId",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usuario encontrado",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Sanction"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Usuario no se encuentra en la BD",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Sanction"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/sanctions/tournament/{tournamentId}": {
+      "get": {
+        "tags": [
+          "Sanctions V1",
+          "Sanciones V1"
+        ],
+        "summary": "Encontrar torneo por ID",
+        "description": "Se devuelve un torneo, en caso contrario se devuelve una excepcion",
+        "operationId": "findByTournamentId",
+        "parameters": [
+          {
+            "name": "tournamentId",
+            "in": "path",
+            "description": "ID",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Torneo encontrada",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Sanction"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Torneo no se encuentra en la BD",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Sanction"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/sanctions/team/{teamId}": {
+      "get": {
+        "tags": [
+          "Sanctions V1",
+          "Sanciones V1"
+        ],
+        "summary": "Encontrar equipo por ID",
+        "operationId": "findByTeamId",
+        "parameters": [
+          {
+            "name": "teamId",
+            "in": "path",
+            "description": "ID",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Equipo encontrado",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Sanction"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Equipo no se encuentra en la BD",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Sanction"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Audit": {
+        "type": "object",
+        "properties": {
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Sanction": {
+        "type": "object",
+        "properties": {
+          "sanctionId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "tournamentId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "teamId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "matchId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "type": {
+            "type": "string",
+            "minLength": 1
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1
+          },
+          "matchesSuspended": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 0
+          },
+          "fineAmount": {
+            "type": "number",
+            "format": "double",
+            "minimum": 0
+          },
+          "status": {
+            "type": "string",
+            "minLength": 1
+          },
+          "audit": {
+            "$ref": "#/components/schemas/Audit"
+          }
+        },
+        "required": [
+          "reason",
+          "status",
+          "teamId",
+          "tournamentId",
+          "type"
+        ]
+      },
+      "EntityModelSanction": {
+        "type": "object",
+        "properties": {
+          "sanctionId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "tournamentId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "teamId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "matchId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "type": {
+            "type": "string",
+            "minLength": 1
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1
+          },
+          "matchesSuspended": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 0
+          },
+          "fineAmount": {
+            "type": "number",
+            "format": "double",
+            "minimum": 0
+          },
+          "status": {
+            "type": "string",
+            "minLength": 1
+          },
+          "audit": {
+            "$ref": "#/components/schemas/Audit"
+          },
+          "_links": {
+            "$ref": "#/components/schemas/Links"
+          }
+        },
+        "required": [
+          "reason",
+          "status",
+          "teamId",
+          "tournamentId",
+          "type"
+        ]
+      },
+      "CollectionModelEntityModelSanction": {
+        "type": "object",
+        "properties": {
+          "_embedded": {
+            "type": "object",
+            "properties": {
+              "sanctionList": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/EntityModelSanction"
+                }
+              }
+            }
+          },
+          "_links": {
+            "$ref": "#/components/schemas/Links"
+          }
+        }
+      },
+      "Link": {
+        "type": "object",
+        "properties": {
+          "href": {
+            "type": "string"
+          },
+          "hreflang": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "deprecation": {
+            "type": "string"
+          },
+          "profile": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "templated": {
+            "type": "boolean"
+          }
+        }
+      },
+      "Links": {
+        "type": "object",
+        "additionalProperties": {
+          "$ref": "#/components/schemas/Link"
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}
